@@ -6,6 +6,7 @@ program
   .version(`uniapp-cli @${require('../package').version}`)
   .usage('<command> [options]')
   .option('-d, --verbose', 'debug mode produces verbose log output for all activity')
+  .allowUnknownOption(true)
   .showHelpAfterError(true)
   .showSuggestionAfterError(true);
 
@@ -19,9 +20,23 @@ program
   .argument('<app-name>', 'Human readable name')
   .option('-t, --template <template>', 'use a custom template from GitHub/GitLab/Bitbucket/Git:url.')
   .option('-f, --force', 'Overwrite target directory if it exists.')
-  .allowUnknownOption(true)
   .action((appName, options) => {
     require('../src/create.js')(appName, options);
+  });
+
+program
+  .command('requirements')
+  .usage('[platform ...]')
+  .summary('Checks and print out all the requirements for platforms specified.')
+  .description(
+    'Checks and print out all the requirements for platforms specified (or all platforms added \nto project if none specified). If all requirements for each platform are met, exits with code 0 \notherwise exits with non-zero code.',
+  )
+  .argument(
+    '[platform...]',
+    'Platforms requirements you want to check.\nExample: uniapp requirements android ios mp-weixin',
+  )
+  .action((platform) => {
+    require('../src/requirements.js')(platform);
   });
 
 program.parse(process.argv);

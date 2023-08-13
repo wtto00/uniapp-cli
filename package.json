@@ -6,7 +6,7 @@
     "uniapp": "bin/uniapp"
   },
   "scripts": {
-    "start": "bin/uniapp"
+    "start": "node bin/uniapp"
   },
   "repository": {
     "type": "git",

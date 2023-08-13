@@ -1,9 +1,8 @@
 const { resolve } = require('path');
 const { existsSync, readdirSync, rmSync, statSync } = require('fs');
 const download = require('download-git-repo');
-const chalk = require('chalk');
 const inquirer = require('inquirer');
-const log = require('./log');
+const Log = require('./log');
 const ora = require('ora');
 
 const templates = {
@@ -28,11 +27,11 @@ module.exports = async function create(appName, options) {
   if (existsSync(projectPath)) {
     if (!force) {
       if (statSync(projectPath).isDirectory() && readdirSync(projectPath).length > 0) {
-        log(chalk.yellow(`directory ${appName} already exists, use \`--force\` to overwrite.`));
+        Log.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`);
         return;
       }
     } else {
-      log(`delete directory: ${projectPath}`, true);
+      Log.debug(`delete directory: ${projectPath}`);
       rmSync(projectPath, { force: true, recursive: true });
     }
   }
@@ -51,11 +50,18 @@ module.exports = async function create(appName, options) {
     template = templates[templateKey];
   }
 
-  log('download template', true);
+  Log.debug('download template');
 
   const spinner = ora(`downloading template: ${template}`).start();
-  download(template, appName, {}, (err) => {
-    if (err) spinner.fail(err.message);
-    else spinner.succeed(`Project ${appName} has been successfully created.`);
-  });
+  try {
+    download(template, appName, {}, (err) => {
+      if (err) {
+        spinner.fail(`failed to download ${template}`);
+        Log.error(err.message);
+      } else spinner.succeed(`Project ${appName} has been successfully created.`);
+    });
+  } catch (err) {
+    spinner.fail(`failed to download ${template}`);
+    Log.error(err.message);
+  }
 };
