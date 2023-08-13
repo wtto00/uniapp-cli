@@ -10,7 +10,7 @@ dependencies:
     version: 3.0.0-3080720230703001(@dcloudio/types@3.3.2)(postcss@8.4.27)(vue@3.2.45)
   '@dcloudio/uni-app-plus':
     specifier: 3.0.0-3080720230703001
-    version: 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45)
+    version: 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45)
   '@dcloudio/uni-components':
     specifier: 3.0.0-3080720230703001
     version: 3.0.0-3080720230703001(postcss@8.4.27)(vue@3.2.45)
@@ -66,7 +66,7 @@ devDependencies:
     version: 3.0.0-3080720230703001
   '@dcloudio/vite-plugin-uni':
     specifier: 3.0.0-3080720230703001
-    version: 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45)
+    version: 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45)
   '@vue/tsconfig':
     specifier: ^0.1.3
     version: 0.1.3
@@ -74,8 +74,8 @@ devDependencies:
     specifier: ^4.9.4
     version: 4.9.4
   vite:
-    specifier: 4.0.4
-    version: 4.0.4(terser@5.19.2)
+    specifier: 4.0.5
+    version: 4.0.5(terser@5.19.2)
   vue-tsc:
     specifier: ^1.0.24
     version: 1.0.24(typescript@4.9.4)
@@ -1270,11 +1270,11 @@ packages:
   /@dcloudio/types@3.3.2:
     resolution: {integrity: sha512-O+7M55RXqYJMCTh3MC86IGJvDPTR+v214yUeaoz1YUIHa2gJdgObs4RRwfAwZoLMtdoZ9J5BElZZqRy5oi+UTg==}
 
-  /@dcloudio/uni-app-plus@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45):
+  /@dcloudio/uni-app-plus@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45):
     resolution: {integrity: sha512-WGHniWrEJPIAVP3GDp+maf30fZz/Dc+gAfiPMDWvQdE12nAcnpbgnmaLEPifPDeeV2dr7/VuxoVM+Z2M5AlN1Q==}
     dependencies:
       '@dcloudio/uni-app-uts': 3.0.0-3080720230703001(postcss@8.4.27)(vue@3.2.45)
-      '@dcloudio/uni-app-vite': 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45)
+      '@dcloudio/uni-app-vite': 3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45)
       '@dcloudio/uni-app-vue': 3.0.0-3080720230703001
       debug: 4.3.4
       fs-extra: 10.1.0
@@ -1313,7 +1313,7 @@ packages:
       - vue
     dev: false
 
-  /@dcloudio/uni-app-vite@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45):
+  /@dcloudio/uni-app-vite@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45):
     resolution: {integrity: sha512-OAFjSfrin2pLuBBfDMg3qvm7ZCS3Vqt0/CDxRicc7lD6ioiahUvaXdLhARTWykoO6rlYjbIckDmg3HuBbb3wjA==}
     dependencies:
       '@dcloudio/uni-cli-shared': 3.0.0-3080720230703001(postcss@8.4.27)(vue@3.2.45)
@@ -1321,7 +1321,7 @@ packages:
       '@dcloudio/uni-nvue-styler': 3.0.0-3080720230703001
       '@dcloudio/uni-shared': 3.0.0-3080720230703001
       '@rollup/pluginutils': 4.2.1
-      '@vitejs/plugin-vue': 4.2.3(vite@4.0.4)(vue@3.2.45)
+      '@vitejs/plugin-vue': 4.2.3(vite@4.0.5)(vue@3.2.45)
       '@vue/compiler-dom': 3.2.47
       '@vue/compiler-sfc': 3.2.47
       debug: 4.3.4
@@ -1770,7 +1770,7 @@ packages:
       - vue
     dev: false
 
-  /@dcloudio/vite-plugin-uni@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.4)(vue@3.2.45):
+  /@dcloudio/vite-plugin-uni@3.0.0-3080720230703001(postcss@8.4.27)(vite@4.0.5)(vue@3.2.45):
     resolution: {integrity: sha512-PMDGsIDjBuoGNzzNPxLAHrXEzBsA2huoZgjbaGa3H8N+4cnbJZmEJEsy/OVdA3I9lrgZ+H6QW95qIA5aVO6djA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1783,9 +1783,9 @@ packages:
       '@dcloudio/uni-cli-shared': 3.0.0-3080720230703001(postcss@8.4.27)(vue@3.2.45)
       '@dcloudio/uni-shared': 3.0.0-3080720230703001
       '@rollup/pluginutils': 4.2.1
-      '@vitejs/plugin-legacy': 4.1.1(terser@5.19.2)(vite@4.0.4)
-      '@vitejs/plugin-vue': 4.2.3(vite@4.0.4)(vue@3.2.45)
-      '@vitejs/plugin-vue-jsx': 3.0.1(vite@4.0.4)(vue@3.2.45)
+      '@vitejs/plugin-legacy': 4.1.1(terser@5.19.2)(vite@4.0.5)
+      '@vitejs/plugin-vue': 4.2.3(vite@4.0.5)(vue@3.2.45)
+      '@vitejs/plugin-vue-jsx': 3.0.1(vite@4.0.5)(vue@3.2.45)
       '@vue/compiler-core': 3.2.47
       '@vue/compiler-dom': 3.2.47
       '@vue/compiler-sfc': 3.2.47
@@ -1801,7 +1801,7 @@ packages:
       magic-string: 0.30.2
       picocolors: 1.0.0
       terser: 5.19.2
-      vite: 4.0.4(terser@5.19.2)
+      vite: 4.0.5(terser@5.19.2)
     transitivePeerDependencies:
       - postcss
       - supports-color
@@ -2968,7 +2968,7 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@vitejs/plugin-legacy@4.1.1(terser@5.19.2)(vite@4.0.4):
+  /@vitejs/plugin-legacy@4.1.1(terser@5.19.2)(vite@4.0.5):
     resolution: {integrity: sha512-um3gbVouD2Q/g19C0qpDfHwveXDCAHzs8OC3e9g6aXpKoD1H14himgs7wkMnhAynBJy7QqUoZNAXDuqN8zLR2g==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -2983,12 +2983,12 @@ packages:
       regenerator-runtime: 0.13.11
       systemjs: 6.14.1
       terser: 5.19.2
-      vite: 4.0.4(terser@5.19.2)
+      vite: 4.0.5(terser@5.19.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue-jsx@3.0.1(vite@4.0.4)(vue@3.2.45):
+  /@vitejs/plugin-vue-jsx@3.0.1(vite@4.0.5)(vue@3.2.45):
     resolution: {integrity: sha512-+Jb7ggL48FSPS1uhPnJbJwWa9Sr90vQ+d0InW+AhBM22n+cfuYqJZDckBc+W3QSHe1WDvewMZfa4wZOtk5pRgw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -2998,20 +2998,20 @@ packages:
       '@babel/core': 7.22.10
       '@babel/plugin-transform-typescript': 7.22.10(@babel/core@7.22.10)
       '@vue/babel-plugin-jsx': 1.1.5(@babel/core@7.22.10)
-      vite: 4.0.4(terser@5.19.2)
+      vite: 4.0.5(terser@5.19.2)
       vue: 3.2.45
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue@4.2.3(vite@4.0.4)(vue@3.2.45):
+  /@vitejs/plugin-vue@4.2.3(vite@4.0.5)(vue@3.2.45):
     resolution: {integrity: sha512-R6JDUfiZbJA9cMiguQ7jxALsgiprjBeHL5ikpXfJCH62pPHtI+JdJ5xWj6Ev73yXSlYl86+blXn1kZHQ7uElxw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.4(terser@5.19.2)
+      vite: 4.0.5(terser@5.19.2)
       vue: 3.2.45
 
   /@volar/language-core@1.0.24:
@@ -6239,8 +6239,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /vite@4.0.4(terser@5.19.2):
-    resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
+  /vite@4.0.5(terser@5.19.2):
+    resolution: {integrity: sha512-7m87RC+caiAxG+8j3jObveRLqaWA/neAdCat6JAZwMkSWqFHOvg8MYe5fAQxVBRAuKAQ1S6XDh3CBQuLNbY33w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
