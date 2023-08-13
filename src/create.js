@@ -5,7 +5,7 @@ const inquirer = require('inquirer');
 const Log = require('./log');
 const ora = require('ora');
 
-const templates = {
+const TEMPLATES = {
   'vue3-ts': 'dcloudio/uni-preset-vue#vite-ts',
   vue3: 'dcloudio/uni-preset-vue#vite',
   vue2: 'dcloudio/uni-preset-vue',
@@ -14,7 +14,7 @@ const templates = {
 };
 
 /**
- * 创建项目工程
+ * create project
  * @param {string} appName
  * @param {{template: string;force?: boolean;}} options
  * @returns
@@ -47,7 +47,7 @@ module.exports = async function create(appName, options) {
         default: 0,
       },
     ]);
-    template = templates[templateKey];
+    template = TEMPLATES[templateKey];
   }
 
   Log.debug('download template');

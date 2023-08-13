@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 
 /**
- * 打印日志内容
+ * print log content
  */
 module.exports = class Log {
   /**
@@ -16,6 +16,13 @@ module.exports = class Log {
    */
   static warn(...props) {
     console.log(...props.map((item) => chalk.yellow(item)));
+  }
+
+  /**
+   * @param  {...string} props
+   */
+  static success(...props) {
+    console.log(...props.map((item) => chalk.green(item)));
   }
 
   /**
