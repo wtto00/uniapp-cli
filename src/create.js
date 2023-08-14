@@ -48,6 +48,12 @@ module.exports = async function create(appName, options) {
       },
     ]);
     template = TEMPLATES[templateKey];
+    if (templateKey === 'vue2' || templateKey === 'vue2-alpha') {
+      Log.debug('create project by @vue/cli');
+      const createVue = require('@vue/cli/lib/create');
+      createVue(appName, { force, preset: template });
+      return;
+    }
   }
 
   Log.debug('download template');
