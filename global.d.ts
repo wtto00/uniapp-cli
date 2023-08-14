@@ -37,4 +37,6 @@ declare interface PlatformConfig {
   vue3NotSupport?: boolean;
   /** platform require dependencies */
   dependencies?: string[];
+  /** platform require environment */
+  envs?: string[];
 }

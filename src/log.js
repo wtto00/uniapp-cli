@@ -36,6 +36,6 @@ module.exports = class Log {
    * @param  {...string} props
    */
   static debug(...props) {
-    if (process.uniapp?.verbose) console.log(...props.map((item) => chalk.gray(item)));
+    if (process.uniapp?.verbose) console.log(...props.map((item) => chalk.grey(item)));
   }
 };

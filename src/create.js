@@ -56,7 +56,7 @@ module.exports = async function create(appName, options) {
     }
   }
 
-  Log.debug('download template');
+  Log.debug(`download template ${template}`);
 
   const spinner = ora(`downloading template: ${template}`).start();
   try {
