@@ -31,9 +31,9 @@ exports.getPackage = getPackage;
 function isInstalled(packages, module) {
   return !!(
     (packages.dependencies || {})[module] ||
-    (packages.dependencies || {})[module] ||
-    (packages.dependencies || {})[module] ||
-    (packages.dependencies || {})[module]
+    (packages.devDependencies || {})[module] ||
+    (packages.optionalDependencies || {})[module] ||
+    (packages.peerDependencies || {})[module]
   );
 }
 exports.isInstalled = isInstalled;
@@ -44,7 +44,7 @@ exports.isInstalled = isInstalled;
  */
 function checkIsUniapp(packages) {
   if (!isInstalled(packages, '@dcloudio/uni-app')) {
-    Log.error('Current working directory is not a uniapp-based project.');
+    Log.error('Current working directory is not a Uniapp-based project.');
     process.exit(-2);
   }
 }
@@ -60,7 +60,7 @@ function getModuleVersion(packages, module) {
   if (!isInstalled(packages, module)) return undefined;
   const modulePackage = resolve(`./node_modules/${module}/package.json`);
   if (!existsSync(modulePackage)) {
-    Log.warn('Please run `npm install` first');
+    Log.warn('Please run `npm install` first!');
     return undefined;
   }
   try {
@@ -72,3 +72,33 @@ function getModuleVersion(packages, module) {
   }
 }
 exports.getModuleVersion = getModuleVersion;
+
+/**
+ * @param {string} cmd
+ * @param {import('node:child_process').CommonSpawnOptions['stdio']?} stdio
+ */
+function execShell(cmd, stdio = 'inherit') {
+  const { spawnSync } = require('node:child_process');
+  Log.info(cmd);
+  const res = spawnSync(cmd, {
+    encoding: 'utf8',
+    shell: true,
+    stdio: stdio,
+  });
+  if (res.status !== 0) {
+    process.exit(-1000);
+  }
+  return res;
+}
+exports.execShell = execShell;
+
+/**
+ * detect package manager is pnpm yarn or npm
+ * @returns {'pnpm'|'yarn'|'npm'}
+ */
+function detectPackageManager() {
+  if (existsSync(resolve('./pnpm-lock.yaml'))) return 'pnpm';
+  if (existsSync(resolve('./yarn.lock'))) return 'yarn';
+  return 'npm';
+}
+exports.detectPackageManager = detectPackageManager;

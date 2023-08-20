@@ -32,11 +32,9 @@ declare type Platform =
 
 declare interface PlatformConfig {
   /** module of platform */
-  module: string;
+  modules: string[];
   /** platform is support vue3 or not */
   vue3NotSupport?: boolean;
-  /** platform require dependencies */
-  dependencies?: string[];
   /** platform require environment */
   envs?: string[];
 }
