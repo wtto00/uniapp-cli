@@ -1,7 +1,30 @@
-/**
- * @type {Record<Platform,PlatformConfig>}>}
- */
-exports.ALL_PLATFORMS = {
+export type Platform =
+  | 'android'
+  | 'ios'
+  | 'h5'
+  | 'mp-weixin'
+  | 'mp-alipay'
+  | 'mp-baidu'
+  | 'mp-toutiao'
+  | 'mp-lark'
+  | 'mp-qq'
+  | 'mp-kuaishou'
+  | 'mp-jd'
+  | 'mp-360'
+  | 'mp-xhs'
+  | 'quickapp-union'
+  | 'quickapp-huawei'
+
+export interface PlatformConfig {
+  /** module of platform */
+  modules: string[]
+  /** platform is support vue3 or not */
+  vue3NotSupport?: boolean
+  /** platform require environment */
+  envs?: string[]
+}
+
+export const ALL_PLATFORMS: Record<Platform, PlatformConfig> = {
   android: { modules: ['@dcloudio/uni-app-plus', 'uniapp-android'] },
   ios: { modules: ['@dcloudio/uni-app-plus', 'uniapp-ios'] },
   h5: { modules: ['@dcloudio/uni-h5'] },
@@ -16,5 +39,5 @@ exports.ALL_PLATFORMS = {
   'mp-360': { modules: ['@dcloudio/uni-mp-360'], vue3NotSupport: true, envs: ['360_DEV_TOOL'] },
   'mp-xhs': { modules: ['@dcloudio/uni-mp-xhs'], vue3NotSupport: true, envs: ['XHS_DEV_TOOL'] },
   'quickapp-union': { modules: ['@dcloudio/uni-quickapp-webview'], envs: ['QUICKAPP_DEV_TOOL'] },
-  'quickapp-huawei': { modules: ['@dcloudio/uni-quickapp-webview'], envs: ['HUAWEI_DEV_TOOL'] },
-};
+  'quickapp-huawei': { modules: ['@dcloudio/uni-quickapp-webview'], envs: ['HUAWEI_DEV_TOOL'] }
+}

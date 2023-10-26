@@ -2,19 +2,19 @@
   "name": "uniapp-cli",
   "version": "0.0.1",
   "description": "cli for uniapp",
-  "bin": {
-    "uniapp": "bin/uniapp"
-  },
+  "main": "dist/index.cjs",
   "scripts": {
-    "start": "node bin/uniapp"
+    "start": "tsx src/index.ts",
+    "build": "rollup -c rollup.config.mjs",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wtto00/uniapp-cli.git"
   },
   "keywords": [
-    "cli",
-    "uniapp"
+    "uniapp",
+    "cli"
   ],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
@@ -22,16 +22,30 @@
     "url": "https://github.com/wtto00/uniapp-cli/issues"
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
-  "dependencies": {
-    "@vue/cli": "^5.0.8",
-    "chalk": "^4.1.2",
-    "commander": "^11.0.0",
-    "download-git-repo": "^3.0.2",
-    "inquirer": "^8.2.5",
-    "ora": "^5.4.1"
-  },
   "devDependencies": {
-    "@types/inquirer": "^8",
-    "@types/node": "^20.4.5"
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/inquirer": "^9.0.6",
+    "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "eslint": "^8.52.0",
+    "eslint-config-standard-with-typescript": "^39.1.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
+    "rollup": "^4.1.4",
+    "tslib": "^2.6.2",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "download-git-repo": "^3.0.2",
+    "inquirer": "^9.2.11",
+    "ora": "^7.0.1",
+    "pkg-types": "^1.0.3"
   }
 }
