@@ -17,7 +17,7 @@ const TEMPLATES = {
 }
 
 export interface CreateOptoins {
-  template: string
+  template?: string
   force?: boolean
 }
 
@@ -38,14 +38,14 @@ export async function create (appName: string, options: CreateOptoins): Promise<
     }
   }
 
-  let template = options.template
+  let template = options.template ?? ''
   if (template.length === 0) {
     const { templateKey } = await inquirer.prompt<{ templateKey: keyof typeof TEMPLATES }>([
       {
         type: 'list',
         name: 'templateKey',
         message: 'Please select a project template',
-        choices: ['vue3-ts', 'vue3', 'vue2', 'vue3-alpha', 'vue2-alpha'],
+        choices: ['vue3-ts', 'vue3', 'vitesse-uni-app', 'vue2', 'vue3-alpha', 'vue2-alpha'],
         default: 0
       }
     ])
