@@ -4,9 +4,10 @@
   "description": "cli for uniapp",
   "main": "dist/index.cjs",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "build": "rollup -c rollup.config.mjs",
-    "test": "jest"
+    "start": "tsx src/bin.ts",
+    "build": "rm -rf dist && rollup -c rollup.config.mjs",
+    "test": "jest",
+    "lint": "eslint --fix --color **/*.{ts,mjs,js}"
   },
   "repository": {
     "type": "git",
@@ -26,26 +27,28 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
+    "@types/degit": "^2.8.5",
     "@types/inquirer": "^9.0.6",
     "@types/node": "^20.8.9",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "degit": "^2.8.4",
     "eslint": "^8.52.0",
     "eslint-config-standard-with-typescript": "^39.1.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
     "eslint-plugin-promise": "^6.0.0",
+    "inquirer": "^9.2.11",
+    "jest": "^29.7.0",
+    "ora": "^7.0.1",
+    "pkg-types": "^1.0.3",
     "rollup": "^4.1.4",
+    "rollup-plugin-node-externals": "^6.1.2",
     "tslib": "^2.6.2",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^11.1.0",
-    "download-git-repo": "^3.0.2",
-    "inquirer": "^9.2.11",
-    "ora": "^7.0.1",
-    "pkg-types": "^1.0.3"
   }
 }

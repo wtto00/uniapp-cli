@@ -1,9 +1,3 @@
-declare namespace NodeJS {
-  interface Process {
-    uniappVerbose?: boolean
-  }
-}
-
 declare module 'download-git-repo' {
   interface Options {
     clone?: boolean

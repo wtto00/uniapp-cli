@@ -68,6 +68,4 @@ export function initPlatformCommand (program: Command): void {
     .action(() => {
       list()
     })
-
-  program.parse(process.argv)
 }

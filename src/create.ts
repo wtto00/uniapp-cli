@@ -1,10 +1,10 @@
 import type { Command } from 'commander'
 import { resolve } from 'node:path'
 import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
-import download from 'download-git-repo'
 import inquirer from 'inquirer'
 import Log from './utils/log'
 import ora from 'ora'
+import degit from 'degit'
 import { createVueProject, installVueCli, isVueCliInstalled } from './utils/exec'
 
 const TEMPLATES = {
@@ -23,6 +23,8 @@ export interface CreateOptoins {
 
 export async function create (appName: string, options: CreateOptoins): Promise<void> {
   const { force } = options
+
+  console.log('VERBOSE ', process.env.VERBOSE)
 
   const projectPath = resolve(`./${appName}`)
 
@@ -51,7 +53,7 @@ export async function create (appName: string, options: CreateOptoins): Promise<
     ])
     template = TEMPLATES[templateKey]
     if (templateKey === 'vue2' || templateKey === 'vue2-alpha') {
-      Log.debug('create project by @vue/cli')
+      Log.info('create project by @vue/cli')
       if (!isVueCliInstalled()) {
         installVueCli()
       }
@@ -63,17 +65,21 @@ export async function create (appName: string, options: CreateOptoins): Promise<
   Log.debug(`download template ${template}`)
 
   const spinner = ora(`downloading template: ${template}`).start()
-  try {
-    download(template, appName, {}, (err) => {
-      if (err != null) {
-        spinner.fail(`failed to download ${template}`)
-        Log.error(err.message)
-      } else spinner.succeed(`Project ${appName} has been successfully created.`)
-    })
-  } catch (err) {
+  const emitter = degit(template, {
+    cache: true,
+    force: true,
+    verbose: true
+  })
+  emitter.on('info', info => {
+    spinner.info(info.message)
+  })
+
+  emitter.clone(appName).then(() => {
+    spinner.succeed(`Project ${appName} has been successfully created.`)
+  }).catch((err: Error) => {
     spinner.fail(`failed to download ${template}`)
-    Log.error((err as Error).message)
-  }
+    Log.error((err).message)
+  })
 }
 
 export function initCreateCommand (program: Command): void {

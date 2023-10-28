@@ -55,7 +55,9 @@ export function initRequirementsCommand (program: Command): void {
     .usage('[platform ...]')
     .summary('Checks and print out all the requirements for platforms specified.')
     .description(
-      'Checks and print out all the requirements for platforms specified (or all platforms added to project if none specified). If all requirements for each platform are met, exits with code 0 otherwise exits with non-zero code.'
+      'Checks and print out all the requirements for platforms specified ' +
+      '(or all platforms added to project if none specified). ' +
+      'If all requirements for each platform are met, exits with code 0 otherwise exits with non-zero code.'
     )
     .argument('[platform...]', 'Platforms requirements you want to check.')
     .addHelpText('after', '\nExample:\n  uniapp requirements android')

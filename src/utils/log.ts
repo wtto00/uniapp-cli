@@ -18,7 +18,7 @@ const Log = {
   },
 
   debug (...props: string[]) {
-    if (process.uniappVerbose ?? false) console.log(...props.map((item) => chalk.grey(item)))
+    if (process.env.VERBOSE) console.log(...props.map((item) => chalk.grey(item)))
   }
 }
 export default Log

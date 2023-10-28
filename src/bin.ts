@@ -1,0 +1,3 @@
+import createCommand from '.'
+
+createCommand()
