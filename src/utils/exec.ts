@@ -13,7 +13,7 @@ export function spawnExec (command: string, option?: Omit<SpawnSyncOptionsWithSt
  * @vue/cli has been installed or not
  */
 export function isVueCliInstalled (): boolean {
-  return spawnExec('vue').includes('Usage: vue')
+  return spawnExec('vue --version').includes('@vue/cli')
 }
 
 export function installVueCli (): void {

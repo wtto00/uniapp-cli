@@ -7,14 +7,19 @@ import ora from 'ora'
 import degit from 'degit'
 import { createVueProject, installVueCli, isVueCliInstalled } from './utils/exec'
 
-const TEMPLATES = {
-  'vue3-ts': 'dcloudio/uni-preset-vue#vite-ts',
-  vue3: 'dcloudio/uni-preset-vue#vite',
-  'vitesse-uni-app': 'uni-helper/vitesse-uni-app',
-  vue2: 'dcloudio/uni-preset-vue',
-  'vue3-alpha': 'dcloudio/uni-preset-vue#vite-alpha',
-  'vue2-alpha': 'dcloudio/uni-preset-vue#alpha'
+interface TemplateItem {
+  title: string
+  registry: string
+  useVueCli?: boolean
 }
+const allTemplates: TemplateItem[] = [
+  { title: 'vue3-ts', registry: 'dcloudio/uni-preset-vue#vite-ts' },
+  { title: 'vue3', registry: 'dcloudio/uni-preset-vue#vite' },
+  { title: 'vitesse-uni-app', registry: 'uni-helper/vitesse-uni-app' },
+  { title: 'vue2', registry: 'dcloudio/uni-preset-vue', useVueCli: true },
+  { title: 'vue3-alpha', registry: 'dcloudio/uni-preset-vue#vite-alpha' },
+  { title: 'vue2-alpha', registry: 'dcloudio/uni-preset-vue#alpha', useVueCli: true }
+]
 
 export interface CreateOptoins {
   template?: string
@@ -23,8 +28,6 @@ export interface CreateOptoins {
 
 export async function create (appName: string, options: CreateOptoins): Promise<void> {
   const { force } = options
-
-  console.log('VERBOSE ', process.env.VERBOSE)
 
   const projectPath = resolve(`./${appName}`)
 
@@ -40,24 +43,28 @@ export async function create (appName: string, options: CreateOptoins): Promise<
     }
   }
 
-  let template = options.template ?? ''
+  const template = options.template ?? ''
   if (template.length === 0) {
-    const { templateKey } = await inquirer.prompt<{ templateKey: keyof typeof TEMPLATES }>([
+    const { templateKey } = await inquirer.prompt<{ templateKey: string }>([
       {
         type: 'list',
         name: 'templateKey',
         message: 'Please select a project template',
-        choices: ['vue3-ts', 'vue3', 'vitesse-uni-app', 'vue2', 'vue3-alpha', 'vue2-alpha'],
+        choices: allTemplates.map(item => item.title),
         default: 0
       }
     ])
-    template = TEMPLATES[templateKey]
-    if (templateKey === 'vue2' || templateKey === 'vue2-alpha') {
+    const templateItem = allTemplates.find(item => item.title === templateKey)
+    if (!templateItem) {
+      Log.error(`unknown template: ${templateKey}`)
+      process.exit(-1)
+    }
+    if (templateItem.useVueCli) {
       Log.info('create project by @vue/cli')
       if (!isVueCliInstalled()) {
         installVueCli()
       }
-      createVueProject(appName, template, force)
+      createVueProject(appName, templateItem.registry, force)
       return
     }
   }
