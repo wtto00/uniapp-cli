@@ -2,6 +2,13 @@
 
 CLI for Uniapp
 
+## TODO
+
+[ ] test requirments
+[ ] platform
+[ ] run
+[ ] build
+
 ## Help
 
 ```shell
