@@ -4,10 +4,10 @@ CLI for Uniapp
 
 ## TODO
 
-[ ] test requirments
-[ ] platform
-[ ] run
-[ ] build
+- [ ] test requirments
+- [ ] platform
+- [ ] run
+- [ ] build
 
 ## Help
 
