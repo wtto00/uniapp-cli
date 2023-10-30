@@ -43,7 +43,7 @@ export async function create (appName: string, options: CreateOptoins): Promise<
     }
   }
 
-  const template = options.template ?? ''
+  let template = options.template ?? ''
   if (template.length === 0) {
     const { templateKey } = await inquirer.prompt<{ templateKey: string }>([
       {
@@ -56,15 +56,15 @@ export async function create (appName: string, options: CreateOptoins): Promise<
     ])
     const templateItem = allTemplates.find(item => item.title === templateKey)
     if (!templateItem) {
-      Log.error(`unknown template: ${templateKey}`)
-      process.exit(-1)
+      throw Error(`unknown template: ${templateKey}`)
     }
+    template = templateItem.registry
     if (templateItem.useVueCli) {
       Log.info('create project by @vue/cli')
       if (!isVueCliInstalled()) {
         installVueCli()
       }
-      createVueProject(appName, templateItem.registry, force)
+      createVueProject(appName, template, force)
       return
     }
   }

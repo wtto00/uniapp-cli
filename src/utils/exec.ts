@@ -22,8 +22,7 @@ export function installVueCli (): void {
   if (isVueCliInstalled()) {
     Log.debug('@vue/cli has been successfully installed.')
   } else {
-    Log.error('@vue/cli installation failed. Please manually execute npm i -g @vue/cli.')
-    process.exit(-1)
+    throw Error('@vue/cli installation failed. Please manually execute npm i -g @vue/cli.')
   }
 }
 

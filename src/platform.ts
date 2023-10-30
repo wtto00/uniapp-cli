@@ -1,12 +1,11 @@
 import type { Command } from 'commander'
-import { checkIsUniapp, getModuleVersion, getPackage } from './utils/package'
+import { getModuleVersion, getPackage } from './utils/package'
 import { ALL_PLATFORMS, type Platform } from './utils/const'
 import Log from './utils/log'
 import { installPackages } from './utils/exec'
 
 export async function add (platforms: Platform[]): Promise<void> {
   const packages = await getPackage()
-  checkIsUniapp(packages)
 
   const uniVersoin = await getModuleVersion(packages, '@dcloudio/uni-app')
 
