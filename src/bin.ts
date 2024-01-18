@@ -1,3 +1,0 @@
-import createCommand from '.'
-
-createCommand()
