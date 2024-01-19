@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx src/index",
-    "build": "rollup --config"
+    "build": "unbuild"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "dependencies": {
     "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "pkg-types": "^1.0.3"
   }
 }
