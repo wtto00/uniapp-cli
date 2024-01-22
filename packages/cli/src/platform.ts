@@ -1,5 +1,5 @@
-import { installPackages } from "./utils/exec";
-import { checkIsUniapp, getModuleVersion, getPackage } from "./utils/package";
+import { installPackages, uninstallPackages } from "./utils/exec";
+import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
 import { ALL_PLATFORMS, PLATFORMS } from "./utils/platform";
 
 /**
@@ -40,12 +40,13 @@ export async function remove(platforms: PLATFORMS[]) {
   const packages = await getPackage();
   checkIsUniapp(packages);
 
-  for (let i = 0; i < platforms.length; i++) {
-    const pfm = platforms[i];
+  for (const pfm of platforms) {
+    console.debug(`remove platform: ${pfm}`);
     if (!ALL_PLATFORMS[pfm]) {
       console.error(`${pfm} is not an valid platform value.\n`);
     } else {
-      const modules = ALL_PLATFORMS[pfm].modules || [];
+      const modules = (ALL_PLATFORMS[pfm].modules || []).filter((module) => isInstalled(packages, module));
+      uninstallPackages(modules);
     }
   }
 }
@@ -53,4 +54,22 @@ export async function remove(platforms: PLATFORMS[]) {
 /**
  * list platforms
  */
-export function list() {}
+export async function list() {
+  const packages = await getPackage();
+  checkIsUniapp(packages);
+
+  const vueVersion = await getModuleVersion(packages, "vue");
+
+  for (const pfm in ALL_PLATFORMS) {
+    const platform = ALL_PLATFORMS[pfm as PLATFORMS];
+    if (platform.modules.every((module) => isInstalled(packages, module))) {
+      if (platform.vue3NotSupport && vueVersion >= "3") {
+        console.info(`${pfm}: Vue3 not support`);
+      } else {
+        console.info(`${pfm}: Installed`);
+      }
+    } else {
+      console.info(`${pfm}: Not installed`);
+    }
+  }
+}

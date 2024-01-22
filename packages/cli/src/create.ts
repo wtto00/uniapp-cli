@@ -22,7 +22,7 @@ export interface CreateOptoins {
 export async function create(appName: string, options: CreateOptoins) {
   const { force } = options;
 
-  console.log("VERBOSE ", process.env.VERBOSE);
+  console.info("VERBOSE ", process.env.VERBOSE);
 
   const projectPath = resolve(process.env.PWD as string, `./${appName}`);
 
