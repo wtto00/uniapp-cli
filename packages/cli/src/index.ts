@@ -8,7 +8,6 @@ program
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
   .allowUnknownOption(true)
-  .showHelpAfterError(true)
   .showSuggestionAfterError(true);
 
 program
@@ -21,8 +20,8 @@ program
       "(or all platforms added to project if none specified). " +
       "If all requirements for each platform are met, exits with code 0 otherwise exits with non-zero code."
   )
-  .argument("[platform...]", "Platforms requirements you want to check.")
-  .addHelpText("after", "\nExample:\n  uniapp requirements android")
+  .argument("[platform...]", "Platforms requirements you want to check")
+  .addHelpText("after", "\nExample:\n  uni requirements android")
   .action((platforms) => {
     void import("./requirements").then(({ requirements }) => requirements(platforms));
   });
@@ -30,12 +29,12 @@ program
 program
   .command("create")
   .usage("<app-name>")
-  .summary("Create a new project")
-  .description("create a new project powered by uniapp-cli")
+  .summary("Create a new project.")
+  .description("Create a new project powered by uniapp-cli.")
   .argument("<app-name>", "Human readable name")
-  .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket/Git:url.")
-  .option("-f, --force", "Overwrite target directory if it exists.")
-  .addHelpText("after", "\nExample:\n  uniapp create MyUniApp")
+  .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket/Git:url")
+  .option("-f, --force", "Overwrite target directory if it exists")
+  .addHelpText("after", "\nExample:\n  uni create MyUniApp")
   .action((appName, options) => {
     void import("./create").then(({ create }) => create(appName, options));
   });
@@ -72,6 +71,29 @@ platform
   .description("List all installed and available platforms.")
   .action(() => {
     void import("./platform").then(({ list }) => list());
+  });
+
+program
+  .command("run")
+  .usage("<platform>")
+  .summary("Start development service")
+  .description("Start development service with a specified platform.")
+  .argument("<platform>", "Specified platforms")
+  .option("--debug", "Deploy a debug build")
+  .option("--release", "Deploy a release build")
+  .option("--device", "Deploy to a device\nOnly available on Android and iOS")
+  .option("--emulator", "Deploy to an emulator\nOnly available on Android and iOS")
+  .option(
+    "--list",
+    "Lists available targets\nWill display both device and emulator\nunless --device or --emulator option is provided\nOnly available on Android and iOS"
+  )
+  .option("--target <target>", "Deploy to a specific target")
+  .addHelpText(
+    "after",
+    "\nExample:\n  uni run android --release --target=myEmulator\n  uni run ios --device --debug\n  uni run mp-weixin"
+  )
+  .action((platform, options) => {
+    void import("./run").then(({ run }) => run(platform, options));
   });
 
 program.parse(process.argv);
