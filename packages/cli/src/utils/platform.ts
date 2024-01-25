@@ -1,3 +1,5 @@
+import open from "open";
+
 export enum PLATFORMS {
   ANDROID = "android",
   IOS = "ios",
@@ -23,12 +25,23 @@ export interface PlatformConfig {
   vue3NotSupport?: boolean;
   /** platform require environment */
   envs?: string[];
+  /** Check whether the run command is successful */
+  runSuccess?: (msg: string, output: string[]) => boolean;
+  /** 打开应用程序 */
+  opener?: (...args: string[]) => void;
 }
 
 export const ALL_PLATFORMS: Record<PLATFORMS, PlatformConfig> = {
   android: { modules: ["@dcloudio/uni-app-plus", "uniapp-android"] },
   ios: { modules: ["@dcloudio/uni-app-plus", "uniapp-ios"] },
-  h5: { modules: ["@dcloudio/uni-h5"] },
+  h5: {
+    modules: ["@dcloudio/uni-h5"],
+    runSuccess: (msg) => /ready in \d+ms./.test(msg),
+    opener: (url) => {
+      console.log("opener");
+      open(url);
+    },
+  },
   "mp-weixin": { modules: ["@dcloudio/uni-mp-weixin"], envs: ["WEIXIN_DEV_TOOL"] },
   "mp-alipay": { modules: ["@dcloudio/uni-mp-alipay"], envs: ["ALIPAY_DEV_TOOL"] },
   "mp-baidu": { modules: ["@dcloudio/uni-mp-baidu"], envs: ["BAIDU_DEV_TOOL"] },

@@ -8,6 +8,7 @@ program
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
   .allowUnknownOption(true)
+  .showHelpAfterError(true)
   .showSuggestionAfterError(true);
 
 program
@@ -79,15 +80,16 @@ program
   .summary("Start development service")
   .description("Start development service with a specified platform.")
   .argument("<platform>", "Specified platforms")
-  .option("--debug", "Deploy a debug build")
-  .option("--release", "Deploy a release build")
+  .option("--no-open", "Do not automatically open preview")
+  .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
+  .option("--release", "Deploy a release build\nOnly available on Android and iOS")
   .option("--device", "Deploy to a device\nOnly available on Android and iOS")
   .option("--emulator", "Deploy to an emulator\nOnly available on Android and iOS")
   .option(
     "--list",
     "Lists available targets\nWill display both device and emulator\nunless --device or --emulator option is provided\nOnly available on Android and iOS"
   )
-  .option("--target <target>", "Deploy to a specific target")
+  .option("--target <target>", "Deploy to a specific target\nOnly available on Android and iOS")
   .addHelpText(
     "after",
     "\nExample:\n  uni run android --release --target=myEmulator\n  uni run ios --device --debug\n  uni run mp-weixin"
