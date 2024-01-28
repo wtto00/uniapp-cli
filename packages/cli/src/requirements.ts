@@ -1,46 +1,33 @@
-import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
-import { ALL_PLATFORMS, PLATFORMS } from "./utils/platform";
+import { checkIsUniapp, getPackage } from "./utils/package";
+import { PLATFORM, allPlatforms, isDevToolsInstalled, isModulesInstalled, isVue3Supported } from "./utils/platform";
 
-export async function requirements(platforms: PLATFORMS[]) {
+export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackage();
   checkIsUniapp(packages);
 
-  const allPlatforms = Object.keys(ALL_PLATFORMS) as PLATFORMS[];
   const checkCurrentDirectory = !Array.isArray(platforms) || platforms.length === 0;
 
-  const platform: PLATFORMS[] = checkCurrentDirectory
-    ? allPlatforms.filter((pfm) =>
-        (ALL_PLATFORMS[pfm as PLATFORMS].modules || []).every((module) => isInstalled(packages, module))
-      )
-    : platforms.reduce<PLATFORMS[]>((sum, pfm) => {
-        if (ALL_PLATFORMS[pfm]) sum.push(pfm);
-        return sum;
+  const validPlatforms: PLATFORM[] = checkCurrentDirectory
+    ? allPlatforms.filter((pfm) => isModulesInstalled(pfm, packages))
+    : platforms.reduce<PLATFORM[]>((prev, pfm) => {
+        if (allPlatforms.includes(pfm)) prev.push(pfm);
+        return prev;
       }, []);
 
-  for (let i = 0; i < platform.length; i++) {
-    const pfm = platform[i];
+  for (const pfm of validPlatforms) {
     console.debug(`check requirements of ${pfm}`);
     console.info(`${pfm}: `);
 
-    const { vue3NotSupport, envs } = ALL_PLATFORMS[pfm];
-
-    // check vue3 support
-    if (vue3NotSupport) {
-      const vueVersion = await getModuleVersion(packages, "vue");
-      if (vueVersion >= "3") {
-        console.error(`Vue3 currently does not support ${pfm}\n`);
-        return;
-      }
+    const vue3Support = await isVue3Supported(pfm, packages);
+    if (!vue3Support) {
+      console.warn(`Vue3 currently does not support ${pfm}\n`);
     }
 
-    // check environments of requirement
-    (envs ?? []).forEach((/** @type {string} */ env) => {
-      if (process.env[env]) {
-        console.info(`env: ${env} already set`);
-      } else {
-        console.info(`env: ${env} not set yet`);
-      }
-    });
+    if (!isDevToolsInstalled(pfm)) {
+      console.warn("Dev tools is not installed.");
+    } else {
+      console.success("Dev tools is installed.");
+    }
     console.info();
   }
 }

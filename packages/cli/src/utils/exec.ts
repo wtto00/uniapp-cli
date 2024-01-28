@@ -1,10 +1,8 @@
 import {
   type SpawnSyncOptionsWithStringEncoding,
   spawnSync,
-  ChildProcessWithoutNullStreams,
   spawn,
-  SpawnOptions,
-  SpawnOptionsWithoutStdio,
+  type SpawnOptionsWithoutStdio,
 } from "node:child_process";
 import { detectPackageManager } from "./package";
 
@@ -33,6 +31,14 @@ export function spawnExec(command: string, option?: SpawnOptionsWithoutStdio, ca
   }
 
   return proc;
+}
+
+/**
+ * Remove the color of the output text
+ * @param text output text
+ */
+export function outputRemoveColor(text: string) {
+  return text.replace(/\x1B\[\d+m/g, "");
 }
 
 /**

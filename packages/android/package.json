@@ -1,5 +1,5 @@
 {
-  "name": "@uniapp-cli/android",
+  "name": "uniapp-android",
   "version": "0.0.1",
   "description": "Platform android in cli for uniapp.",
   "main": "index.js",
