@@ -1,6 +1,6 @@
 import { outputRemoveColor, spawnExec } from "./utils/exec";
 import { checkIsUniapp, getPackage } from "./utils/package";
-import { PLATFORM, afterRunSuccess, allPlatforms, isRunSuccessed } from "./utils/platform";
+import { PLATFORM, allPlatforms, isModulesInstalled } from "./utils/platform";
 
 export interface RunOptions {
   debug?: boolean;
@@ -20,6 +20,17 @@ export async function run(platform: PLATFORM, options: RunOptions) {
     return;
   }
 
+  if (!isModulesInstalled(platform, packages)) {
+    console.error(
+      `Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`
+    );
+    return;
+  }
+
+  const module = (await import(`./platforms/${platform}`)).default as PlatformModule.ModuleClass;
+
+  await module.brforeRun?.();
+
   let success = false;
   let over = false;
   let output: string[] = [];
@@ -27,10 +38,9 @@ export async function run(platform: PLATFORM, options: RunOptions) {
     console.log(msg.substring(0, msg.length - 1));
     if (over) return;
     output.push(outputRemoveColor(msg));
-    success ||= isRunSuccessed(platform, msg, output);
+    success ||= module.isRunSuccessed ? module.isRunSuccessed(platform, msg, output) : true;
     if (!success) return;
-    if (afterRunSuccess(platform, msg, output)) {
-      over = true;
-    }
+    module.afterRun?.(platform, msg, output);
+    over = true;
   });
 }

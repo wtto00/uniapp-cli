@@ -15,14 +15,14 @@ program
 program
   .command("requirements")
   .alias("requirement")
-  .usage("[platform ...]")
+  .usage("<platform ...>")
   .summary("Checks and print out all the requirements for platforms specified.")
   .description(
     "Checks and print out all the requirements for platforms specified " +
       "(or all platforms added to project if none specified). " +
       "If all requirements for each platform are met, exits with code 0 otherwise exits with non-zero code."
   )
-  .argument("[platform...]", "Platforms requirements you want to check")
+  .argument("<platform...>", "Platforms requirements you want to check")
   .addHelpText("after", "\nExample:\n  uni requirements android")
   .action((platforms) => {
     void import("./requirements").then(({ requirements }) => requirements(platforms));

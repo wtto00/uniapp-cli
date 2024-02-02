@@ -7,7 +7,7 @@ export async function getPackage() {
   const packagePath = resolve(currentPath, "./package.json");
   if (!existsSync(packagePath)) {
     console.error("Current working directory does't have a package.json file.");
-    process.exit(-1);
+    process.exit();
   }
   return await readPackageJSON(packagePath);
 }
@@ -39,7 +39,7 @@ export async function getModuleVersion(packages: PackageJson, module: string) {
 export function checkIsUniapp(packages: PackageJson) {
   if (!isInstalled(packages, "@dcloudio/uni-app")) {
     console.error("Current working directory is not a Uniapp-based project.");
-    process.exit(-2);
+    process.exit();
   }
 }
 

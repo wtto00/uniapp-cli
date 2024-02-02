@@ -5,14 +5,10 @@ export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackage();
   checkIsUniapp(packages);
 
-  const checkCurrentDirectory = !Array.isArray(platforms) || platforms.length === 0;
-
-  const validPlatforms: PLATFORM[] = checkCurrentDirectory
-    ? allPlatforms.filter((pfm) => isModulesInstalled(pfm, packages))
-    : platforms.reduce<PLATFORM[]>((prev, pfm) => {
-        if (allPlatforms.includes(pfm)) prev.push(pfm);
-        return prev;
-      }, []);
+  const validPlatforms: PLATFORM[] = platforms.reduce<PLATFORM[]>((prev, pfm) => {
+    if (allPlatforms.includes(pfm)) prev.push(pfm);
+    return prev;
+  }, []);
 
   for (const pfm of validPlatforms) {
     console.debug(`check requirements of ${pfm}`);
