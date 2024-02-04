@@ -1,5 +1,5 @@
 import { checkIsUniapp, getPackage } from "./utils/package";
-import { PLATFORM, allPlatforms, isDevToolsInstalled, isModulesInstalled, isVue3Supported } from "./utils/platform";
+import { PLATFORM, allPlatforms, isDevToolsInstalled, isVue3Supported } from "./utils/platform";
 
 export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackage();

@@ -1,7 +1,21 @@
-import { PLATFORM } from "../utils/platform";
+import { installPackages, uninstallPackages } from "../utils/exec";
+import { isInstalled } from "../utils/package";
 
-const pfm = PLATFORM.MP_TOUTIAO;
+const mpToutiao: PlatformModule.ModuleClass = {
+  modules: ["@dcloudio/uni-mp-toutiao"],
 
-export default {
-  getModules: () => ["@dcloudio/uni-mp-toutiao"],
-} as PlatformModule.ModuleClass;
+  requirement() {},
+
+  platformAdd({ version }) {
+    installPackages(this.modules.map((m) => `${m}@${version}`));
+  },
+
+  platformRemove({ packages }) {
+    const filterModules = this.modules.filter((module) => isInstalled(packages, module));
+    uninstallPackages(filterModules);
+  },
+
+  run() {},
+};
+
+export default mpToutiao;

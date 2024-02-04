@@ -1,23 +1,36 @@
-import { PLATFORM } from "../utils/platform";
-import { resolve } from "node:path";
+import { installPackages, uninstallPackages } from "../utils/exec";
+import { isInstalled } from "../utils/package";
 
-const pfm = PLATFORM.MP_WEIXIN;
+const mpWeixin: PlatformModule.ModuleClass = {
+  modules: ["@dcloudio/uni-mp-weixin"],
 
-export default {
-  getModules: () => ["@dcloudio/uni-mp-weixin"],
-  isRunSuccessed: (platform, msg, output) => /ready in \d+ms./.test(msg),
-  afterRun(platform, msg, output) {
-    console.debug("Start open wechat web devTools.");
-    import("miniprogram-automator").then(({ default: automator }) => {
-      automator
-        .launch({
-          cliPath: process.env.WEIXIN_DEV_TOOL,
-          projectPath: resolve(process.env.PWD as string, "./dist/dev/mp-weixin"),
-        })
-        .then(() => {
-          console.success("Wechat web devTools has been opened.");
-        })
-        .catch(console.error);
-    });
+  requirement() {},
+
+  platformAdd({ version }) {
+    installPackages(this.modules.map((m) => `${m}@${version}`));
   },
-} as PlatformModule.ModuleClass;
+
+  platformRemove({ packages }) {
+    const filterModules = this.modules.filter((module) => isInstalled(packages, module));
+    uninstallPackages(filterModules);
+  },
+
+  run() {},
+  // isRunSuccessed: (platform, msg, output) => /ready in \d+ms./.test(msg),
+  // afterRun(platform, msg, output) {
+  //   console.debug("Start open wechat web devTools.");
+  //   import("miniprogram-automator").then(({ default: automator }) => {
+  //     automator
+  //       .launch({
+  //         cliPath: process.env.WEIXIN_DEV_TOOL,
+  //         projectPath: resolve(process.env.PWD as string, "./dist/dev/mp-weixin"),
+  //       })
+  //       .then(() => {
+  //         console.success("Wechat web devTools has been opened.");
+  //       })
+  //       .catch(console.error);
+  //   });
+  // },
+};
+
+export default mpWeixin;

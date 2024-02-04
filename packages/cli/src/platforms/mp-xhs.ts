@@ -1,15 +1,26 @@
-import { getModuleVersion } from "../utils/package";
-import { PLATFORM } from "../utils/platform";
+import { installPackages, uninstallPackages } from "../utils/exec";
+import { getModuleVersion, isInstalled } from "../utils/package";
 
-const pfm = PLATFORM.MP_XHS;
+const mpXHS: PlatformModule.ModuleClass = {
+  modules: ["@dcloudio/uni-mp-xhs"],
 
-export default {
-  getModules: () => ["@dcloudio/uni-mp-xhs"],
-  beforePlatformAdd: async (packages) => {
+  requirement() {},
+
+  async platformAdd({ packages, version }) {
     const vueVersion = await getModuleVersion(packages, "vue");
     if (vueVersion >= "3") {
-      console.error(`Vue3 currently does not support "${pfm}"\n`);
-      process.exit();
+      console.error(`Vue3 currently does not support "mp-xhs"`);
+    } else {
+      installPackages(this.modules.map((m) => `${m}@${version}`));
     }
   },
-} as PlatformModule.ModuleClass;
+
+  platformRemove({ packages }) {
+    const filterModules = this.modules.filter((module) => isInstalled(packages, module));
+    uninstallPackages(filterModules);
+  },
+
+  run() {},
+};
+
+export default mpXHS;

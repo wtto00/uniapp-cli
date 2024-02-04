@@ -1,7 +1,21 @@
-import { PLATFORM } from "../utils/platform";
+import { installPackages, uninstallPackages } from "../utils/exec";
+import { isInstalled } from "../utils/package";
 
-const pfm = PLATFORM.MP_QUICKAPP_UNION;
+const quickAppUnion: PlatformModule.ModuleClass = {
+  modules: ["@dcloudio/uni-quickapp-webview"],
 
-export default {
-  getModules: () => ["@dcloudio/uni-quickapp-webview"],
-} as PlatformModule.ModuleClass;
+  requirement() {},
+
+  platformAdd({ version }) {
+    installPackages(this.modules.map((m) => `${m}@${version}`));
+  },
+
+  platformRemove({ packages }) {
+    const filterModules = this.modules.filter((module) => isInstalled(packages, module));
+    uninstallPackages(filterModules);
+  },
+
+  run() {},
+};
+
+export default quickAppUnion;

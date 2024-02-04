@@ -1,7 +1,21 @@
-import { PLATFORM } from "../utils/platform";
+import { installPackages, uninstallPackages } from "../utils/exec";
+import { isInstalled } from "../utils/package";
 
-const pfm = PLATFORM.ANDROID;
+const ios: PlatformModule.ModuleClass = {
+  modules: ["@dcloudio/uni-app-plus", "uniapp-ios"],
 
-export default {
-  getModules: () => ["@dcloudio/uni-app-plus", "uniapp-ios"],
-} as PlatformModule.ModuleClass;
+  requirement() {},
+
+  platformAdd({ version }) {
+    installPackages(this.modules.map((m) => `${m}@${version}`));
+  },
+
+  platformRemove({ packages }) {
+    const filterModules = this.modules.filter((module) => isInstalled(packages, module));
+    uninstallPackages(filterModules);
+  },
+
+  run() {},
+};
+
+export default ios;

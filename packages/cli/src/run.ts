@@ -1,3 +1,4 @@
+import { importPlatform } from "./platforms";
 import { outputRemoveColor, spawnExec } from "./utils/exec";
 import { checkIsUniapp, getPackage } from "./utils/package";
 import { PLATFORM, allPlatforms, isModulesInstalled } from "./utils/platform";
@@ -27,7 +28,7 @@ export async function run(platform: PLATFORM, options: RunOptions) {
     return;
   }
 
-  const module = (await import(`./platforms/${platform}`)).default as PlatformModule.ModuleClass;
+  const module = await importPlatform(platform);
 
   await module.brforeRun?.();
 

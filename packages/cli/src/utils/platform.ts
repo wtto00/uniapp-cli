@@ -38,7 +38,7 @@ export const allPlatforms = [
 ];
 
 export function isModulesInstalled(module: PlatformModule.ModuleClass, packages: PackageJson) {
-  return module.getModules().every((module) => isInstalled(packages, module));
+  return module.modules.every((module) => isInstalled(packages, module));
 }
 
 export function notSupportVue3(platform: PLATFORM) {

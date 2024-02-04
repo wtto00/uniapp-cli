@@ -1,4 +1,4 @@
-import { installPackages, uninstallPackages } from "./utils/exec";
+import { importPlatform } from "./platforms";
 import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
 import { PLATFORM, allPlatforms, isModulesInstalled } from "./utils/platform";
 
@@ -22,14 +22,9 @@ export async function add(platforms: PLATFORM[]) {
       continue;
     }
 
-    const module = (await import(`./platforms/${pfm}`)).default as PlatformModule.ModuleClass;
+    const module = await importPlatform(pfm);
 
-    await module.beforePlatformAdd?.(packages);
-
-    const modules = module.getModules();
-    installPackages(modules.map((m) => `${m}@^${uniVersoin}`));
-
-    await module.afterPlatformAdd?.(packages);
+    await module.platformAdd({ packages, version: uniVersoin });
   }
 }
 
@@ -46,11 +41,8 @@ export async function remove(platforms: PLATFORM[]) {
       console.error(`${pfm} is not an valid platform value.\n`);
       continue;
     }
-    const module = (await import(`./platforms/${pfm}`)).default as PlatformModule.ModuleClass;
-    await module.beforePlatformRemove?.();
-    const modules = module.getModules().filter((module) => isInstalled(packages, module));
-    uninstallPackages(modules);
-    await module.afterPlatformRemove?.();
+    const module = await importPlatform(pfm);
+    await module.platformRemove({ packages });
   }
 }
 
@@ -62,7 +54,7 @@ export async function list() {
   checkIsUniapp(packages);
 
   for (const pfm of allPlatforms) {
-    const module = (await import(`./platforms/${pfm}`)).default as PlatformModule.ModuleClass;
+    const module = await importPlatform(pfm);
     if (isModulesInstalled(module, packages)) {
       console.success(`${pfm}: Installed`);
     } else {

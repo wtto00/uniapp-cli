@@ -1,5 +1,5 @@
 {
-  "name": "@uniapp-cli",
+  "name": "uniapp-cli-monorepo",
   "version": "0.0.1",
   "description": "CLI for uniapp.",
   "main": "index.js",
