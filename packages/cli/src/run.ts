@@ -1,18 +1,8 @@
 import { importPlatform } from "./platforms";
-import { outputRemoveColor, spawnExec } from "./utils/exec";
-import { checkIsUniapp, getPackage } from "./utils/package";
-import { PLATFORM, allPlatforms, isModulesInstalled } from "./utils/platform";
+import { checkIsUniapp, getPackage, isInstalled } from "./utils/package";
+import { PLATFORM, allPlatforms } from "./utils/platform";
 
-export interface RunOptions {
-  debug?: boolean;
-  release?: boolean;
-  device?: boolean;
-  emulator?: boolean;
-  list?: boolean;
-  target?: string;
-}
-
-export async function run(platform: PLATFORM, options: RunOptions) {
+export async function run(platform: PLATFORM, options: UniappCli.RunOptions) {
   const packages = await getPackage();
   checkIsUniapp(packages);
 
@@ -21,27 +11,14 @@ export async function run(platform: PLATFORM, options: RunOptions) {
     return;
   }
 
-  if (!isModulesInstalled(platform, packages)) {
+  const module = await importPlatform(platform);
+
+  if (module.modules.some((module) => !isInstalled(packages, module))) {
     console.error(
       `Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`
     );
     return;
   }
 
-  const module = await importPlatform(platform);
-
-  await module.brforeRun?.();
-
-  let success = false;
-  let over = false;
-  let output: string[] = [];
-  spawnExec(`npx uni -p ${platform}`, { stdio: "pipe", shell: true }, (msg) => {
-    console.log(msg.substring(0, msg.length - 1));
-    if (over) return;
-    output.push(outputRemoveColor(msg));
-    success ||= module.isRunSuccessed ? module.isRunSuccessed(platform, msg, output) : true;
-    if (!success) return;
-    module.afterRun?.(platform, msg, output);
-    over = true;
-  });
+  await module.run(options);
 }

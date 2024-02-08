@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const quickAppHuawei: PlatformModule.ModuleClass = {
+const quickAppHuawei: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-quickapp-webview"],
 
   requirement() {},

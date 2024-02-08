@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpJD: PlatformModule.ModuleClass = {
+const mpJD: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-jd"],
 
   requirement() {},

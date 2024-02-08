@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const quickAppUnion: PlatformModule.ModuleClass = {
+const quickAppUnion: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-quickapp-webview"],
 
   requirement() {},

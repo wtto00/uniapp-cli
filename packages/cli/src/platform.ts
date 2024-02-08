@@ -1,6 +1,6 @@
 import { importPlatform } from "./platforms";
 import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
-import { PLATFORM, allPlatforms, isModulesInstalled } from "./utils/platform";
+import { PLATFORM, allPlatforms } from "./utils/platform";
 
 /**
  * add platforms
@@ -55,7 +55,7 @@ export async function list() {
 
   for (const pfm of allPlatforms) {
     const module = await importPlatform(pfm);
-    if (isModulesInstalled(module, packages)) {
+    if (module.modules.every((module) => isInstalled(packages, module))) {
       console.success(`${pfm}: Installed`);
     } else {
       console.warn(`${pfm}: Not installed`);

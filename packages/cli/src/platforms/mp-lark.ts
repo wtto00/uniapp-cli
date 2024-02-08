@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpLark: PlatformModule.ModuleClass = {
+const mpLark: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-lark"],
 
   requirement() {},

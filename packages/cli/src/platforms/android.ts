@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const android: PlatformModule.ModuleClass = {
+const android: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-app-plus", "uniapp-android"],
 
   requirement() {},

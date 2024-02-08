@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const ios: PlatformModule.ModuleClass = {
+const ios: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-app-plus", "uniapp-ios"],
 
   requirement() {},

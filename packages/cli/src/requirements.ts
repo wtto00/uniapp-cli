@@ -1,5 +1,6 @@
+import { importPlatform } from "./platforms";
 import { checkIsUniapp, getPackage } from "./utils/package";
-import { PLATFORM, allPlatforms, isDevToolsInstalled, isVue3Supported } from "./utils/platform";
+import { PLATFORM, allPlatforms } from "./utils/platform";
 
 export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackage();
@@ -14,16 +15,9 @@ export async function requirements(platforms: PLATFORM[]) {
     console.debug(`check requirements of ${pfm}`);
     console.info(`${pfm}: `);
 
-    const vue3Support = await isVue3Supported(pfm, packages);
-    if (!vue3Support) {
-      console.warn(`Vue3 currently does not support ${pfm}\n`);
-    }
+    const module = await importPlatform(pfm);
+    await module.requirement({ packages });
 
-    if (!isDevToolsInstalled(pfm)) {
-      console.warn("Dev tools is not installed.");
-    } else {
-      console.success("Dev tools is installed.");
-    }
     console.info();
   }
 }

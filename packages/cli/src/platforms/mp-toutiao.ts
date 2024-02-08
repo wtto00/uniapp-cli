@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpToutiao: PlatformModule.ModuleClass = {
+const mpToutiao: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-toutiao"],
 
   requirement() {},

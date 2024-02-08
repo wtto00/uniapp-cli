@@ -1,10 +1,15 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { getModuleVersion, isInstalled } from "../utils/package";
 
-const mpXHS: PlatformModule.ModuleClass = {
+const mpXHS: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-xhs"],
 
-  requirement() {},
+  async requirement({ packages }) {
+    const vueVersion = await getModuleVersion(packages, "vue");
+    if (vueVersion >= "3") {
+      console.error(`Vue3 currently does not support "mp-360"`);
+    }
+  },
 
   async platformAdd({ packages, version }) {
     const vueVersion = await getModuleVersion(packages, "vue");

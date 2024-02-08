@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpKuaishou: PlatformModule.ModuleClass = {
+const mpKuaishou: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-kuaishou"],
 
   requirement() {},

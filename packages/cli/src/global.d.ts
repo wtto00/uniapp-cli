@@ -4,7 +4,7 @@ interface Console {
 
 declare type MaybePromise<T> = T | Promise<T>;
 
-declare namespace PlatformModule {
+declare namespace UniappCli {
   import type { PackageJson } from "pkg-types";
   import type { PLATFORM } from "./utils/platform";
   interface CommonOptions {
@@ -13,11 +13,19 @@ declare namespace PlatformModule {
   interface PlatformAddOptions extends CommonOptions {
     version: string;
   }
+  interface RunOptions {
+    debug?: boolean;
+    release?: boolean;
+    device?: boolean;
+    emulator?: boolean;
+    list?: boolean;
+    target?: string;
+  }
   interface ModuleClass {
     modules: string[];
-    requirement: () => MaybePromise<void>;
+    requirement: (options: CommonOptions) => MaybePromise<void>;
     platformAdd: (options: PlatformAddOptions) => MaybePromise<void>;
     platformRemove: (options: CommonOptions) => MaybePromise<void>;
-    run: () => MaybePromise<void>;
+    run: (options: RunOptions) => MaybePromise<void>;
   }
 }

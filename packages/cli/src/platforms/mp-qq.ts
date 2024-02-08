@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpQQ: PlatformModule.ModuleClass = {
+const mpQQ: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-qq"],
 
   requirement() {},

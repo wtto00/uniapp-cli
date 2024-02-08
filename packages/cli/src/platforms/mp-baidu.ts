@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpBaidu: PlatformModule.ModuleClass = {
+const mpBaidu: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-baidu"],
 
   requirement() {},

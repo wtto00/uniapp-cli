@@ -1,7 +1,7 @@
 import { installPackages, uninstallPackages } from "../utils/exec";
 import { isInstalled } from "../utils/package";
 
-const mpAlipay: PlatformModule.ModuleClass = {
+const mpAlipay: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-alipay"],
 
   requirement() {},
