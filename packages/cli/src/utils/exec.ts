@@ -7,7 +7,7 @@ import {
 import { detectPackageManager } from "./package";
 
 export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
-  console.debug(command);
+  process.Log.debug(command);
   const [cmd, ...args] = command
     .split(" ")
     .map((item) => item.trim())
@@ -17,7 +17,7 @@ export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWit
 }
 
 export function spawnExec(command: string, option?: SpawnOptionsWithoutStdio, callback?: (log: string) => void) {
-  console.debug(command);
+  process.Log.debug(command);
   const [cmd, ...args] = command
     .split(" ")
     .map((item) => item.trim())
@@ -52,9 +52,9 @@ export function installVueCli() {
   console.info("@vue/cli not installed, starting global installation of @vue/cli.");
   spwanSyncExec("npm i -g @vue/cli", { stdio: "inherit" });
   if (isVueCliInstalled()) {
-    console.debug("@vue/cli has been successfully installed.");
+    process.Log.debug("@vue/cli has been successfully installed.");
   } else {
-    console.error("@vue/cli installation failed. Please manually execute npm i -g @vue/cli.");
+    process.Log.error("@vue/cli installation failed. Please manually execute npm i -g @vue/cli.");
     process.exit(-1);
   }
 }

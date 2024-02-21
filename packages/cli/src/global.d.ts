@@ -29,3 +29,9 @@ declare namespace UniappCli {
     run: (options: RunOptions) => MaybePromise<void>;
   }
 }
+
+namespace NodeJS {
+  interface Process {
+    Log: import("./utils/log").default;
+  }
+}

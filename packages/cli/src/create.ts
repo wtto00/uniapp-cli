@@ -27,7 +27,7 @@ export async function create(appName: string, options: CreateOptoins) {
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {
       if (statSync(projectPath).isDirectory() && readdirSync(projectPath).length > 0) {
-        console.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`);
+        process.Log.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`);
         return;
       }
     } else {
@@ -58,7 +58,7 @@ export async function create(appName: string, options: CreateOptoins) {
     }
   }
 
-  console.debug(`download template ${template}`);
+  process.Log.debug(`download template ${template}`);
 
   const spinner = ora(`downloading template: ${template}`).start();
   const emitter = degit(template, {
@@ -77,6 +77,6 @@ export async function create(appName: string, options: CreateOptoins) {
     })
     .catch((err: Error) => {
       spinner.fail(`failed to download ${template}`);
-      console.error(err.message);
+      process.Log.error(err.message);
     });
 }

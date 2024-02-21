@@ -8,12 +8,13 @@ const mpWeixin: UniappCli.ModuleClass = {
 
   async requirement() {
     if (process.platform !== "win32" && process.platform !== "darwin") {
-      console.error(`Wechat web devTools is not supported on ${process.platform}`);
+      process.Log.error(`Wechat web devTools is not supported on ${process.platform}`);
       return;
     }
+
     if (process.env.WEIXIN_DEV_TOOL) {
       if (existsSync(process.env.WEIXIN_DEV_TOOL)) {
-        console.success("Dev tools is installed.");
+        process.Log.success("✅ Dev tools is installed.");
         return;
       }
     }
@@ -21,11 +22,13 @@ const mpWeixin: UniappCli.ModuleClass = {
       process.platform === "win32"
         ? "C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat"
         : "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
-    if (existsSync(defaultPath)) {
-      console.warn("Dev tools is not installed.");
+    if (!existsSync(defaultPath)) {
+      process.Log.warn(
+        "❌ Dev tools is not installed.\n   If it's already installed, please set the environment variable `WEIXIN_DEV_TOOL` to the location of the `cli` executable file."
+      );
       return;
     }
-    console.success("Dev tools is installed.");
+    process.Log.success("✅ Dev tools is installed.");
   },
 
   platformAdd({ version }) {
@@ -42,12 +45,12 @@ const mpWeixin: UniappCli.ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p mp-weixin`, { stdio: "pipe", shell: true }, (msg) => {
-      console.log(msg.substring(0, msg.length - 1));
+      process.Log.info(msg.substring(0, msg.length - 1));
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms./.test(msg);
       if (!success) return;
-      console.debug("Start open wechat web devTools.");
+      process.Log.debug("Start open wechat web devTools.");
       import("miniprogram-automator").then(({ default: automator }) => {
         automator
           .launch({
@@ -55,9 +58,9 @@ const mpWeixin: UniappCli.ModuleClass = {
             projectPath: resolve(process.env.PWD as string, "./dist/dev/mp-weixin"),
           })
           .then(() => {
-            console.success("Wechat web devTools has been opened.");
+            process.Log.success("Wechat web devTools has been opened.");
           })
-          .catch(console.error);
+          .catch(process.Log.error);
       });
       over = true;
     });

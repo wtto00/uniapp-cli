@@ -12,7 +12,7 @@ export async function requirements(platforms: PLATFORM[]) {
   }, []);
 
   for (const pfm of validPlatforms) {
-    console.debug(`check requirements of ${pfm}`);
+    process.Log.debug(`check requirements of ${pfm}`);
     console.info(`${pfm}: `);
 
     const module = await importPlatform(pfm);

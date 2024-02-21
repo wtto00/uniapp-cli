@@ -7,14 +7,14 @@ const mpXHS: UniappCli.ModuleClass = {
   async requirement({ packages }) {
     const vueVersion = await getModuleVersion(packages, "vue");
     if (vueVersion >= "3") {
-      console.error(`Vue3 currently does not support "mp-360"`);
+      process.Log.error(`Vue3 currently does not support "mp-360"`);
     }
   },
 
   async platformAdd({ packages, version }) {
     const vueVersion = await getModuleVersion(packages, "vue");
     if (vueVersion >= "3") {
-      console.error(`Vue3 currently does not support "mp-xhs"`);
+      process.Log.error(`Vue3 currently does not support "mp-xhs"`);
     } else {
       installPackages(this.modules.map((m) => `${m}@${version}`));
     }

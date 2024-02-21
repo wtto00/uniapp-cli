@@ -33,7 +33,7 @@ export async function importPlatform(platform: PLATFORM) {
     case PLATFORM.MP_QUICKAPP_HUAWEI:
       return (await import("./quickapp-huawei")).default;
     default:
-      console.error(`Unknown platform: ${platform}.`);
+      process.Log.error(`Unknown platform: ${platform}.`);
       process.exit();
   }
 }

@@ -7,14 +7,14 @@ export async function run(platform: PLATFORM, options: UniappCli.RunOptions) {
   checkIsUniapp(packages);
 
   if (!allPlatforms.includes(platform)) {
-    console.error(`Unknown platform: ${platform}.`);
+    process.Log.error(`Unknown platform: ${platform}.`);
     return;
   }
 
   const module = await importPlatform(platform);
 
   if (module.modules.some((module) => !isInstalled(packages, module))) {
-    console.error(
+    process.Log.error(
       `Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`
     );
     return;

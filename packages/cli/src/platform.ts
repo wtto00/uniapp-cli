@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { importPlatform } from "./platforms";
 import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
 import { PLATFORM, allPlatforms } from "./utils/platform";
@@ -12,13 +13,13 @@ export async function add(platforms: PLATFORM[]) {
   const uniVersoin = await getModuleVersion(packages, "@dcloudio/uni-app");
 
   if (!uniVersoin) {
-    console.error("Cannot get version of uniapp.");
+    process.Log.error("Cannot get version of uniapp.");
     process.exit(-3);
   }
 
   for (const pfm of platforms) {
     if (!allPlatforms.includes(pfm)) {
-      console.error(`${pfm} is not an valid platform value.\n`);
+      process.Log.error(`${pfm} is not an valid platform value.\n`);
       continue;
     }
 
@@ -36,9 +37,9 @@ export async function remove(platforms: PLATFORM[]) {
   checkIsUniapp(packages);
 
   for (const pfm of platforms) {
-    console.debug(`remove platform: ${pfm}`);
+    process.Log.debug(`remove platform: ${pfm}`);
     if (!allPlatforms.includes(pfm)) {
-      console.error(`${pfm} is not an valid platform value.\n`);
+      process.Log.error(`${pfm} is not an valid platform value.\n`);
       continue;
     }
     const module = await importPlatform(pfm);
@@ -55,10 +56,13 @@ export async function list() {
 
   for (const pfm of allPlatforms) {
     const module = await importPlatform(pfm);
-    if (module.modules.every((module) => isInstalled(packages, module))) {
-      console.success(`${pfm}: Installed`);
-    } else {
-      console.warn(`${pfm}: Not installed`);
-    }
+    const space = Array.from(Array(16 - pfm.length))
+      .map(() => " ")
+      .join("");
+    const isPfmInstalled = module.modules.every((module) => isInstalled(packages, module));
+    process.Log.info([
+      { msg: `${pfm}:${space}` },
+      isPfmInstalled ? { msg: "✅ Installed", type: "success" } : { msg: "❌ Not installed", type: "warn" },
+    ]);
   }
 }

@@ -1,6 +1,7 @@
 import { program } from "commander";
 import { version } from "../package.json";
 import chalk from "chalk";
+import Log from "./utils/log";
 
 program
   .name("uni")
@@ -101,11 +102,4 @@ program
 
 program.parse(process.argv);
 
-if (program.getOptionValue("verbose")) {
-  console.debug = (msg) => console.log(chalk.gray(msg));
-} else {
-  console.debug = () => {};
-}
-console.warn = (msg) => console.log(chalk.yellow(msg));
-console.error = (msg) => console.log(chalk.red(msg));
-console.success = (msg: any) => console.log(chalk.green(msg));
+process.Log = new Log(program.getOptionValue("verbose"));

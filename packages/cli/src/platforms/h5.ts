@@ -20,7 +20,7 @@ const h5: UniappCli.ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p h5`, { stdio: "pipe", shell: true }, (msg) => {
-      console.log(msg.substring(0, msg.length - 1));
+      process.Log.info(msg.substring(0, msg.length - 1));
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms./.test(msg);
@@ -30,7 +30,7 @@ const h5: UniappCli.ModuleClass = {
       if (line) {
         const url = line.match(regex)?.[1];
         if (url) {
-          console.debug("Start open browser.");
+          process.Log.debug("Start open browser.");
           import("open").then(({ default: open }) => open(url));
         }
       }
