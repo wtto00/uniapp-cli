@@ -1,10 +1,11 @@
 {
-  "name": "uniapp-cli-monorepo",
+  "name": "uniapp-cli",
   "version": "0.0.1",
   "description": "CLI for uniapp.",
   "main": "index.js",
   "scripts": {
-    "dev:cli": "pnpm -C packages/cli dev",
+    "dev:core": "pnpm -C packages/cli dev",
+    "build:core": "pnpm -C packages/cli build",
     "preinstall": "npx -y only-allow pnpm"
   },
   "keywords": [

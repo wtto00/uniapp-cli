@@ -1,8 +1,10 @@
 {
-  "name": "uniapp-cli",
+  "name": "@uniapp-cli/core",
   "version": "0.0.1",
   "description": "CLI for uniapp.",
-  "main": "index.js",
+  "bin": {
+    "uniapp": "./bin/uniapp.cjs"
+  },
   "scripts": {
     "dev": "tsx src/index",
     "build": "unbuild"

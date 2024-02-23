@@ -1,5 +1,5 @@
 {
-  "name": "uniapp-ios",
+  "name": "@uniapp-cli/ios",
   "version": "0.0.1",
   "description": "Platform ios in cli for uniapp.",
   "main": "index.js",
