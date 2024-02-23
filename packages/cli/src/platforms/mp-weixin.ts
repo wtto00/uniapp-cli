@@ -14,7 +14,7 @@ const mpWeixin: UniappCli.ModuleClass = {
 
     if (process.env.WEIXIN_DEV_TOOL) {
       if (existsSync(process.env.WEIXIN_DEV_TOOL)) {
-        process.Log.success("✅ Dev tools is installed.");
+        process.Log.success(`${process.Log.emoji.success} Dev tools is installed.`);
         return;
       }
     }
@@ -24,11 +24,11 @@ const mpWeixin: UniappCli.ModuleClass = {
         : "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
     if (!existsSync(defaultPath)) {
       process.Log.warn(
-        "❌ Dev tools is not installed.\n   If it's already installed, please set the environment variable `WEIXIN_DEV_TOOL` to the location of the `cli` executable file."
+        `${process.Log.emoji.fail} Dev tools is not installed.\n   If it's already installed, please set the environment variable \`WEIXIN_DEV_TOOL\` to the location of the \`cli\` executable file.`
       );
       return;
     }
-    process.Log.success("✅ Dev tools is installed.");
+    process.Log.success(`${process.Log.emoji.success} Dev tools is installed.`);
   },
 
   platformAdd({ version }) {

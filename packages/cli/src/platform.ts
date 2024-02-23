@@ -62,7 +62,9 @@ export async function list() {
     const isPfmInstalled = module.modules.every((module) => isInstalled(packages, module));
     process.Log.info([
       { msg: `${pfm}:${space}` },
-      isPfmInstalled ? { msg: "✅ Installed", type: "success" } : { msg: "❌ Not installed", type: "warn" },
+      isPfmInstalled
+        ? { msg: `${process.Log.emoji.success} Installed`, type: "success" }
+        : { msg: `${process.Log.emoji.fail} Not installed`, type: "warn" },
     ]);
   }
 }

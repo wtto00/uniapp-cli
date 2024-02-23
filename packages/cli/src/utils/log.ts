@@ -6,6 +6,11 @@ export default class Log {
     this._debug = debug;
   }
 
+  emoji = {
+    success: "✅",
+    fail: "❌",
+  };
+
   debug(...msgs: string[]) {
     if (!this._debug) return;
     console.log(...msgs.map((msg) => chalk.gray(msg)));
