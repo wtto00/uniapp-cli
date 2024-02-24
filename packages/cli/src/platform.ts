@@ -1,7 +1,6 @@
-import chalk from "chalk";
-import { importPlatform } from "./platforms";
-import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package";
-import { PLATFORM, allPlatforms } from "./utils/platform";
+import { importPlatform } from "./platforms/index.js";
+import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package.js";
+import { PLATFORM, allPlatforms } from "./utils/platform.js";
 
 /**
  * add platforms
@@ -14,7 +13,7 @@ export async function add(platforms: PLATFORM[]) {
 
   if (!uniVersoin) {
     process.Log.error("Cannot get version of uniapp.");
-    process.exit(-3);
+    process.exit();
   }
 
   for (const pfm of platforms) {

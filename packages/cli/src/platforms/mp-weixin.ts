@@ -1,6 +1,6 @@
 import { resolve } from "path";
-import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec";
-import { isInstalled } from "../utils/package";
+import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec.js";
+import { isInstalled } from "../utils/package.js";
 import { existsSync } from "fs";
 
 const mpWeixin: UniappCli.ModuleClass = {

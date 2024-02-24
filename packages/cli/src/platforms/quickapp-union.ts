@@ -1,5 +1,5 @@
-import { installPackages, uninstallPackages } from "../utils/exec";
-import { isInstalled } from "../utils/package";
+import { installPackages, uninstallPackages } from "../utils/exec.js";
+import { isInstalled } from "../utils/package.js";
 
 const quickAppUnion: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-quickapp-webview"],

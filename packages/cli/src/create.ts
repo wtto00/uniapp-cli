@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
-import { createVueProject, installVueCli, isVueCliInstalled } from "./utils/exec";
+import { createVueProject, installVueCli, isVueCliInstalled } from "./utils/exec.js";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 
 const TEMPLATES = {

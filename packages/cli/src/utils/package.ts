@@ -3,13 +3,12 @@ import { resolve } from "node:path";
 import { type PackageJson, readPackageJSON } from "pkg-types";
 
 export async function getPackage() {
-  const currentPath = process.env.PWD as string;
-  const packagePath = resolve(currentPath, "./package.json");
-  if (!existsSync(packagePath)) {
-    process.Log.error("Current working directory does't have a package.json file.");
+  try {
+    return await readPackageJSON(process.env.PWD as string);
+  } catch (error) {
+    process.Log.error((error as Error).message);
     process.exit();
   }
-  return await readPackageJSON(packagePath);
 }
 export function isInstalled(packages: PackageJson, module: string) {
   const allDependencies = {
