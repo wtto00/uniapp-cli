@@ -1,5 +1,5 @@
-import { installPackages, uninstallPackages } from "../utils/exec";
-import { getModuleVersion, isInstalled } from "../utils/package";
+import { installPackages, uninstallPackages } from "../utils/exec.js";
+import { getModuleVersion, isInstalled } from "../utils/package.js";
 
 const mpXHS: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-mp-xhs"],

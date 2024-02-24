@@ -1,5 +1,5 @@
-import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec";
-import { isInstalled } from "../utils/package";
+import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec.js";
+import { isInstalled } from "../utils/package.js";
 
 const h5: UniappCli.ModuleClass = {
   modules: ["@dcloudio/uni-h5"],

@@ -4,7 +4,7 @@ import {
   spawn,
   type SpawnOptionsWithoutStdio,
 } from "node:child_process";
-import { detectPackageManager } from "./package";
+import { detectPackageManager } from "./package.js";
 
 export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
   process.Log.debug(command);
@@ -55,7 +55,7 @@ export function installVueCli() {
     process.Log.debug("@vue/cli has been successfully installed.");
   } else {
     process.Log.error("@vue/cli installation failed. Please manually execute npm i -g @vue/cli.");
-    process.exit(-1);
+    process.exit();
   }
 }
 

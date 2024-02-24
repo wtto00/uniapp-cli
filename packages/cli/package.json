@@ -2,12 +2,18 @@
   "name": "@uniapp-cli/core",
   "version": "0.0.1",
   "description": "CLI for uniapp.",
+  "type": "module",
   "bin": {
-    "uniapp": "./bin/uniapp.cjs"
+    "uniapp": "./bin/uniapp.js"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "dev": "tsx src/index",
-    "build": "unbuild"
+    "build": "rm -rf dist && tsc -p tsconfig.json --pretty",
+    "build:type": "tsc --outDir dist --declaration --emitDeclarationOnly --pretty --types src/global.d.ts src/**/*"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-import { importPlatform } from "./platforms";
-import { checkIsUniapp, getPackage, isInstalled } from "./utils/package";
-import { PLATFORM, allPlatforms } from "./utils/platform";
+import { importPlatform } from "./platforms/index.js";
+import { checkIsUniapp, getPackage, isInstalled } from "./utils/package.js";
+import { PLATFORM, allPlatforms } from "./utils/platform.js";
 
 export async function run(platform: PLATFORM, options: UniappCli.RunOptions) {
   const packages = await getPackage();

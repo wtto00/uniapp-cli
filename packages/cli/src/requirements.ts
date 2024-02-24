@@ -1,6 +1,6 @@
-import { importPlatform } from "./platforms";
-import { checkIsUniapp, getPackage } from "./utils/package";
-import { PLATFORM, allPlatforms } from "./utils/platform";
+import { importPlatform } from "./platforms/index.js";
+import { checkIsUniapp, getPackage } from "./utils/package.js";
+import { PLATFORM, allPlatforms } from "./utils/platform.js";
 
 export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackage();

@@ -1,10 +1,25 @@
 import { program } from "commander";
-import { version } from "../package.json";
-import Log from "./utils/log";
+import Log from "./utils/log.js";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { PackageJson } from "pkg-types";
+import a from "../package.json";
+
+a.bin;
+
+const packagesPath = resolve("../package.json");
+const packagesString = readFileSync(packagesPath, { encoding: "utf8" });
+let packages = {} as PackageJson;
+try {
+  packages = JSON.parse(packagesString);
+} catch (error) {
+  console.error("Fail to get package.json.");
+  process.exit();
+}
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${version}`)
+  .version(`uniapp-cli v${packages.version}`)
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
@@ -13,32 +28,28 @@ program
   .showSuggestionAfterError(true);
 
 program
-  .command("requirements")
-  .alias("requirement")
-  .usage("<platform ...>")
-  .summary("Checks and print out all the requirements for platforms specified.")
-  .description(
-    "Checks and print out all the requirements for platforms specified " +
-      "(or all platforms added to project if none specified). " +
-      "If all requirements for each platform are met, exits with code 0 otherwise exits with non-zero code."
-  )
-  .argument("<platform...>", "Platforms requirements you want to check")
-  .addHelpText("after", "\nExample:\n  uniapp requirements android")
-  .action((platforms) => {
-    void import("./requirements").then(({ requirements }) => requirements(platforms));
-  });
-
-program
   .command("create")
   .usage("<app-name>")
-  .summary("Create a new project.")
+  .summary("Create a new project")
   .description("Create a new project powered by uniapp-cli.")
   .argument("<app-name>", "Human readable name")
   .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket/Git:url")
   .option("-f, --force", "Overwrite target directory if it exists")
   .addHelpText("after", "\nExample:\n  uniapp create MyUniApp")
   .action((appName, options) => {
-    void import("./create").then(({ create }) => create(appName, options));
+    void import("./create.js").then(({ create }) => create(appName, options));
+  });
+
+program
+  .command("requirements")
+  .alias("requirement")
+  .usage("<platform ...>")
+  .summary("Checks and print out all the requirements for platforms specified")
+  .description("Checks and print out all the requirements for platforms specified.")
+  .argument("<platform...>", "Platforms requirements you want to check")
+  .addHelpText("after", "\nExample:\n  uniapp requirements android")
+  .action((platforms) => {
+    void import("./requirements.js").then(({ requirements }) => requirements(platforms));
   });
 
 const platform = program
@@ -50,29 +61,29 @@ const platform = program
 platform
   .command("add")
   .usage("<platform...>")
-  .summary("Add specified platforms and install them.")
+  .summary("Add specified platforms and install them")
   .description("Add specified platforms and install them.")
   .argument("<platform...>", "Specified platforms")
   .action((platforms) => {
-    void import("./platform").then(({ add }) => add(platforms));
+    void import("./platform.js").then(({ add }) => add(platforms));
   });
 platform
   .command("rm")
   .alias("remove")
   .usage("<platform...>")
-  .summary("Remove specified platforms.")
+  .summary("Remove specified platforms")
   .description("Remove specified platforms.")
   .argument("<platform...>", "Specified platforms")
   .action((platforms) => {
-    void import("./platform").then(({ remove }) => remove(platforms));
+    void import("./platform.js").then(({ remove }) => remove(platforms));
   });
 platform
   .command("ls")
   .alias("list")
-  .summary("List all installed and available platforms.")
+  .summary("List all installed and available platforms")
   .description("List all installed and available platforms.")
   .action(() => {
-    void import("./platform").then(({ list }) => list());
+    void import("./platform.js").then(({ list }) => list());
   });
 
 program
@@ -96,7 +107,7 @@ program
     "\nExample:\n  uniapp run android --release --target=myEmulator\n  uniapp run ios --device --debug\n  uniapp run mp-weixin"
   )
   .action((platform, options) => {
-    void import("./run").then(({ run }) => run(platform, options));
+    void import("./run.js").then(({ run }) => run(platform, options));
   });
 
 program.parse(process.argv);

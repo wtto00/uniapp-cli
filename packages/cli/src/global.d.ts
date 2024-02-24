@@ -6,7 +6,7 @@ declare type MaybePromise<T> = T | Promise<T>;
 
 declare namespace UniappCli {
   import type { PackageJson } from "pkg-types";
-  import type { PLATFORM } from "./utils/platform";
+  import type { PLATFORM } from "./utils/platform.js";
   interface CommonOptions {
     packages: PackageJson;
   }
@@ -32,6 +32,6 @@ declare namespace UniappCli {
 
 namespace NodeJS {
   interface Process {
-    Log: import("./utils/log").default;
+    Log: import("./utils/log.js").default;
   }
 }
