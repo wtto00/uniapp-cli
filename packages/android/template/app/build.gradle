@@ -96,7 +96,7 @@ dependencies {
     implementation 'com.umeng.umsdk:abtest:1.0.1'
     implementation 'com.umeng.umsdk:apm:1.9.1'
 
-    implementation 'com.getui:gtsdk:3.3.3.0'  //个推SDK
+    implementation 'com.getui:gtsdk:3.3.5.0'  //个推SDK
     implementation 'com.getui:gtc:3.2.9.0'  //个推核心组件
 
 }
