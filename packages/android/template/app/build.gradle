@@ -91,7 +91,7 @@ dependencies {
     implementation 'com.amap.api:3dmap:9.5.0'
     implementation 'com.amap.api:search:9.4.5'
     // 友盟统计
-    implementation 'com.umeng.umsdk:common:9.6.1'
+    implementation 'com.umeng.umsdk:common:9.6.7'
     implementation 'com.umeng.umsdk:asms:1.8.0'
     implementation 'com.umeng.umsdk:abtest:1.0.1'
     implementation 'com.umeng.umsdk:apm:1.9.1'
