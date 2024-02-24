@@ -4,6 +4,7 @@ import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
 import { createVueProject, installVueCli, isVueCliInstalled } from "./utils/exec";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 
 const TEMPLATES = {
   "vue3-ts": "dcloudio/uni-preset-vue#vite-ts",
@@ -70,13 +71,21 @@ export async function create(appName: string, options: CreateOptoins) {
     spinner.info(info.message);
   });
 
-  emitter
-    .clone(appName)
-    .then(() => {
-      spinner.succeed(`Project ${appName} has been successfully created.`);
-    })
-    .catch((err: Error) => {
-      spinner.fail(`failed to download ${template}`);
-      process.Log.error(err.message);
-    });
+  try {
+    await emitter.clone(appName);
+    spinner.succeed(`Project \`${appName}\` has been successfully created.`);
+  } catch (err) {
+    spinner.fail(`failed to download \`${template}\``);
+    process.Log.error((err as Error).message);
+    process.exit();
+  }
+
+  try {
+    process.Log.debug(`rename project name to \`${appName}\``);
+    const packages = await readPackageJSON(projectPath);
+    packages.name = appName;
+    await writePackageJSON(resolve(projectPath, "package.json"), packages);
+  } catch (err) {
+    process.Log.error((err as Error).message);
+  }
 }
