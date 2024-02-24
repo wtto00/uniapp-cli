@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "dev": "tsx src/index",
-    "build": "rm -rf dist && tsc -p tsconfig.json --pretty",
+    "build": "rm -rf dist && tsc -p tsconfig.json --pretty && node scripts/build.js",
     "build:type": "tsc --outDir dist --declaration --emitDeclarationOnly --pretty --types src/global.d.ts src/**/*"
   },
   "repository": {

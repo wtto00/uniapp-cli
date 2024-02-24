@@ -41,12 +41,6 @@ importers:
       '@dcloudio/uni-mp-alipay':
         specifier: 3.0.0-3081220230817001
         version: 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-baidu':
-        specifier: 3.0.0-3081220230817001
-        version: 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-jd':
-        specifier: 3.0.0-3081220230817001
-        version: 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
       '@dcloudio/uni-mp-kuaishou':
         specifier: 3.0.0-3081220230817001
         version: 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
@@ -1802,31 +1796,6 @@ packages:
       - vue
     dev: false
 
-  /@dcloudio/uni-mp-baidu@3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19):
-    resolution: {integrity: sha512-FYwK1AqSc+NvtvaCia/fOP57ELx5O5icHjuwPKMsJv5eGtqlwhXzyvSCoGEFyYQcsWP9ZqYSb3fTuxVlbiEYdA==}
-    dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-compiler': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-vite': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-vue': 3.0.0-3081220230817001
-      '@dcloudio/uni-mp-weixin': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-shared': 3.0.0-3081220230817001
-      '@vue/compiler-core': 3.2.47
-      '@vue/shared': 3.2.47
-      jimp: 0.10.3
-      licia: 1.39.2
-      qrcode-reader: 1.0.4
-      qrcode-terminal: 0.12.0
-      ws: 8.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - postcss
-      - supports-color
-      - ts-node
-      - utf-8-validate
-      - vue
-    dev: false
-
   /@dcloudio/uni-mp-compiler@3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19):
     resolution: {integrity: sha512-KDfwEr9jFNSkNbYmdDc+zfGuZwXGkz3bW3c4cuV44IncTf/UW2m594Z2UzhJkx/p662aQ2W9M4BFZ0o5QSfQDw==}
     dependencies:
@@ -1839,22 +1808,6 @@ packages:
       '@vue/compiler-dom': 3.2.47
       '@vue/shared': 3.2.47
       estree-walker: 2.0.2
-    transitivePeerDependencies:
-      - postcss
-      - supports-color
-      - ts-node
-      - vue
-    dev: false
-
-  /@dcloudio/uni-mp-jd@3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19):
-    resolution: {integrity: sha512-sKDppXhk7k8Euce9v7ItQ2cs3+XpQV/DX8FjXzfO9DfjQEKiR/Pyfis7e3ANQrF4V/W3uwK5wgN/PyI3/NRloQ==}
-    dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-compiler': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-vite': 3.0.0-3081220230817001(postcss@8.4.33)(vue@3.4.19)
-      '@dcloudio/uni-mp-vue': 3.0.0-3081220230817001
-      '@dcloudio/uni-shared': 3.0.0-3081220230817001
-      '@vue/shared': 3.2.47
     transitivePeerDependencies:
       - postcss
       - supports-color

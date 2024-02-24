@@ -1,25 +1,10 @@
 import { program } from "commander";
 import Log from "./utils/log.js";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import type { PackageJson } from "pkg-types";
-import a from "../package.json";
-
-a.bin;
-
-const packagesPath = resolve("../package.json");
-const packagesString = readFileSync(packagesPath, { encoding: "utf8" });
-let packages = {} as PackageJson;
-try {
-  packages = JSON.parse(packagesString);
-} catch (error) {
-  console.error("Fail to get package.json.");
-  process.exit();
-}
+import { version } from "../package.json";
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${packages.version}`)
+  .version(`uniapp-cli v${version}`)
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
