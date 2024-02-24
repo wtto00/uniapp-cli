@@ -35,3 +35,7 @@ namespace NodeJS {
     Log: import("./utils/log.js").default;
   }
 }
+
+interface ImportMeta {
+  env: NodeJS.Process["env"];
+}

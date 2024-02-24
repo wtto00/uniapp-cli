@@ -1,10 +1,9 @@
 import { program } from "commander";
 import Log from "./utils/log.js";
-import { version } from "../package.json";
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${version}`)
+  .version(`uniapp-cli v${import.meta.env.npm_package_version}`)
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
