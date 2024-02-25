@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "NodeNext",
+    "rootDir": "./src",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "importsNotUsedAsValues": "remove",
+    "newLine": "lf",
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+
+    "skipLibCheck": true
+  }
+}
