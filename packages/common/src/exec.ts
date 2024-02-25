@@ -49,12 +49,12 @@ export function isVueCliInstalled() {
 }
 
 export function installVueCli() {
-  console.info("@vue/cli not installed, starting global installation of @vue/cli.");
+  process.Log.info("@vue/cli not installed, starting global installation of @vue/cli.");
   spwanSyncExec("npm i -g @vue/cli", { stdio: "inherit" });
   if (isVueCliInstalled()) {
     process.Log.debug("@vue/cli has been successfully installed.");
   } else {
-    process.Log.error("@vue/cli installation failed. Please manually execute npm i -g @vue/cli.");
+    process.Log.warn("@vue/cli installation failed. Please manually execute npm i -g @vue/cli.");
     process.exit();
   }
 }

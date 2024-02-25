@@ -1,10 +1,12 @@
-import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec.js";
-import { isInstalled } from "../utils/package.js";
+import { isInstalled, installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const h5: UniappCli.ModuleClass = {
+const h5: ModuleClass = {
   modules: ["@dcloudio/uni-h5"],
 
-  requirement() {},
+  requirement() {
+    process.Log.success(`${process.Log.emoji.success} Platform \`h5\` doesn't need any dependency.`);
+  },
 
   platformAdd({ version }) {
     installPackages(this.modules.map((m) => `${m}@${version}`));

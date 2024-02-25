@@ -1,7 +1,7 @@
-import { installPackages, uninstallPackages } from "../utils/exec.js";
-import { getModuleVersion, isInstalled } from "../utils/package.js";
+import { getModuleVersion, isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const mpXHS: UniappCli.ModuleClass = {
+const mpXHS: ModuleClass = {
   modules: ["@dcloudio/uni-mp-xhs"],
 
   async requirement({ packages }) {

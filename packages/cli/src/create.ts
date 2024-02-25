@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
-import { createVueProject, installVueCli, isVueCliInstalled } from "./utils/exec.js";
+import { projectRoot, createVueProject, installVueCli, isVueCliInstalled } from "@uniapp-cli/common";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 
 const TEMPLATES = {
@@ -23,7 +23,7 @@ export interface CreateOptoins {
 export async function create(appName: string, options: CreateOptoins) {
   const { force } = options;
 
-  const projectPath = resolve(process.cwd(), `./${appName}`);
+  const projectPath = resolve(projectRoot, `./${appName}`);
 
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {
@@ -32,7 +32,7 @@ export async function create(appName: string, options: CreateOptoins) {
         return;
       }
     } else {
-      console.info(`delete directory: ${projectPath}`);
+      process.Log.info(`delete directory: ${projectPath}`);
       rmSync(projectPath, { force: true, recursive: true });
     }
   }
@@ -50,7 +50,7 @@ export async function create(appName: string, options: CreateOptoins) {
     ]);
     template = TEMPLATES[templateKey];
     if (templateKey === "vue2" || templateKey === "vue2-alpha") {
-      console.info("create project by @vue/cli");
+      process.Log.info("create project by @vue/cli");
       if (!isVueCliInstalled()) {
         installVueCli();
       }

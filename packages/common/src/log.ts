@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-export default class Log {
+export class Log {
   _debug = false;
   constructor(debug = false) {
     this._debug = debug;
@@ -17,7 +17,7 @@ export default class Log {
   }
 
   info(...msgs: string[] | [{ msg: string; type?: "debug" | "warn" | "error" | "success" }[]]) {
-    if (typeof msgs[0] === "string") {
+    if (!Array.isArray(msgs[0])) {
       console.log(...msgs);
     } else {
       console.log(
@@ -40,14 +40,14 @@ export default class Log {
   }
 
   warn(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.yellow(msg)));
+    console.log(...msgs.map((msg) => chalk.yellowBright(msg)));
   }
 
   error(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.red(msg)));
+    console.log(...msgs.map((msg) => chalk.redBright(msg)));
   }
 
   success(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.green(msg)));
+    console.log(...msgs.map((msg) => chalk.greenBright(msg)));
   }
 }

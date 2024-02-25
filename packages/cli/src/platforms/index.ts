@@ -1,6 +1,69 @@
-import { PLATFORM } from "../utils/platform.js";
+import type { PackageJson } from "pkg-types";
+import type { ManifestConfig } from "@uniapp-cli/common";
 
-export async function importPlatform(platform: PLATFORM) {
+type MaybePromise<T> = T | Promise<T>;
+
+export interface CommonOptions {
+  /** Current project Package.json content */
+  packages: PackageJson;
+}
+export interface PlatformAddOptions extends CommonOptions {
+  /** Current project UniApp version  */
+  version: string;
+  manifest?: ManifestConfig;
+}
+export interface RunOptions {
+  debug?: boolean;
+  release?: boolean;
+  device?: boolean;
+  emulator?: boolean;
+  list?: boolean;
+  target?: string;
+}
+export interface ModuleClass {
+  modules: string[];
+  requirement: (options: CommonOptions) => MaybePromise<void>;
+  platformAdd: (options: PlatformAddOptions) => MaybePromise<void>;
+  platformRemove: (options: CommonOptions) => MaybePromise<void>;
+  run: (options: RunOptions) => MaybePromise<void>;
+}
+
+export enum PLATFORM {
+  ANDROID = "android",
+  IOS = "ios",
+  H5 = "h5",
+  MP_WEIXIN = "mp-weixin",
+  MP_ALIPAY = "mp-alipay",
+  MP_BAIDU = "mp-baidu",
+  MP_TOUTIAO = "mp-toutiao",
+  MP_LARK = "mp-lark",
+  MP_QQ = "mp-qq",
+  MP_KUAISHOU = "mp-kuaishou",
+  MP_JD = "mp-jd",
+  MP_360 = "mp-360",
+  MP_XHS = "mp-xhs",
+  MP_QUICKAPP_UNION = "quickapp-union",
+  MP_QUICKAPP_HUAWEI = "quickapp-huawei",
+}
+export const allPlatforms = [
+  PLATFORM.ANDROID,
+  PLATFORM.IOS,
+  PLATFORM.H5,
+  PLATFORM.MP_WEIXIN,
+  PLATFORM.MP_ALIPAY,
+  PLATFORM.MP_BAIDU,
+  PLATFORM.MP_TOUTIAO,
+  PLATFORM.MP_LARK,
+  PLATFORM.MP_QQ,
+  PLATFORM.MP_KUAISHOU,
+  PLATFORM.MP_JD,
+  PLATFORM.MP_360,
+  PLATFORM.MP_XHS,
+  PLATFORM.MP_QUICKAPP_UNION,
+  PLATFORM.MP_QUICKAPP_HUAWEI,
+];
+
+export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
   switch (platform) {
     case PLATFORM.ANDROID:
       return (await import("./android.js")).default;

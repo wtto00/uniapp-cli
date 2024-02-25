@@ -4,8 +4,9 @@
   "description": "CLI for uniapp.",
   "main": "index.js",
   "scripts": {
-    "dev:core": "pnpm -C packages/cli dev",
-    "build:core": "pnpm -C packages/cli build",
+    "build:cli": "pnpm -C packages/cli build",
+    "build:common": "pnpm -C packages/common build",
+    "build:android": "pnpm -C packages/android build",
     "preinstall": "npx -y only-allow pnpm"
   },
   "keywords": [
@@ -16,9 +17,9 @@
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.11.20",
     "tslib": "^2.6.2",
-    "tsx": "^4.7.0",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   },
   "repository": {

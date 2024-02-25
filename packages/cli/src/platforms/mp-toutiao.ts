@@ -1,7 +1,7 @@
-import { installPackages, uninstallPackages } from "../utils/exec.js";
-import { isInstalled } from "../utils/package.js";
+import { isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const mpToutiao: UniappCli.ModuleClass = {
+const mpToutiao: ModuleClass = {
   modules: ["@dcloudio/uni-mp-toutiao"],
 
   requirement() {},

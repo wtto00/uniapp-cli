@@ -1,5 +1,5 @@
 import { program } from "commander";
-import Log from "./utils/log.js";
+import { Log } from "@uniapp-cli/common";
 
 import.meta.env = process.env;
 

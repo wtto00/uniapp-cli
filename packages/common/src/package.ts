@@ -1,12 +1,13 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { type PackageJson, readPackageJSON } from "pkg-types";
+import { projectRoot } from "./path.js";
 
-export async function getPackage() {
+export async function getPackageJson() {
   try {
     return await readPackageJSON(process.cwd());
   } catch (error) {
-    process.Log.error((error as Error).message);
+    process.Log.warn((error as Error).message);
     process.exit();
   }
 }
@@ -21,7 +22,7 @@ export function isInstalled(packages: PackageJson, module: string) {
 }
 export async function getModuleVersion(packages: PackageJson, module: string) {
   if (!isInstalled(packages, module)) return "";
-  const modulePackage = resolve(`./node_modules/${module}/package.json`);
+  const modulePackage = resolve(projectRoot, `./node_modules/${module}/package.json`);
   if (!existsSync(modulePackage)) {
     process.Log.warn("Please run `npm install` first!");
     return "";
@@ -37,13 +38,13 @@ export async function getModuleVersion(packages: PackageJson, module: string) {
 
 export function checkIsUniapp(packages: PackageJson) {
   if (!isInstalled(packages, "@dcloudio/uni-app")) {
-    process.Log.error("Current working directory is not a Uniapp-based project.");
+    process.Log.warn("Current working directory is not a Uniapp-based project.");
     process.exit();
   }
 }
 
 export function detectPackageManager() {
-  if (existsSync(resolve("./pnpm-lock.yaml"))) return "pnpm";
-  if (existsSync(resolve("./yarn.lock"))) return "yarn";
+  if (existsSync(resolve(projectRoot, "./pnpm-lock.yaml"))) return "pnpm";
+  if (existsSync(resolve(projectRoot, "./yarn.lock"))) return "yarn";
   return "npm";
 }

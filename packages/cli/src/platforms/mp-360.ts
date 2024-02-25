@@ -1,7 +1,7 @@
-import { installPackages, uninstallPackages } from "../utils/exec.js";
-import { getModuleVersion, isInstalled } from "../utils/package.js";
+import { getModuleVersion, isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const mp360: UniappCli.ModuleClass = {
+const mp360: ModuleClass = {
   modules: ["@dcloudio/uni-mp-360"],
 
   async requirement({ packages }) {

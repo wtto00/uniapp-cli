@@ -1,7 +1,7 @@
-import { installPackages, uninstallPackages } from "../utils/exec.js";
-import { isInstalled } from "../utils/package.js";
+import { isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const quickAppHuawei: UniappCli.ModuleClass = {
+const quickAppHuawei: ModuleClass = {
   modules: ["@dcloudio/uni-quickapp-webview"],
 
   requirement() {},

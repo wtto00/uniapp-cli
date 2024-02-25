@@ -1,12 +1,11 @@
-import { importPlatform } from "./platforms/index.js";
-import { checkIsUniapp, getModuleVersion, getPackage, isInstalled } from "./utils/package.js";
-import { PLATFORM, allPlatforms } from "./utils/platform.js";
+import { importPlatform, PLATFORM, allPlatforms } from "./platforms/index.js";
+import { checkIsUniapp, getModuleVersion, getPackageJson, isInstalled } from "@uniapp-cli/common";
 
 /**
  * add platforms
  */
 export async function add(platforms: PLATFORM[]) {
-  const packages = await getPackage();
+  const packages = await getPackageJson();
   checkIsUniapp(packages);
 
   const uniVersoin = await getModuleVersion(packages, "@dcloudio/uni-app");
@@ -24,7 +23,11 @@ export async function add(platforms: PLATFORM[]) {
 
     const module = await importPlatform(pfm);
 
-    await module.platformAdd({ packages, version: uniVersoin });
+    try {
+      await module.platformAdd({ packages, version: uniVersoin });
+    } catch (error) {
+      module.platformRemove({ packages });
+    }
   }
 }
 
@@ -32,7 +35,7 @@ export async function add(platforms: PLATFORM[]) {
  * remove platforms
  */
 export async function remove(platforms: PLATFORM[]) {
-  const packages = await getPackage();
+  const packages = await getPackageJson();
   checkIsUniapp(packages);
 
   for (const pfm of platforms) {
@@ -50,7 +53,7 @@ export async function remove(platforms: PLATFORM[]) {
  * list platforms
  */
 export async function list() {
-  const packages = await getPackage();
+  const packages = await getPackageJson();
   checkIsUniapp(packages);
 
   for (const pfm of allPlatforms) {

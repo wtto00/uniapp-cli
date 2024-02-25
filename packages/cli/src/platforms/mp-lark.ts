@@ -1,7 +1,7 @@
-import { installPackages, uninstallPackages } from "../utils/exec.js";
-import { isInstalled } from "../utils/package.js";
+import { isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import type { ModuleClass } from "./index.js";
 
-const mpLark: UniappCli.ModuleClass = {
+const mpLark: ModuleClass = {
   modules: ["@dcloudio/uni-mp-lark"],
 
   requirement() {},

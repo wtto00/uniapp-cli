@@ -25,8 +25,12 @@ const replaceRegex = new RegExp(
  */
 function replaceEnvVar(jsStr) {
   return jsStr.replace(replaceRegex, (matched) => {
-    return JSON.stringify(process.env[matched.substring(16)] ?? "");
+    return JOSN.stringify(process.env[matched.substring(16)] ?? "");
   });
+}
+
+function removeImportMetaEnv(jsStr) {
+  return jsStr.replace(/import\.meta\.env\s*?=\s*?process\.env[;\s]*/g, "");
 }
 
 /**
@@ -43,7 +47,8 @@ function readJsFiles(basePath = distDir) {
     } else if (extname(filePath) === ".js") {
       // handle js files
       let jsStr = readFileSync(filePath, { encoding: "utf8" });
-      const jsReplaced = replaceEnvVar(jsStr);
+      let jsReplaced = replaceEnvVar(jsStr);
+      jsReplaced = removeImportMetaEnv(jsReplaced);
       if (jsReplaced !== jsStr) {
         writeFileSync(filePath, jsReplaced);
       }

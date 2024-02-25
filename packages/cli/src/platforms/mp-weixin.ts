@@ -1,9 +1,16 @@
-import { resolve } from "path";
-import { installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "../utils/exec.js";
-import { isInstalled } from "../utils/package.js";
-import { existsSync } from "fs";
+import { resolve } from "node:path";
+import {
+  isInstalled,
+  projectRoot,
+  installPackages,
+  outputRemoveColor,
+  spawnExec,
+  uninstallPackages,
+} from "@uniapp-cli/common";
+import { existsSync } from "node:fs";
+import type { ModuleClass } from "./index.js";
 
-const mpWeixin: UniappCli.ModuleClass = {
+const mpWeixin: ModuleClass = {
   modules: ["@dcloudio/uni-mp-weixin"],
 
   async requirement() {
@@ -55,7 +62,7 @@ const mpWeixin: UniappCli.ModuleClass = {
         automator
           .launch({
             cliPath: process.env.WEIXIN_DEV_TOOL,
-            projectPath: resolve(process.cwd(), "./dist/dev/mp-weixin"),
+            projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
           })
           .then(() => {
             process.Log.success("Wechat web devTools has been opened.");
