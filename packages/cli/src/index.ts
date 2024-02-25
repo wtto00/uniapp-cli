@@ -1,6 +1,8 @@
 import { program } from "commander";
 import Log from "./utils/log.js";
 
+import.meta.env = process.env;
+
 program
   .name("uniapp")
   .version(`uniapp-cli v${import.meta.env.npm_package_version}`)
