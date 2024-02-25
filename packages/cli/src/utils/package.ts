@@ -4,7 +4,7 @@ import { type PackageJson, readPackageJSON } from "pkg-types";
 
 export async function getPackage() {
   try {
-    return await readPackageJSON(process.env.PWD as string);
+    return await readPackageJSON(process.cwd());
   } catch (error) {
     process.Log.error((error as Error).message);
     process.exit();

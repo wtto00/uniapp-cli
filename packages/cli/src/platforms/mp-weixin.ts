@@ -55,7 +55,7 @@ const mpWeixin: UniappCli.ModuleClass = {
         automator
           .launch({
             cliPath: process.env.WEIXIN_DEV_TOOL,
-            projectPath: resolve(process.env.PWD as string, "./dist/dev/mp-weixin"),
+            projectPath: resolve(process.cwd(), "./dist/dev/mp-weixin"),
           })
           .then(() => {
             process.Log.success("Wechat web devTools has been opened.");

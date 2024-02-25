@@ -23,7 +23,7 @@ export interface CreateOptoins {
 export async function create(appName: string, options: CreateOptoins) {
   const { force } = options;
 
-  const projectPath = resolve(process.env.PWD as string, `./${appName}`);
+  const projectPath = resolve(process.cwd(), `./${appName}`);
 
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {
