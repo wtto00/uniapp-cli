@@ -20,17 +20,13 @@ const replaceRegex = new RegExp(
 );
 
 /**
- *
- * @param {string} filePath
+ * replace environment variable name with string value
+ * @param {string} jsStr
  */
-function patchJsonModules(filePath) {
-  let jsStr = readFileSync(filePath, { encoding: "utf8" });
-  const jsReplaced = jsStr.replace(replaceRegex, (matched) => {
+function replaceEnvVar(jsStr) {
+  return jsStr.replace(replaceRegex, (matched) => {
     return JSON.stringify(process.env[matched.substring(16)] ?? "");
   });
-  if (jsReplaced !== jsStr) {
-    writeFileSync(filePath, jsReplaced);
-  }
 }
 
 /**
@@ -45,7 +41,12 @@ function readJsFiles(basePath = distDir) {
     if (stat.isDirectory()) {
       readJsFiles(filePath);
     } else if (extname(filePath) === ".js") {
-      patchJsonModules(filePath);
+      // handle js files
+      let jsStr = readFileSync(filePath, { encoding: "utf8" });
+      const jsReplaced = replaceEnvVar(jsStr);
+      if (jsReplaced !== jsStr) {
+        writeFileSync(filePath, jsReplaced);
+      }
     }
   });
 }
