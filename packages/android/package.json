@@ -15,7 +15,9 @@
   "scripts": {
     "build": "rm -rf dist && pnpm build:js && pnpm build:type",
     "build:js": "tsc -p tsconfig.json --pretty",
-    "build:type": "tsc -p tsconfig.types.json --pretty"
+    "build:type": "tsc -p tsconfig.types.json --pretty",
+    "postinstall": "node dist/add.js",
+    "uninstall": "node dist/remove.js"
   },
   "repository": {
     "type": "git",

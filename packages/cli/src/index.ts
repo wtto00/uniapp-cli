@@ -96,6 +96,25 @@ program
     void import("./run.js").then(({ run }) => run(platform, options));
   });
 
+program
+  .command("build")
+  .usage("<platform>")
+  .summary("Build for a specified platform")
+  .description("Start development service with a specified platform.")
+  .argument("<platform>", "Specified platforms")
+  .option("--no-open", "Do not automatically open preview")
+  .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
+  .option("--release", "Deploy a release build\nOnly available on Android and iOS")
+  .option("--device", "Deploy to a device\nOnly available on Android and iOS")
+  .option("--emulator", "Deploy to an emulator\nOnly available on Android and iOS")
+  .addHelpText(
+    "after",
+    "\nExample:\n  uniapp build android --release --emulator\n  uniapp build ios --device --debug\n  uniapp build mp-weixin"
+  )
+  .action((platform, options) => {
+    void import("./build.js").then(({ build }) => build(platform, options));
+  });
+
 program.parse(process.argv);
 
 process.Log = new Log(program.getOptionValue("verbose"));

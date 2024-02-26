@@ -17,12 +17,37 @@ const h5: ModuleClass = {
     uninstallPackages(filterModules);
   },
 
-  run() {
+  run(options) {
     let success = false;
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p h5`, { stdio: "pipe", shell: true }, (msg) => {
       process.Log.info(msg.substring(0, msg.length - 1));
+      if (options.open === false) return;
+      if (over) return;
+      output.push(outputRemoveColor(msg));
+      success ||= /ready in \d+ms./.test(msg);
+      if (!success) return;
+      const regex = /Local:\s+(http:\/\/localhost:\d+)\//;
+      const line = output.find((l) => regex.test(l));
+      if (line) {
+        const url = line.match(regex)?.[1];
+        if (url) {
+          process.Log.debug("Start open browser.");
+          import("open").then(({ default: open }) => open(url));
+        }
+      }
+      over = true;
+    });
+  },
+
+  build(options) {
+    let success = false;
+    let over = false;
+    let output: string[] = [];
+    spawnExec(`npx uni build -p h5`, { stdio: "pipe", shell: true }, (msg) => {
+      process.Log.info(msg.substring(0, msg.length - 1));
+      if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms./.test(msg);

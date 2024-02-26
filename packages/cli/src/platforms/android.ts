@@ -8,10 +8,11 @@ const android: ModuleClass = {
   requirement() {},
 
   async platformAdd({ version, packages }) {
-    // installPackages(this.modules.map((m) => `${m}@${version}`));
     try {
-      const android = await import("file://" + resolve(projectRoot, "node_modules/@uniapp-cli/android/dist/index.js"));
-      await android.add();
+      // installPackages(this.modules.map((m) => `${m}@${version}`));
+      installPackages([`@dcloudio/uni-app-plus@${version}`, "@uniapp-cli/android@file:../packages/android"]);
+      // const android = await import("file://" + resolve(projectRoot, "node_modules/@uniapp-cli/android/dist/index.js"));
+      // await android.add();
     } catch (error) {
       process.Log.error(`${process.Log.emoji.fail} failed to add platform \`android\`.`);
       process.Log.debug("Undo operations.");

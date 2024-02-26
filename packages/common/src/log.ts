@@ -17,6 +17,10 @@ export class Log {
   }
 
   info(...msgs: string[] | [{ msg: string; type?: "debug" | "warn" | "error" | "success" }[]]) {
+    Log.info(...msgs);
+  }
+
+  static info(...msgs: string[] | [{ msg: string; type?: "debug" | "warn" | "error" | "success" }[]]) {
     if (!Array.isArray(msgs[0])) {
       console.log(...msgs);
     } else {
@@ -40,14 +44,23 @@ export class Log {
   }
 
   warn(...msgs: string[]) {
+    Log.warn(...msgs);
+  }
+  static warn(...msgs: string[]) {
     console.log(...msgs.map((msg) => chalk.yellowBright(msg)));
   }
 
   error(...msgs: string[]) {
+    Log.error(...msgs);
+  }
+  static error(...msgs: string[]) {
     console.log(...msgs.map((msg) => chalk.redBright(msg)));
   }
 
   success(...msgs: string[]) {
+    Log.success(...msgs);
+  }
+  static success(...msgs: string[]) {
     console.log(...msgs.map((msg) => chalk.greenBright(msg)));
   }
 }

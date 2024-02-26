@@ -25,7 +25,7 @@ const replaceRegex = new RegExp(
  */
 function replaceEnvVar(jsStr) {
   return jsStr.replace(replaceRegex, (matched) => {
-    return JOSN.stringify(process.env[matched.substring(16)] ?? "");
+    return JSON.stringify(process.env[matched.substring(16)] ?? "");
   });
 }
 

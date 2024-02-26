@@ -47,12 +47,40 @@ const mpWeixin: ModuleClass = {
     uninstallPackages(filterModules);
   },
 
-  run() {
+  run(options) {
     let success = false;
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p mp-weixin`, { stdio: "pipe", shell: true }, (msg) => {
       process.Log.info(msg.substring(0, msg.length - 1));
+      if (options.open === false) return;
+      if (over) return;
+      output.push(outputRemoveColor(msg));
+      success ||= /ready in \d+ms./.test(msg);
+      if (!success) return;
+      process.Log.debug("Start open wechat web devTools.");
+      import("miniprogram-automator").then(({ default: automator }) => {
+        automator
+          .launch({
+            cliPath: process.env.WEIXIN_DEV_TOOL,
+            projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
+          })
+          .then(() => {
+            process.Log.success("Wechat web devTools has been opened.");
+          })
+          .catch(process.Log.error);
+      });
+      over = true;
+    });
+  },
+
+  build(options) {
+    let success = false;
+    let over = false;
+    let output: string[] = [];
+    spawnExec(`npx uni build -p mp-weixin`, { stdio: "pipe", shell: true }, (msg) => {
+      process.Log.info(msg.substring(0, msg.length - 1));
+      if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms./.test(msg);

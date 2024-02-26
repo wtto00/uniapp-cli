@@ -3,12 +3,12 @@ import { parseStringPromise, Builder, type ParserOptions, type BuilderOptions } 
 
 export { parseStringPromise, Builder } from "xml2js";
 
-export function xmlParse(path: string, optoins?: ParserOptions) {
+export function xmlParse<T = any>(path: string, optoins?: ParserOptions) {
   if (!existsSync(path)) {
     return Promise.reject(Error(`${path} is not exist.`));
   }
   const str = readFileSync(path, { encoding: "utf8" });
-  return parseStringPromise(str, optoins);
+  return parseStringPromise(str, optoins) as Promise<T>;
 }
 
 export function xmlBuild(rootObj: any, path: string, options?: BuilderOptions) {

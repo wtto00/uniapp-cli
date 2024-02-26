@@ -12,11 +12,14 @@ export interface PlatformAddOptions extends CommonOptions {
   version: string;
   manifest?: ManifestConfig;
 }
-export interface RunOptions {
+export interface BuildOptions {
+  open: boolean;
   debug?: boolean;
   release?: boolean;
   device?: boolean;
   emulator?: boolean;
+}
+export interface RunOptions extends BuildOptions {
   list?: boolean;
   target?: string;
 }
@@ -26,6 +29,7 @@ export interface ModuleClass {
   platformAdd: (options: PlatformAddOptions) => MaybePromise<void>;
   platformRemove: (options: CommonOptions) => MaybePromise<void>;
   run: (options: RunOptions) => MaybePromise<void>;
+  build: (options: BuildOptions) => MaybePromise<void>;
 }
 
 export enum PLATFORM {
