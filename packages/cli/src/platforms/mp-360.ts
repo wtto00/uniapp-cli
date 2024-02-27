@@ -26,6 +26,8 @@ const mp360: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mp360;

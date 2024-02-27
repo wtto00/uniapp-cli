@@ -16,6 +16,8 @@ const ios: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default ios;

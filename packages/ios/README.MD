@@ -1,1 +1,1 @@
-# @uniapp-cli/ios
+# uniapp-ios

@@ -16,6 +16,8 @@ const mpQQ: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpQQ;

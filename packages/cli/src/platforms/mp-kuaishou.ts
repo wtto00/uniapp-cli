@@ -16,6 +16,8 @@ const mpKuaishou: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpKuaishou;

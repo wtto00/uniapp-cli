@@ -16,6 +16,8 @@ const mpLark: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpLark;

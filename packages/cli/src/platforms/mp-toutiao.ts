@@ -16,6 +16,8 @@ const mpToutiao: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpToutiao;

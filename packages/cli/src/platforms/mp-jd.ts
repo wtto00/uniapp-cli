@@ -16,6 +16,8 @@ const mpJD: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpJD;

@@ -16,6 +16,8 @@ const mpAlipay: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpAlipay;

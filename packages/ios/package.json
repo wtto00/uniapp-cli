@@ -1,11 +1,9 @@
 {
-  "name": "@uniapp-cli/ios",
+  "name": "uniapp-ios",
   "version": "0.0.1",
   "description": "Platform ios in cli for uniapp.",
   "main": "index.js",
-  "scripts": {
-    "build": "rollup"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wtto00/uniapp-cli.git",

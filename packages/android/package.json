@@ -1,5 +1,5 @@
 {
-  "name": "@uniapp-cli/android",
+  "name": "uniapp-android",
   "version": "3.0.0-3090920231225001.1",
   "description": "Platform android in cli for uniapp.",
   "type": "module",

@@ -16,6 +16,8 @@ const quickAppHuawei: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default quickAppHuawei;

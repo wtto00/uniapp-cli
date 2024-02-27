@@ -16,6 +16,8 @@ const quickAppUnion: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default quickAppUnion;

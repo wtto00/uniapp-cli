@@ -16,6 +16,8 @@ const mpBaidu: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpBaidu;

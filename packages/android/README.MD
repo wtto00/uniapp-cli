@@ -1,1 +1,1 @@
-# @uniapp-cli/android
+# uniapp-android

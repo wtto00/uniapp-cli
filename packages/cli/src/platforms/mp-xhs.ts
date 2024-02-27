@@ -26,6 +26,8 @@ const mpXHS: ModuleClass = {
   },
 
   run() {},
+
+  build() {},
 };
 
 export default mpXHS;

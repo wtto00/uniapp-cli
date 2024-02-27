@@ -8,7 +8,7 @@ interface ImportMeta {
   env: NodeJS.Process["env"];
 }
 
-module "@uniapp-cli/android" {
+module "uniapp-android" {
   const run: import("../../android");
   export default run;
 }
