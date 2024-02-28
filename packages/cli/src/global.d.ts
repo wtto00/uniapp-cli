@@ -7,8 +7,3 @@ namespace NodeJS {
 interface ImportMeta {
   env: NodeJS.Process["env"];
 }
-
-module "uniapp-android" {
-  const run: import("../../android");
-  export default run;
-}

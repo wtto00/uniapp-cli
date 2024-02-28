@@ -45,5 +45,8 @@
     "@types/degit": "^2.8.6",
     "@types/inquirer": "^9.0.7",
     "pkg-types": "^1.0.3"
+  },
+  "optionalDependencies": {
+    "uniapp-android": "workspace:3.0.0-3090920231225001-alpha.1"
   }
 }

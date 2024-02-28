@@ -1,6 +1,5 @@
-import { isInstalled, projectRoot, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import { isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
 import type { ModuleClass } from "./index.js";
-import { resolve } from "path";
 
 const android: ModuleClass = {
   modules: ["@dcloudio/uni-app-plus", "uniapp-android"],
@@ -9,10 +8,9 @@ const android: ModuleClass = {
 
   async platformAdd({ version, packages }) {
     try {
-      // installPackages(this.modules.map((m) => `${m}@${version}`));
-      installPackages([`@dcloudio/uni-app-plus@${version}`, "uniapp-android@file:../packages/android"]);
-      // const android = await import("file://" + resolve(projectRoot, "node_modules/uniapp-android/dist/index.js"));
-      // await android.add();
+      installPackages(this.modules.map((m) => `${m}@${version}`));
+      const { add } = await import("uniapp-android");
+      add();
     } catch (error) {
       process.Log.error(`${process.Log.emoji.fail} failed to add platform \`android\`.`);
       process.Log.debug("Undo operations.");
@@ -20,10 +18,9 @@ const android: ModuleClass = {
     }
   },
 
-  platformRemove({ packages }) {
-    import("file://" + resolve(projectRoot, "node_modules/uniapp-android/dist/index.js")).then(({ remove }) => {
-      void remove();
-    });
+  async platformRemove({ packages }) {
+    const { remove } = await import("uniapp-android");
+    remove();
     const filterModules = this.modules.filter((module) => isInstalled(packages, module));
     uninstallPackages(filterModules);
   },

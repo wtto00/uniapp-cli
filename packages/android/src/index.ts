@@ -1,14 +1,14 @@
 import { Log, getManifestJson, xmlBuild, xmlParse } from "@uniapp-cli/common";
-import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
 import { projectRoot } from "@uniapp-cli/common";
 import { fileURLToPath } from "node:url";
 
-const currentDir = fileURLToPath(new URL("./", import.meta.url));
-const androidDir = resolve(projectRoot, "platform/android");
+export const currentDir = fileURLToPath(new URL("./", import.meta.url));
+export const androidDir = resolve(projectRoot, "platform/android");
 
-async function add() {
+export async function add() {
   const manifest = getManifestJson();
 
   if (!manifest) throw Error("Failed to parse manifest.json");
@@ -102,4 +102,6 @@ async function add() {
   xmlBuild(stringXml, resolve(androidDir, stringXmlPath));
 }
 
-add();
+export function remove() {
+  rmSync(resolve(androidDir), { recursive: true });
+}
