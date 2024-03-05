@@ -88,4 +88,12 @@ export async function create(appName: string, options: CreateOptoins) {
   } catch (err) {
     process.Log.error((err as Error).message);
   }
+
+  process.Log.info(`
+Project \`${appName}\` has been created.
+Run these commands to start:
+    cd ${appName}
+    npm i
+    uniapp run h5
+`);
 }

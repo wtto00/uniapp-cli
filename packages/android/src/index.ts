@@ -36,10 +36,16 @@ export async function add() {
       }
     });
   });
-  if (isFailed) throw Error("Some fields are missing in `src/manifest.json`.");
+  if (isFailed) {
+    Log.error("Some fields are missing in `src/manifest.json`.");
+    return false;
+  }
 
   if (existsSync(androidDir)) {
-    throw Error("Directory `platform/android` already exists.");
+    Log.error(
+      "Directory `platform/android` already exists. Please run `rm -rf platform/android` to delete the directory first."
+    );
+    return false;
   }
   mkdirSync(androidDir, { recursive: true });
 
@@ -100,8 +106,10 @@ export async function add() {
     stringXml.resources.string[index]._ = manifest.name;
   }
   xmlBuild(stringXml, resolve(androidDir, stringXmlPath));
+
+  return true;
 }
 
 export function remove() {
-  rmSync(resolve(androidDir), { recursive: true });
+  if (existsSync(androidDir)) rmSync(androidDir, { recursive: true });
 }

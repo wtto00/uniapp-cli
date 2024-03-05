@@ -47,20 +47,20 @@ export class Log {
     Log.warn(...msgs);
   }
   static warn(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.yellowBright(msg)));
+    console.log(...msgs.map((msg) => chalk.yellow(msg)));
   }
 
   error(...msgs: string[]) {
     Log.error(...msgs);
   }
   static error(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.redBright(msg)));
+    console.log(...msgs.map((msg) => chalk.red(msg)));
   }
 
   success(...msgs: string[]) {
     Log.success(...msgs);
   }
   static success(...msgs: string[]) {
-    console.log(...msgs.map((msg) => chalk.greenBright(msg)));
+    console.log(...msgs.map((msg) => chalk.green(msg)));
   }
 }

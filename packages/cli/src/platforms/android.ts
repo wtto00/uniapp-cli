@@ -7,11 +7,10 @@ const android: ModuleClass = {
   requirement() {},
 
   async platformAdd({ version, packages }) {
-    try {
-      installPackages(this.modules.map((m) => `${m}@${version}`));
-      const { add } = await import("uniapp-android");
-      add();
-    } catch (error) {
+    installPackages(this.modules.map((m) => `${m}@${version}`));
+    const { add } = await import("uniapp-android");
+    const result = await add();
+    if (!result) {
       process.Log.error(`${process.Log.emoji.fail} failed to add platform \`android\`.`);
       process.Log.debug("Undo operations.");
       this.platformRemove({ packages });
