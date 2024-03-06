@@ -11,7 +11,10 @@ export const androidDir = resolve(projectRoot, "platform/android");
 export async function add() {
   const manifest = getManifestJson();
 
-  if (!manifest) throw Error("Failed to parse manifest.json");
+  if (!manifest) {
+    Log.warn("Failed to parse manifest.json.");
+    return false;
+  }
   // require these field in src/manifest.json before platform add
   const reuiqreFields = [
     "name",
@@ -37,12 +40,12 @@ export async function add() {
     });
   });
   if (isFailed) {
-    Log.error("Some fields are missing in `src/manifest.json`.");
+    Log.warn("Some fields are missing in `src/manifest.json`.");
     return false;
   }
 
   if (existsSync(androidDir)) {
-    Log.error(
+    Log.warn(
       "Directory `platform/android` already exists. Please run `rm -rf platform/android` to delete the directory first."
     );
     return false;
@@ -58,9 +61,7 @@ export async function add() {
     "gradle.properties",
     "build.gradle",
     "gradle",
-    "android.iml",
     "app/proguard-rules.pro",
-    "app/app.iml",
     "app/libs/android-gif-drawable-release@1.2.23.aar",
     "app/libs/breakpad-build-release.aar",
     "app/libs/lib.5plus.base-release.aar",

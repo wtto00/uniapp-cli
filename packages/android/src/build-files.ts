@@ -1,4 +1,5 @@
 import type { ManifestConfig } from "@uniapp-cli/common";
+import { isAbsolute, relative } from "node:path/posix";
 
 export function buildBuildGradle(manifest: ManifestConfig) {
   const abiFilters: string[] = manifest["app-plus"].distribute.android.abiFilters || [];
@@ -19,7 +20,7 @@ android {
         versionName "${manifest.versionName}"
         multiDexEnabled true
         ndk {
-            abiFilters ${abiFilters.map((item) => `'${item}'`).join(" ")}
+            abiFilters ${abiFilters.map((item) => `'${item}'`).join(", ")}
         }
         manifestPlaceholders = [
                 "apk.applicationId"     : "${manifest["app-plus"].distribute.android.packagename}",
@@ -39,7 +40,11 @@ android {
             keyPassword '${
               manifest["app-plus"].distribute.android.aliaspassword || manifest["app-plus"].distribute.android.password
             }'
-            storeFile file('${manifest["app-plus"].distribute.android.keystore}')
+            storeFile file('${
+              isAbsolute(manifest["app-plus"].distribute.android.keystore)
+                ? manifest["app-plus"].distribute.android.keystore
+                : relative("./platform/android/app/", manifest["app-plus"].distribute.android.keystore)
+            }')
             storePassword '${manifest["app-plus"].distribute.android.password}'
             v1SigningEnabled true
             v2SigningEnabled true
@@ -104,7 +109,6 @@ dependencies {
 
     //implementation 'com.getui:gtsdk:3.3.3.0'  //个推SDK
     //implementation 'com.getui:gtc:3.2.9.0'  //个推核心组件
-
 }
 `;
 }
