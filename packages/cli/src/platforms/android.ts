@@ -1,4 +1,11 @@
-import { isInstalled, installPackages, uninstallPackages, getPackageJson, projectRoot } from "@uniapp-cli/common";
+import {
+  isInstalled,
+  installPackages,
+  uninstallPackages,
+  getPackageJson,
+  projectRoot,
+  spwanSyncExec,
+} from "@uniapp-cli/common";
 import type { ModuleClass } from "./index.js";
 import { resolve } from "path";
 import { existsSync } from "fs";
@@ -17,24 +24,19 @@ const android: ModuleClass = {
         return;
       }
     }
-    const scriptPath = resolve(projectRoot, "node_modules/uniapp-android/dist/index.js");
+    const scriptPath = resolve(projectRoot, "node_modules/uniapp-android/dist/add.js");
     if (!existsSync(scriptPath)) {
       process.Log.error("File `node_modules/uniapp-android/dist/index.js` not found.");
       return;
     }
-    const { add } = await import("file://" + scriptPath);
-    const result = await add();
-    if (!result) {
-      process.Log.error(`${process.Log.emoji.fail} failed to add platform \`android\`.`);
-    }
+    spwanSyncExec(`node ${scriptPath}`, { stdio: "inherit" });
   },
 
   async platformRemove({ packages }) {
     if (isInstalled(packages, "uniapp-android")) {
-      const scriptPath = resolve(projectRoot, "node_modules/uniapp-android/dist/index.js");
+      const scriptPath = resolve(projectRoot, "node_modules/uniapp-android/dist/remove.js");
       if (existsSync(scriptPath)) {
-        const { remove } = await import("file://" + scriptPath);
-        remove();
+        spwanSyncExec(`node ${scriptPath}`, { stdio: "inherit" });
       }
     }
     uninstallPackages(["uniapp-android"]);

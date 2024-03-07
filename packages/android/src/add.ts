@@ -1,14 +1,10 @@
 import { Log, getManifestJson, xmlBuild, xmlParse } from "@uniapp-cli/common";
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { androidDir, currentDir } from "./common.js";
 import { dirname, resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
-import { projectRoot } from "@uniapp-cli/common";
-import { fileURLToPath } from "node:url";
 
-export const currentDir = fileURLToPath(new URL("./", import.meta.url));
-export const androidDir = resolve(projectRoot, "platform/android");
-
-export async function add() {
+async function add() {
   const manifest = getManifestJson();
 
   if (!manifest) {
@@ -111,6 +107,4 @@ export async function add() {
   return true;
 }
 
-export function remove() {
-  if (existsSync(androidDir)) rmSync(androidDir, { recursive: true });
-}
+add();
