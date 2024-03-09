@@ -11,7 +11,6 @@ export async function add(platforms: PLATFORM[]) {
   const uniVersoin = await getModuleVersion(packages, "@dcloudio/uni-app");
 
   if (!uniVersoin) {
-    process.Log.error("Cannot get version of uniapp.");
     process.exit();
   }
 
