@@ -8,6 +8,7 @@
     "build:cli": "pnpm -C packages/cli build",
     "build:common": "pnpm -C packages/common build",
     "build:android": "pnpm -C packages/android build",
+    "docker:build": "pnpm build && docker build -t uniapp-cli-test .",
     "preinstall": "npx -y only-allow pnpm"
   },
   "keywords": [
