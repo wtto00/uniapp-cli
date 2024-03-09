@@ -6,22 +6,25 @@ import degit from "degit";
 import { projectRoot, createVueProject, installVueCli, isVueCliInstalled } from "@uniapp-cli/common";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 
-const TEMPLATES = {
-  "vue3-ts": "dcloudio/uni-preset-vue#vite-ts",
-  vue3: "dcloudio/uni-preset-vue#vite",
-  "vitesse-uni-app": "uni-helper/vitesse-uni-app",
-  vue2: "dcloudio/uni-preset-vue",
-  "vue3-alpha": "dcloudio/uni-preset-vue#vite-alpha",
-  "vue2-alpha": "dcloudio/uni-preset-vue#alpha",
-};
+const TEMPLATES = [
+  {
+    name: "vue3-ts",
+    repo: "dcloudio/uni-preset-vue#vite-ts",
+  },
+  { name: "vue3", repo: "dcloudio/uni-preset-vue#vite" },
+  { name: "vue2", repo: "dcloudio/uni-preset-vue" },
+  { name: "vue3-alpha", repo: "dcloudio/uni-preset-vue#vite-alpha" },
+  { name: "vue2-alpha", repo: "dcloudio/uni-preset-vue#alpha" },
+] as const;
 
 export interface CreateOptoins {
   template?: string;
   force?: boolean;
+  cache?: boolean;
 }
 
 export async function create(appName: string, options: CreateOptoins) {
-  const { force } = options;
+  const { force, cache } = options;
 
   const projectPath = resolve(projectRoot, `./${appName}`);
 
@@ -39,16 +42,16 @@ export async function create(appName: string, options: CreateOptoins) {
 
   let template = options.template ?? "";
   if (template.length === 0) {
-    const { templateKey } = await inquirer.prompt<{ templateKey: keyof typeof TEMPLATES }>([
+    const { templateKey } = await inquirer.prompt<{ templateKey: (typeof TEMPLATES)[number]["name"] }>([
       {
         type: "list",
         name: "templateKey",
         message: "Please select a project template",
-        choices: ["vue3-ts", "vue3", "vitesse-uni-app", "vue2", "vue3-alpha", "vue2-alpha"],
+        choices: TEMPLATES.map((item) => item.name),
         default: 0,
       },
     ]);
-    template = TEMPLATES[templateKey];
+    template = TEMPLATES.find((item) => item.name === templateKey)?.repo ?? TEMPLATES[0].repo;
     if (templateKey === "vue2" || templateKey === "vue2-alpha") {
       process.Log.info("create project by @vue/cli");
       if (!isVueCliInstalled()) {
@@ -63,7 +66,7 @@ export async function create(appName: string, options: CreateOptoins) {
 
   const spinner = ora(`downloading template: ${template}`).start();
   const emitter = degit(template, {
-    cache: true,
+    cache: cache !== false,
     force: true,
     verbose: true,
   });
