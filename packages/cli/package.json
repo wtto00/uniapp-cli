@@ -38,7 +38,7 @@
     "degit": "^2.8.4",
     "inquirer": "^9.2.15",
     "miniprogram-automator": "^0.12.1",
-    "open": "^10.0.4",
+    "open": "^10.1.0",
     "ora": "^8.0.1"
   },
   "devDependencies": {
