@@ -21,6 +21,7 @@ program
   .argument("<app-name>", "Human readable name")
   .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket/Git:url")
   .option("-f, --force", "Overwrite target directory if it exists")
+  .option("--no-cache", "Overwrite target directory if it exists")
   .addHelpText("after", "\nExample:\n  uniapp create MyUniApp")
   .action((appName, options) => {
     void import("./create.js").then(({ create }) => create(appName, options));
