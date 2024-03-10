@@ -1,1 +1,1 @@
-export const projectRoot = process.env.PWD as string;
+export const projectRoot = process.cwd() as string;

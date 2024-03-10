@@ -6,7 +6,7 @@ import { Log } from "./log.js";
 
 export async function getPackageJson() {
   try {
-    return await readPackageJSON(process.cwd());
+    return await readPackageJSON(projectRoot);
   } catch (error) {
     Log.warn((error as Error).message);
     process.exit();
