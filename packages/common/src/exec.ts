@@ -8,7 +8,6 @@ import { detectPackageManager } from "./package.js";
 import { Log } from "./log.js";
 
 export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
-  Log.info(command);
   const [cmd, ...args] = command
     .split(" ")
     .map((item) => item.trim())
@@ -18,7 +17,6 @@ export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWit
 }
 
 export function spawnExec(command: string, option?: SpawnOptionsWithoutStdio, callback?: (log: string) => void) {
-  Log.info(command);
   const [cmd, ...args] = command
     .split(" ")
     .map((item) => item.trim())
