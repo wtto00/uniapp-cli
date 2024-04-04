@@ -1,10 +1,10 @@
-import { Log, getManifestJson, xmlBuild, xmlParse } from "@uniapp-cli/common";
-import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { androidDir, currentDir } from "./common.js";
-import { dirname, resolve } from "node:path";
+import { Log, getManifestJson, projectRoot } from "@uniapp-cli/common";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { androidDir } from "./common.js";
+import { resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
 
-async function add() {
+async function run() {
   const manifest = getManifestJson();
 
   if (!manifest) {
@@ -40,36 +40,12 @@ async function add() {
     return false;
   }
 
-  if (existsSync(androidDir)) {
+  if (!existsSync(androidDir)) {
     Log.warn(
-      "Directory `platform/android` already exists. Please run `rm -rf platform/android` to delete the directory first."
+      "Directory `platform/android` does't exists. Please run `uniapp platform add android` to initialize platform android."
     );
     return false;
   }
-  mkdirSync(androidDir, { recursive: true });
-
-  const templateDir = resolve(currentDir, "../template");
-  // copy files
-  const files = [
-    "settings.gradle",
-    "gradlew.bat",
-    "gradlew",
-    "gradle.properties",
-    "build.gradle",
-    "gradle",
-    "app/proguard-rules.pro",
-    "app/libs/android-gif-drawable-release@1.2.23.aar",
-    "app/libs/breakpad-build-release.aar",
-    "app/libs/lib.5plus.base-release.aar",
-    "app/libs/oaid_sdk_1.0.25.aar",
-    "app/libs/uniapp-v8-release.aar",
-    "app/libs/install-apk-release.aar",
-    "app/src/main/assets/data/dcloud_error.html",
-    "app/src/main/res/drawable-xxhdpi",
-  ];
-  files.forEach((file) => {
-    cpSync(resolve(templateDir, file), resolve(androidDir, file), { recursive: true });
-  });
 
   // app/build.gradle
   const buildGradlePath = resolve(androidDir, "app/build.gradle");
@@ -84,21 +60,14 @@ async function add() {
 
   // appid dir
   const wwwDir = resolve(androidDir, `app/src/main/assets/apps/${manifest.appid}`);
+  if (existsSync(wwwDir)) {
+    rmSync(wwwDir, { recursive: true });
+  }
   mkdirSync(wwwDir, { recursive: true });
 
-  // strings.xml
-  const stringXmlPath = "app/src/main/res/values/strings.xml";
-  mkdirSync(dirname(resolve(androidDir, stringXmlPath)));
-  const stringXml = await xmlParse(resolve(templateDir, stringXmlPath));
-  const index = (stringXml?.resources?.string || []).findIndex(
-    (item: { $: { name: string } }) => item?.$?.name === "app_name"
-  );
-  if (index > -1) {
-    stringXml.resources.string[index]._ = manifest.name;
-  }
-  xmlBuild(stringXml, resolve(androidDir, stringXmlPath));
+  cpSync(resolve(projectRoot, "dist/dev/app"), wwwDir, { recursive: true });
 
   return true;
 }
 
-add();
+run();

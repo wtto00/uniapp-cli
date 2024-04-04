@@ -56,7 +56,7 @@ const mpWeixin: ModuleClass = {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
-      success ||= /ready in \d+ms./.test(msg);
+      success ||= /ready in \d+ms\./.test(msg);
       if (!success) return;
       process.Log.debug("Start open wechat web devTools.");
       import("miniprogram-automator").then(({ default: automator }) => {

@@ -16,6 +16,14 @@ export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWit
   return res.output.reverse().reduce((prev, curr) => prev + (curr ?? ""), "") ?? "";
 }
 
+export function spawnExecSync(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
+  const [cmd, ...args] = command
+    .split(" ")
+    .map((item) => item.trim())
+    .filter((item) => item);
+  return spawnSync(cmd, args, { encoding: "utf8", shell: true, ...option });
+}
+
 export function spawnExec(command: string, option?: SpawnOptionsWithoutStdio, callback?: (log: string) => void) {
   const [cmd, ...args] = command
     .split(" ")

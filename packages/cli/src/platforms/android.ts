@@ -5,6 +5,8 @@ import {
   getPackageJson,
   projectRoot,
   spwanSyncExec,
+  spawnExecSync,
+  spawnExec,
 } from "@uniapp-cli/common";
 import type { ModuleClass } from "./index.js";
 import { resolve } from "path";
@@ -62,7 +64,68 @@ const android: ModuleClass = {
     uninstallPackages(["uniapp-android"]);
   },
 
-  run() {},
+  run(options) {
+    const { release, device, emulator, list, target } = options;
+    // const { open, debug, release, device, emulator, list, target } = options;
+    let success = false;
+    spawnExec(`npx uni -p app-android`, { stdio: "pipe", shell: true }, (msg) => {
+      process.Log.info(msg.substring(0, msg.length - 1));
+      success ||= /ready in \d+ms\./.test(msg);
+      const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
+      if (!doneChange && !success) return;
+
+      process.Log.info("start build android:");
+
+      const scriptPath = resolve(projectRoot, "node_modules/uniapp-android/dist/run.js");
+      if (!existsSync(scriptPath)) {
+        process.Log.error(`File \`${scriptPath}\` does't exist.`);
+        return;
+      }
+      const proc = spawnExecSync(`node ${scriptPath}`, { stdio: "inherit" });
+      if (proc.stderr.trim()) {
+        process.Log.error(proc.stderr.trim());
+        return;
+      }
+      const gradleExePath = resolve(
+        projectRoot,
+        `platform/android/gradlew${process.platform === "win32" ? ".bat" : ""}`
+      );
+      if (!existsSync(gradleExePath)) {
+        process.Log.error(`File \`${gradleExePath}\` does\'t exist.`);
+        return;
+      }
+      process.chdir(resolve(projectRoot, "platform/android"));
+      spawnExecSync(`${gradleExePath} ${release ? "assembleRelease" : "assembleDebug"}`, { stdio: "inherit" });
+      if (proc.stderr.trim()) {
+        process.Log.error(proc.stderr.trim());
+        return;
+      }
+      const apkPath = `platform/android/app/build/outputs/apk/${
+        release ? "release/app-release.apk" : "debug/app-debug.apk"
+      }`;
+      if (!existsSync(resolve(projectRoot, apkPath))) {
+        process.Log.error("Build failed.");
+        return;
+      }
+      process.Log.success(`Build success: ${apkPath}`);
+      if (device) {
+        // adb install to device
+        return;
+      }
+      if (emulator) {
+        // adb install to emulator
+        return;
+      }
+      if (list) {
+        // let user to choose device
+        return;
+      }
+      if (target) {
+        // adb install to special target
+        return;
+      }
+    });
+  },
 
   build() {},
 };
