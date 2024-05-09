@@ -1,11 +1,11 @@
-import { isInstalled, installPackages, outputRemoveColor, spawnExec, uninstallPackages } from "@uniapp-cli/common";
+import { isInstalled, installPackages, outputRemoveColor, spawnExec, uninstallPackages, Log } from "@uniapp-cli/common";
 import type { ModuleClass } from "./index.js";
 
 const h5: ModuleClass = {
   modules: ["@dcloudio/uni-h5"],
 
   requirement() {
-    process.Log.success(`${process.Log.emoji.success} Platform \`h5\` doesn't need any dependency.`);
+    Log.success(`${Log.emoji.success} Platform \`h5\` doesn't need any dependency.`);
   },
 
   platformAdd({ version }) {
@@ -22,7 +22,7 @@ const h5: ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p h5`, { stdio: "pipe", shell: true }, (msg) => {
-      process.Log.info(msg.substring(0, msg.length - 1));
+      Log.info(msg.substring(0, msg.length - 1));
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -33,7 +33,7 @@ const h5: ModuleClass = {
       if (line) {
         const url = line.match(regex)?.[1];
         if (url) {
-          process.Log.debug("Start open browser.");
+          Log.debug("Start open browser.");
           import("open").then(({ default: open }) => open(url));
         }
       }
@@ -46,7 +46,7 @@ const h5: ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni build -p h5`, { stdio: "pipe", shell: true }, (msg) => {
-      process.Log.info(msg.substring(0, msg.length - 1));
+      Log.info(msg.substring(0, msg.length - 1));
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -57,7 +57,7 @@ const h5: ModuleClass = {
       if (line) {
         const url = line.match(regex)?.[1];
         if (url) {
-          process.Log.debug("Start open browser.");
+          Log.debug("Start open browser.");
           import("open").then(({ default: open }) => open(url));
         }
       }

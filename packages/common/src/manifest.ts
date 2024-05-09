@@ -1,9 +1,9 @@
 import { resolve } from "node:path";
 import { projectRoot } from "./path.js";
 import { existsSync, readFileSync } from "node:fs";
-import JSON5 from "json5";
-import type { ManifestConfig } from "@uni-helper/vite-plugin-uni-manifest";
+import * as JSON5 from "json5";
 import { Log } from "./log.js";
+import type { ManifestConfig } from "./manifest.config.js";
 
 export function getManifestJson() {
   try {
@@ -19,5 +19,3 @@ export function getManifestJson() {
     return;
   }
 }
-
-export type { ManifestConfig } from "@uni-helper/vite-plugin-uni-manifest";

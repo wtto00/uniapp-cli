@@ -13,8 +13,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && pnpm build:js && pnpm build:type",
-    "build:js": "tsc -p tsconfig.json --pretty",
-    "build:type": "tsc -p tsconfig.types.json --pretty"
+    "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
+    "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly"
   },
   "repository": {
     "type": "git",
@@ -38,7 +38,6 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@types/xml2js": "^0.4.14",
-    "@uni-helper/vite-plugin-uni-manifest": "^0.2.3"
+    "@types/xml2js": "^0.4.14"
   }
 }

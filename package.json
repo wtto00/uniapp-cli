@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "CLI for uniapp.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "uniapp": "pnpm -F unicli dev",
     "build": "pnpm -r build",
     "build:cli": "pnpm -C packages/cli build",
     "build:common": "pnpm -C packages/common build",

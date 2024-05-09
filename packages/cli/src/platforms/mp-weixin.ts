@@ -6,6 +6,7 @@ import {
   outputRemoveColor,
   spawnExec,
   uninstallPackages,
+  Log,
 } from "@uniapp-cli/common";
 import { existsSync } from "node:fs";
 import type { ModuleClass } from "./index.js";
@@ -15,13 +16,13 @@ const mpWeixin: ModuleClass = {
 
   async requirement() {
     if (process.platform !== "win32" && process.platform !== "darwin") {
-      process.Log.error(`Wechat web devTools is not supported on ${process.platform}`);
+      Log.error(`Wechat web devTools is not supported on ${process.platform}`);
       return;
     }
 
     if (process.env.WEIXIN_DEV_TOOL) {
       if (existsSync(process.env.WEIXIN_DEV_TOOL)) {
-        process.Log.success(`${process.Log.emoji.success} Dev tools is installed.`);
+        Log.success(`${Log.emoji.success} Dev tools is installed.`);
         return;
       }
     }
@@ -30,12 +31,12 @@ const mpWeixin: ModuleClass = {
         ? "C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat"
         : "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
     if (!existsSync(defaultPath)) {
-      process.Log.warn(
-        `${process.Log.emoji.fail} Dev tools is not installed.\n   If it's already installed, please set the environment variable \`WEIXIN_DEV_TOOL\` to the location of the \`cli\` executable file.`
+      Log.warn(
+        `${Log.emoji.fail} Dev tools is not installed.\n   If it's already installed, please set the environment variable \`WEIXIN_DEV_TOOL\` to the location of the \`cli\` executable file.`
       );
       return;
     }
-    process.Log.success(`${process.Log.emoji.success} Dev tools is installed.`);
+    Log.success(`${Log.emoji.success} Dev tools is installed.`);
   },
 
   platformAdd({ version }) {
@@ -52,13 +53,13 @@ const mpWeixin: ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni -p mp-weixin`, { stdio: "pipe", shell: true }, (msg) => {
-      process.Log.info(msg.substring(0, msg.length - 1));
+      Log.info(msg.substring(0, msg.length - 1));
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms\./.test(msg);
       if (!success) return;
-      process.Log.debug("Start open wechat web devTools.");
+      Log.debug("Start open wechat web devTools.");
       import("miniprogram-automator").then(({ default: automator }) => {
         automator
           .launch({
@@ -66,9 +67,9 @@ const mpWeixin: ModuleClass = {
             projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
           })
           .then(() => {
-            process.Log.success("Wechat web devTools has been opened.");
+            Log.success("Wechat web devTools has been opened.");
           })
-          .catch(process.Log.error);
+          .catch(Log.error);
       });
       over = true;
     });
@@ -79,13 +80,13 @@ const mpWeixin: ModuleClass = {
     let over = false;
     let output: string[] = [];
     spawnExec(`npx uni build -p mp-weixin`, { stdio: "pipe", shell: true }, (msg) => {
-      process.Log.info(msg.substring(0, msg.length - 1));
+      Log.info(msg.substring(0, msg.length - 1));
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
       success ||= /ready in \d+ms./.test(msg);
       if (!success) return;
-      process.Log.debug("Start open wechat web devTools.");
+      Log.debug("Start open wechat web devTools.");
       import("miniprogram-automator").then(({ default: automator }) => {
         automator
           .launch({
@@ -93,9 +94,9 @@ const mpWeixin: ModuleClass = {
             projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
           })
           .then(() => {
-            process.Log.success("Wechat web devTools has been opened.");
+            Log.success("Wechat web devTools has been opened.");
           })
-          .catch(process.Log.error);
+          .catch(Log.error);
       });
       over = true;
     });

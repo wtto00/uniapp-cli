@@ -1,4 +1,4 @@
-import { getModuleVersion, isInstalled, installPackages, uninstallPackages } from "@uniapp-cli/common";
+import { getModuleVersion, isInstalled, installPackages, uninstallPackages, Log } from "@uniapp-cli/common";
 import type { ModuleClass } from "./index.js";
 
 const mpXHS: ModuleClass = {
@@ -7,14 +7,14 @@ const mpXHS: ModuleClass = {
   async requirement({ packages }) {
     const vueVersion = await getModuleVersion(packages, "vue");
     if (vueVersion >= "3") {
-      process.Log.error(`Vue3 currently does not support "mp-360"`);
+      Log.error(`Vue3 currently does not support "mp-360"`);
     }
   },
 
   async platformAdd({ packages, version }) {
     const vueVersion = await getModuleVersion(packages, "vue");
     if (vueVersion >= "3") {
-      process.Log.error(`Vue3 currently does not support "mp-xhs"`);
+      Log.error(`Vue3 currently does not support "mp-xhs"`);
     } else {
       installPackages(this.modules.map((m) => `${m}@${version}`));
     }

@@ -1,5 +1,5 @@
 import type { PackageJson } from "pkg-types";
-import type { ManifestConfig } from "@uniapp-cli/common";
+import { type ManifestConfig, Log } from "@uniapp-cli/common";
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -100,7 +100,7 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
     case PLATFORM.MP_QUICKAPP_HUAWEI:
       return (await import("./quickapp-huawei.js")).default;
     default:
-      process.Log.error(`Unknown platform: ${platform}.`);
+      Log.error(`Unknown platform: ${platform}.`);
       process.exit();
   }
 }

@@ -1,5 +1,5 @@
 import { importPlatform, type PLATFORM, allPlatforms } from "./platforms/index.js";
-import { checkIsUniapp, getPackageJson, isInstalled } from "@uniapp-cli/common";
+import { checkIsUniapp, getPackageJson, isInstalled, Log } from "@uniapp-cli/common";
 
 export async function requirements(platforms: PLATFORM[]) {
   const packages = await getPackageJson();
@@ -11,18 +11,16 @@ export async function requirements(platforms: PLATFORM[]) {
   }, []);
 
   for (const pfm of validPlatforms) {
-    process.Log.debug(`check requirements of ${pfm}`);
-    process.Log.info(`${pfm}: `);
+    Log.debug(`check requirements of ${pfm}`);
+    Log.info(`${pfm}: `);
 
     const module = await importPlatform(pfm);
     if (!module.modules.every((module) => isInstalled(packages, module))) {
-      process.Log.error(
-        `${process.Log.emoji.fail} Platform \`${pfm}\` is not installed. Please use \`uniapp platform add ${pfm}\`.`
-      );
+      Log.error(`${Log.emoji.fail} Platform \`${pfm}\` is not installed. Please use \`uniapp platform add ${pfm}\`.`);
       continue;
     }
     await module.requirement({ packages });
 
-    process.Log.info();
+    Log.info();
   }
 }

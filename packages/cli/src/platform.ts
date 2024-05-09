@@ -1,5 +1,5 @@
 import { importPlatform, PLATFORM, allPlatforms } from "./platforms/index.js";
-import { checkIsUniapp, getModuleVersion, getPackageJson, isInstalled } from "@uniapp-cli/common";
+import { checkIsUniapp, getModuleVersion, getPackageJson, isInstalled, Log } from "@uniapp-cli/common";
 
 /**
  * add platforms
@@ -16,7 +16,7 @@ export async function add(platforms: PLATFORM[]) {
 
   for (const pfm of platforms) {
     if (!allPlatforms.includes(pfm)) {
-      process.Log.error(`${pfm} is not an valid platform value.\n`);
+      Log.error(`${pfm} is not an valid platform value.\n`);
       continue;
     }
 
@@ -38,9 +38,9 @@ export async function remove(platforms: PLATFORM[]) {
   checkIsUniapp(packages);
 
   for (const pfm of platforms) {
-    process.Log.debug(`remove platform: ${pfm}`);
+    Log.debug(`remove platform: ${pfm}`);
     if (!allPlatforms.includes(pfm)) {
-      process.Log.error(`${pfm} is not an valid platform value.\n`);
+      Log.error(`${pfm} is not an valid platform value.\n`);
       continue;
     }
     const module = await importPlatform(pfm);
@@ -61,11 +61,11 @@ export async function list() {
       .map(() => " ")
       .join("");
     const isPfmInstalled = module.modules.every((module) => isInstalled(packages, module));
-    process.Log.info([
+    Log.info([
       { msg: `${pfm}:${space}` },
       isPfmInstalled
-        ? { msg: `${process.Log.emoji.success} Installed`, type: "success" }
-        : { msg: `${process.Log.emoji.fail} Not installed`, type: "warn" },
+        ? { msg: `${Log.emoji.success} Installed`, type: "success" }
+        : { msg: `${Log.emoji.fail} Not installed`, type: "warn" },
     ]);
   }
 }

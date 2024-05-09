@@ -1,11 +1,9 @@
 import { program } from "commander";
-import { Log } from "@uniapp-cli/common";
-
-import.meta.env = process.env;
+import packages from "../package.json" with { type: "json" };
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${import.meta.env.npm_package_version}`)
+  .version(`uniapp-cli v${packages.version}`)
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
@@ -19,7 +17,7 @@ program
   .summary("Create a new project")
   .description("Create a new project powered by uniapp-cli.")
   .argument("<app-name>", "Human readable name")
-  .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket/Git:url")
+  .option("-t, --template <template>", "use a custom template from GitHub/GitLab/Bitbucket")
   .option("-f, --force", "Overwrite target directory if it exists")
   .option("--no-cache", "Overwrite target directory if it exists")
   .addHelpText("after", "\nExample:\n  uniapp create MyUniApp")
@@ -118,4 +116,4 @@ program
 
 program.parse(process.argv);
 
-process.Log = new Log(program.getOptionValue("verbose"));
+global.verbose = program.getOptionValue("verbose");

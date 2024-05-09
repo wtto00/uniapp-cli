@@ -2,8 +2,7 @@
   "extends": ["../../tsconfig.json"],
   "compilerOptions": {
     "rootDir": "./src",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "removeComments": true
-  }
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"]
 }

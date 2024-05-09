@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
-import { projectRoot, createVueProject, installVueCli, isVueCliInstalled } from "@uniapp-cli/common";
+import { projectRoot, createVueProject, installVueCli, isVueCliInstalled, Log } from "@uniapp-cli/common";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 
 const TEMPLATES = [
@@ -31,11 +31,11 @@ export async function create(appName: string, options: CreateOptoins) {
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {
       if (statSync(projectPath).isDirectory() && readdirSync(projectPath).length > 0) {
-        process.Log.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`);
+        Log.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`);
         return;
       }
     } else {
-      process.Log.info(`delete directory: ${projectPath}`);
+      Log.info(`delete directory: ${projectPath}`);
       rmSync(projectPath, { force: true, recursive: true });
     }
   }
@@ -53,7 +53,7 @@ export async function create(appName: string, options: CreateOptoins) {
     ]);
     template = TEMPLATES.find((item) => item.name === templateKey)?.repo ?? TEMPLATES[0].repo;
     if (templateKey === "vue2" || templateKey === "vue2-alpha") {
-      process.Log.info("create project by @vue/cli");
+      Log.info("create project by @vue/cli");
       if (!isVueCliInstalled()) {
         installVueCli();
       }
@@ -62,7 +62,7 @@ export async function create(appName: string, options: CreateOptoins) {
     }
   }
 
-  process.Log.debug(`download template ${template}`);
+  Log.debug(`download template ${template}`);
 
   const spinner = ora(`downloading template: ${template}`).start();
   const emitter = degit(template, {
@@ -79,20 +79,20 @@ export async function create(appName: string, options: CreateOptoins) {
     spinner.succeed(`Project \`${appName}\` has been successfully created.`);
   } catch (err) {
     spinner.fail(`failed to download \`${template}\``);
-    process.Log.error((err as Error).message);
+    Log.error((err as Error).message);
     process.exit();
   }
 
   try {
-    process.Log.debug(`rename project name to \`${appName}\``);
+    Log.debug(`rename project to \`${appName}\``);
     const packages = await readPackageJSON(projectPath);
     packages.name = appName;
     await writePackageJSON(resolve(projectPath, "package.json"), packages);
   } catch (err) {
-    process.Log.error((err as Error).message);
+    Log.error((err as Error).message || "Failed to rename project in package.json");
   }
 
-  process.Log.info(`
+  Log.info(`
 Project \`${appName}\` has been created.
 Run these commands to start:
     cd ${appName}

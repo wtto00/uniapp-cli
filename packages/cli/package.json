@@ -11,10 +11,10 @@
     "dist"
   ],
   "scripts": {
-    "dev": "tsx src/index",
+    "dev": "tsx src/index.ts",
     "build": "rm -rf dist && pnpm build:js && pnpm build:type",
-    "build:js": "tsc -p tsconfig.json --pretty && node scripts/build.js",
-    "build:type": "tsc -p tsconfig.types.json --pretty"
+    "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
+    "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,6 @@
   "devDependencies": {
     "@types/degit": "^2.8.6",
     "@types/inquirer": "^9.0.7",
-    "pkg-types": "^1.0.3"
+    "pkg-types": "^1.1.0"
   }
 }
