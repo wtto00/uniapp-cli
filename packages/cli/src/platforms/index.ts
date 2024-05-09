@@ -1,5 +1,4 @@
-import type { PackageJson } from "pkg-types";
-import { type ManifestConfig, Log } from "@uniapp-cli/common";
+import { type ManifestConfig, type PackageJson, Log } from "@uniapp-cli/common";
 
 type MaybePromise<T> = T | Promise<T>;
 

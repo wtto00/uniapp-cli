@@ -4,6 +4,8 @@ import { type PackageJson, readPackageJSON } from "pkg-types";
 import { projectRoot } from "./path.js";
 import { Log } from "./log.js";
 
+export * from "pkg-types";
+
 export async function getPackageJson() {
   try {
     return await readPackageJSON(projectRoot);

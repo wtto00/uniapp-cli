@@ -19,13 +19,6 @@
   ],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
-  "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "@types/node": "^20.11.25",
-    "tslib": "^2.6.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.2"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wtto00/uniapp-cli.git"
@@ -33,5 +26,12 @@
   "bugs": {
     "url": "https://github.com/wtto00/uniapp-cli/issues"
   },
-  "homepage": "https://github.com/wtto00/uniapp-cli#readme"
+  "homepage": "https://github.com/wtto00/uniapp-cli#readme",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.11.25",
+    "tslib": "^2.6.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  }
 }

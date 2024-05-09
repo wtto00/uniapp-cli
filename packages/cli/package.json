@@ -43,7 +43,6 @@
   },
   "devDependencies": {
     "@types/degit": "^2.8.6",
-    "@types/inquirer": "^9.0.7",
-    "pkg-types": "^1.1.0"
+    "@types/inquirer": "^9.0.7"
   }
 }

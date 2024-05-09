@@ -3,8 +3,15 @@ import { resolve } from "node:path";
 import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
-import { projectRoot, createVueProject, installVueCli, isVueCliInstalled, Log } from "@uniapp-cli/common";
-import { readPackageJSON, writePackageJSON } from "pkg-types";
+import {
+  projectRoot,
+  createVueProject,
+  installVueCli,
+  isVueCliInstalled,
+  Log,
+  readPackageJSON,
+  writePackageJSON,
+} from "@uniapp-cli/common";
 
 const TEMPLATES = [
   {
