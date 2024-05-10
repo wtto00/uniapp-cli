@@ -2,7 +2,9 @@ import {
   type SpawnSyncOptionsWithStringEncoding,
   spawnSync,
   spawn,
-  type SpawnOptionsWithoutStdio,
+  type SpawnOptionsWithStdioTuple,
+  type StdioPipe,
+  type StdioNull,
 } from "node:child_process";
 import { detectPackageManager } from "./package.js";
 import { Log } from "./log.js";
@@ -24,18 +26,22 @@ export function spawnExecSync(command: string, option?: Omit<SpawnSyncOptionsWit
   return spawnSync(cmd, args, { encoding: "utf8", shell: true, ...option });
 }
 
-export function spawnExec(command: string, option?: SpawnOptionsWithoutStdio, callback?: (log: string) => void) {
+export function spawnExec(
+  command: string,
+  callback: (log: string) => void,
+  option?: Omit<SpawnOptionsWithStdioTuple<StdioNull, StdioPipe, StdioPipe>, "stdio">
+) {
   const [cmd, ...args] = command
     .split(" ")
     .map((item) => item.trim())
     .filter((item) => item);
-  const proc = spawn(cmd, args, option);
-  if (callback) {
-    proc.stdout.setEncoding("utf8");
-    proc.stdout.on("data", (data) => {
-      callback(data);
-    });
-  }
+  const proc = spawn(cmd, args, { stdio: ["inherit", "pipe", "pipe"], shell: true, ...option });
+
+  proc.stdout.pipe(process.stdout);
+  proc.stdout.setEncoding("utf8");
+  proc.stdout.on("data", (data) => {
+    callback(data);
+  });
 
   return proc;
 }

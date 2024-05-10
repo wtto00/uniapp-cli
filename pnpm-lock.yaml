@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      pkg-types:
-        specifier: ^1.1.0
-        version: 1.1.0
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.1
@@ -76,6 +72,9 @@ importers:
       json5:
         specifier: ^2.2.3
         version: 2.2.3
+      pkg-types:
+        specifier: ^1.1.0
+        version: 1.1.0
       xml2js:
         specifier: ^0.6.2
         version: 0.6.2

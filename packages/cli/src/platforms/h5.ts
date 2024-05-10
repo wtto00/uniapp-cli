@@ -21,8 +21,7 @@ const h5: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni -p h5`, { stdio: "pipe", shell: true }, (msg) => {
-      Log.info(msg.substring(0, msg.length - 1));
+    spawnExec(`npx uni -p h5`, (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -34,7 +33,13 @@ const h5: ModuleClass = {
         const url = line.match(regex)?.[1];
         if (url) {
           Log.debug("Start open browser.");
-          import("open").then(({ default: open }) => open(url));
+          import("open").then(({ default: open }) =>
+            open(url)
+              .then(() => {
+                Log.success("Browser has been opened.");
+              })
+              .catch(Log.error)
+          );
         }
       }
       over = true;
@@ -45,8 +50,7 @@ const h5: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni build -p h5`, { stdio: "pipe", shell: true }, (msg) => {
-      Log.info(msg.substring(0, msg.length - 1));
+    spawnExec(`npx uni build -p h5`, (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -58,7 +62,13 @@ const h5: ModuleClass = {
         const url = line.match(regex)?.[1];
         if (url) {
           Log.debug("Start open browser.");
-          import("open").then(({ default: open }) => open(url));
+          import("open").then(({ default: open }) =>
+            open(url)
+              .then(() => {
+                Log.success("Browser has been opened.");
+              })
+              .catch(Log.error)
+          );
         }
       }
       over = true;

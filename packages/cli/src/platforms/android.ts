@@ -69,8 +69,7 @@ const android: ModuleClass = {
     const { release, device, emulator, list, target } = options;
     // const { open, debug, release, device, emulator, list, target } = options;
     let success = false;
-    spawnExec(`npx uni -p app-android`, { stdio: "pipe", shell: true }, (msg) => {
-      Log.info(msg.substring(0, msg.length - 1));
+    spawnExec(`npx uni -p app-android`, (msg) => {
       success ||= /ready in \d+ms\./.test(msg);
       const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange && !success) return;
