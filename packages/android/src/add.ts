@@ -42,7 +42,7 @@ async function add() {
 
   if (existsSync(androidDir)) {
     Log.warn(
-      "Directory `platform/android` already exists. Please run `rm -rf platform/android` to delete the directory first."
+      "The android platform has been added, please execute `uniapp platform rm android` to remove the android platform."
     );
     return false;
   }

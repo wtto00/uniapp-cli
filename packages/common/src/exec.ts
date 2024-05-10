@@ -5,18 +5,10 @@ import {
   type SpawnOptionsWithStdioTuple,
   type StdioPipe,
   type StdioNull,
+  SpawnSyncReturns,
 } from "node:child_process";
 import { detectPackageManager } from "./package.js";
 import { Log } from "./log.js";
-
-export function spwanSyncExec(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
-  const [cmd, ...args] = command
-    .split(" ")
-    .map((item) => item.trim())
-    .filter((item) => item);
-  const res = spawnSync(cmd, args, { encoding: "utf8", shell: true, ...option });
-  return res.output.reverse().reduce((prev, curr) => prev + (curr ?? ""), "") ?? "";
-}
 
 export function spawnExecSync(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
   const [cmd, ...args] = command
@@ -39,11 +31,21 @@ export function spawnExec(
 
   proc.stdout.pipe(process.stdout);
   proc.stdout.setEncoding("utf8");
-  proc.stdout.on("data", (data) => {
-    callback(data);
-  });
+  proc.stdout.on("data", callback);
+  proc.stderr.pipe(process.stdout);
+  proc.stderr.setEncoding("utf8");
+  proc.stderr.on("data", Log.error);
 
   return proc;
+}
+
+/**
+ * Get output string from spawnSync
+ * @param proc child_process
+ * @returns
+ */
+export function getOutput(proc: SpawnSyncReturns<string>) {
+  return proc.output.reverse().reduce((prev, curr) => prev + (curr ?? ""), "") ?? "";
 }
 
 /**
@@ -58,12 +60,12 @@ export function outputRemoveColor(text: string) {
  * @vue/cli has been installed or not
  */
 export function isVueCliInstalled() {
-  return spwanSyncExec("vue").includes("Usage: vue");
+  return getOutput(spawnExecSync("vue")).includes("Usage: vue");
 }
 
 export function installVueCli() {
   Log.info("@vue/cli not installed, starting global installation of @vue/cli.");
-  spwanSyncExec("npm i -g @vue/cli", { stdio: "inherit" });
+  spawnExecSync("npm i -g @vue/cli", { stdio: "inherit" });
   if (isVueCliInstalled()) {
     Log.info("@vue/cli has been successfully installed.");
   } else {
@@ -74,19 +76,19 @@ export function installVueCli() {
 
 export function createVueProject(appName: string, template: string, force = false) {
   const cmd = `vue create -p ${template} ${appName} ${force ? "--force" : ""}`;
-  spwanSyncExec(cmd, { stdio: "inherit" });
+  spawnExecSync(cmd, { stdio: "inherit" });
 }
 
 export function installPackages(packages: string[]) {
   const pm = detectPackageManager();
   const pmCmd = pm === "npm" ? `${pm} install` : `${pm} add`;
   const cmd = `${pmCmd} ${packages.join(" ")}`;
-  spwanSyncExec(cmd, { stdio: "inherit" });
+  spawnExecSync(cmd, { stdio: "inherit" });
 }
 
 export function uninstallPackages(packages: string[]) {
   const pm = detectPackageManager();
   const pmCmd = pm === "npm" ? `${pm} uninstall` : `${pm} remove`;
   const cmd = `${pmCmd} ${packages.join(" ")}`;
-  spwanSyncExec(cmd, { stdio: "inherit" });
+  spawnExecSync(cmd, { stdio: "inherit" });
 }

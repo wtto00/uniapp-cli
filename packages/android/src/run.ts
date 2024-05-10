@@ -42,7 +42,7 @@ async function run() {
 
   if (!existsSync(androidDir)) {
     Log.warn(
-      "Directory `platform/android` does't exists. Please run `uniapp platform add android` to initialize platform android."
+      "The android platform has not been added yet. Please execute `uniapp platform add android` to add the android platform."
     );
     return false;
   }

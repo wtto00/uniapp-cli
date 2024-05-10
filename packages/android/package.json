@@ -34,6 +34,10 @@
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "dependencies": {
-    "@uniapp-cli/common": "workspace:^"
+    "@uniapp-cli/common": "workspace:^",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.32"
   }
 }

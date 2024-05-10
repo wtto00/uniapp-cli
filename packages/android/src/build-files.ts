@@ -1,4 +1,4 @@
-import type { ManifestConfig } from "@uniapp-cli/common";
+import { type ManifestConfig, androidPath } from "@uniapp-cli/common";
 import { isAbsolute, relative } from "node:path/posix";
 
 export function buildBuildGradle(manifest: ManifestConfig) {
@@ -43,7 +43,7 @@ android {
             storeFile file('${
               isAbsolute(manifest["app-plus"].distribute.android.keystore)
                 ? manifest["app-plus"].distribute.android.keystore
-                : relative("./platform/android/app/", manifest["app-plus"].distribute.android.keystore)
+                : relative(`./${androidPath}/app/`, manifest["app-plus"].distribute.android.keystore)
             }')
             storePassword '${manifest["app-plus"].distribute.android.password}'
             v1SigningEnabled true

@@ -77,7 +77,7 @@ program
   .summary("Start development service")
   .description("Start development service with a specified platform.")
   .argument("<platform>", "Specified platforms")
-  .option("--no-open", "Do not automatically open preview")
+  .option("--no-open", "Do not automatically deploy to a device or emulator")
   .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
   .option("--release", "Deploy a release build\nOnly available on Android and iOS")
   .option("--device", "Deploy to a device\nOnly available on Android and iOS")

@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { projectRoot } from "./path.js";
 import { existsSync, readFileSync } from "node:fs";
-import * as JSON5 from "json5";
+import JSON5 from "json5";
 import { Log } from "./log.js";
 import type { ManifestConfig } from "./manifest.config.js";
 

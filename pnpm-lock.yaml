@@ -29,12 +29,22 @@ importers:
       '@uniapp-cli/common':
         specifier: workspace:^
         version: link:../common
+      yargs:
+        specifier: ^17.7.2
+        version: 17.7.2
+    devDependencies:
+      '@types/yargs':
+        specifier: ^17.0.32
+        version: 17.0.32
 
   packages/cli:
     dependencies:
       '@uniapp-cli/common':
         specifier: workspace:^
         version: link:../common
+      '@wtto00/android-tools':
+        specifier: ^1.0.4
+        version: 1.0.4
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -482,6 +492,15 @@ packages:
 
   '@types/xml2js@0.4.14':
     resolution: {integrity: sha512-4YnrRemBShWRO2QjvUin8ESA41rH+9nQGLUGZV/1IDhi3SL9OhdpNC/MrulTWuptXKwhx/aDxE7toV0f/ypIXQ==}
+
+  '@types/yargs-parser@21.0.3':
+    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
+
+  '@types/yargs@17.0.32':
+    resolution: {integrity: sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==}
+
+  '@wtto00/android-tools@1.0.4':
+    resolution: {integrity: sha512-mq3ia6igGrJwPgUoF/ygWusLLjoLBt6tJ8tIZ05k4YsAHMY5DminJvWcBVrleil+w47Azq32e4IXOcdx1U57Gw==}
 
   acorn@8.11.3:
     resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
@@ -2286,6 +2305,14 @@ snapshots:
   '@types/xml2js@0.4.14':
     dependencies:
       '@types/node': 20.11.25
+
+  '@types/yargs-parser@21.0.3': {}
+
+  '@types/yargs@17.0.32':
+    dependencies:
+      '@types/yargs-parser': 21.0.3
+
+  '@wtto00/android-tools@1.0.4': {}
 
   acorn@8.11.3: {}
 
