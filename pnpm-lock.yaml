@@ -84,7 +84,7 @@ importers:
         version: 2.2.3
       pkg-types:
         specifier: ^1.1.0
-        version: 1.1.0
+        version: 1.1.1
       xml2js:
         specifier: ^0.6.2
         version: 0.6.2
@@ -1237,8 +1237,8 @@ packages:
     deprecated: Legacy versions of mkdirp are no longer supported. Please update to mkdirp 1.x. (Note that the API surface has changed to use Promises in 1.x.)
     hasBin: true
 
-  mlly@1.6.1:
-    resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
+  mlly@1.7.0:
+    resolution: {integrity: sha512-U9SDaXGEREBYQgfejV97coK0UL1r+qnF2SyO9A3qcI8MzKnsIFKHNVEkrDyNncQTKQQumsasmeq84eNMdBfsNQ==}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -1368,8 +1368,8 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  pkg-types@1.1.0:
-    resolution: {integrity: sha512-/RpmvKdxKf8uILTtoOhAgf30wYbP2Qw+L9p3Rvshx1JZVX+XQNZQFjlbmGHEGIm4CkVPlSn+NXmIM8+9oWQaSA==}
+  pkg-types@1.1.1:
+    resolution: {integrity: sha512-ko14TjmDuQJ14zsotODv7dBlwxKhUKQEhuhmbqo1uCi9BB0Z2alo/wAXg6q1dTR5TyuqYyWhjtfe/Tsh+X28jQ==}
 
   pngjs@3.4.0:
     resolution: {integrity: sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==}
@@ -1690,8 +1690,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ufo@1.4.0:
-    resolution: {integrity: sha512-Hhy+BhRBleFjpJ2vchUNN40qgkh0366FWJGqVLYBHev0vpHTrXSA0ryT+74UiW6KWsldNurQMKGqCm1M2zBciQ==}
+  ufo@1.5.3:
+    resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
 
   unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -3104,12 +3104,12 @@ snapshots:
     dependencies:
       minimist: 0.0.8
 
-  mlly@1.6.1:
+  mlly@1.7.0:
     dependencies:
       acorn: 8.11.3
       pathe: 1.1.2
-      pkg-types: 1.1.0
-      ufo: 1.4.0
+      pkg-types: 1.1.1
+      ufo: 1.5.3
 
   ms@2.1.2: {}
 
@@ -3240,10 +3240,10 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  pkg-types@1.1.0:
+  pkg-types@1.1.1:
     dependencies:
       confbox: 0.1.7
-      mlly: 1.6.1
+      mlly: 1.7.0
       pathe: 1.1.2
 
   pngjs@3.4.0: {}
@@ -3582,7 +3582,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  ufo@1.4.0: {}
+  ufo@1.5.3: {}
 
   unbox-primitive@1.0.2:
     dependencies:
