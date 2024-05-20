@@ -82,13 +82,6 @@ program
   .option("--no-open", "Do not automatically deploy to a device or emulator")
   .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
   .option("--release", "Deploy a release build\nOnly available on Android and iOS")
-  .option("--device", "Deploy to a device\nOnly available on Android and iOS")
-  .option("--emulator", "Deploy to an emulator\nOnly available on Android and iOS")
-  .option(
-    "--list",
-    "Lists available targets\nWill display both device and emulator\nunless --device or --emulator option is provided\nOnly available on Android and iOS"
-  )
-  .option("--target <target>", "Deploy to a specific target\nOnly available on Android and iOS")
   .addHelpText(
     "after",
     "\nExample:\n  uniapp run android --release --target=myEmulator\n  uniapp run ios --device --debug\n  uniapp run mp-weixin"
@@ -106,8 +99,6 @@ program
   .option("--no-open", "Do not automatically open preview")
   .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
   .option("--release", "Deploy a release build\nOnly available on Android and iOS")
-  .option("--device", "Deploy to a device\nOnly available on Android and iOS")
-  .option("--emulator", "Deploy to an emulator\nOnly available on Android and iOS")
   .addHelpText(
     "after",
     "\nExample:\n  uniapp build android --release --emulator\n  uniapp build ios --device --debug\n  uniapp build mp-weixin"

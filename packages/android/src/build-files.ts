@@ -4,7 +4,7 @@ import { isAbsolute, relative } from "node:path/posix";
 export function buildBuildGradle(manifest: ManifestConfig) {
   const abiFilters: string[] = manifest["app-plus"].distribute.android.abiFilters || [];
   if (abiFilters.length === 0) {
-    abiFilters.push("x86", "armeabi-v7a", "arm64-v8a");
+    abiFilters.push("x86", "x86_64", "armeabi-v7a", "arm64-v8a");
   }
 
   return `apply plugin: 'com.android.application'
@@ -12,12 +12,13 @@ export function buildBuildGradle(manifest: ManifestConfig) {
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
+    namespace '${manifest["app-plus"].distribute.android.packagename}'
     defaultConfig {
-        applicationId "${manifest["app-plus"].distribute.android.packagename}"
+        applicationId '${manifest["app-plus"].distribute.android.packagename}'
         minSdkVersion 21
         targetSdkVersion 28
         versionCode ${manifest.versionCode}
-        versionName "${manifest.versionName}"
+        versionName '${manifest.versionName}'
         multiDexEnabled true
         ndk {
             abiFilters ${abiFilters.map((item) => `'${item}'`).join(", ")}

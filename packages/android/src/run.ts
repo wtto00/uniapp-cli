@@ -1,4 +1,4 @@
-import { Log, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
+import { Log, ManifestConfig, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { androidDir } from "./common.js";
 import { resolve } from "node:path";
@@ -6,23 +6,19 @@ import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
 import Android from "@wtto00/android-tools";
 
 interface RunOptions {
-  open: boolean;
   debug?: boolean;
   release?: boolean;
-  device?: boolean;
-  emulator?: boolean;
-  list?: boolean;
-  target?: string;
 }
 
 const android = new Android();
 
-export default async function run(options: RunOptions) {
-  const manifest = getManifestJson();
+const manifest = getManifestJson();
 
+export async function run(options: RunOptions): Promise<string> {
   if (!manifest) {
     throw Error("Failed to parse manifest.json.");
   }
+
   // require these field in src/manifest.json before platform add
   const reuiqreFields = [
     "name",
@@ -55,7 +51,6 @@ export default async function run(options: RunOptions) {
     throw Error(
       "The android platform has not been added yet. Please execute `uniapp platform add android` to add the android platform."
     );
-    return false;
   }
 
   // app/build.gradle
@@ -78,9 +73,9 @@ export default async function run(options: RunOptions) {
 
   cpSync(resolve(global.projectRoot, "dist/dev/app"), wwwDir, { recursive: true });
 
-  const { debug, release, device, emulator, list, target, open } = options;
+  const { debug, release } = options;
 
-  const isRelease = release || debug == false;
+  const isRelease = release || debug === false;
 
   const isWin = process.platform === "win32";
   const gradleExePath = resolve(global.projectRoot, `${androidPath}/gradlew${isWin ? ".bat" : ""}`);
@@ -90,7 +85,8 @@ export default async function run(options: RunOptions) {
   const apkPath = `${androidPath}/app/build/outputs/apk/${
     isRelease ? "release/app-release.apk" : "debug/app-debug.apk"
   }`;
-  rmSync(resolve(global.projectRoot, apkPath), { force: true });
+  const apkFullPath = resolve(global.projectRoot, apkPath);
+  rmSync(apkFullPath, { force: true });
   process.chdir(resolve(global.projectRoot, androidPath));
   const proc = spawnExecSync(
     `${isWin ? "cmd" : "sh"} ${gradleExePath} ${isRelease ? "assembleRelease" : "assembleDebug"}`,
@@ -99,42 +95,41 @@ export default async function run(options: RunOptions) {
   if (proc.stderr?.trim()) {
     throw Error(proc.stderr.trim());
   }
-  if (!existsSync(resolve(global.projectRoot, apkPath))) {
+  if (!existsSync(apkFullPath)) {
     throw Error("Build failed.");
   }
   Log.success(`Build success: ${apkPath}`);
-  if (open == false) return;
-  if (device) {
-    // adb install to device
-    android
-      .devices()
-      .then((res) => {
-        console.log("avds", res);
-        const devices = res.filter((item) => item.status === "device");
-        if (devices.length == 0) {
-          Log.warn("No device connected");
-          return;
-        }
-        android
-          .install(devices[0].name, apkPath, { r: true })
-          .then(() => {
-            Log.success(`Deploy ${apkPath} to ${devices[0].name} successfully.`);
-          })
-          .catch(Log.error);
-      })
-      .catch(Log.error);
-    return;
+  const allDevices = await android.devices();
+  const devices = allDevices.filter((item) => item.status === "device");
+  if (devices.length == 0) {
+    throw Error("No device connected");
   }
-  if (emulator) {
-    // adb install to emulator
-    return;
+  const deviceName = devices[0].name;
+  Log.debug(`Install ${apkPath} to device \`${deviceName}\``);
+  await android.install(deviceName, apkFullPath, { r: true });
+  Log.success(`Deploy ${apkPath} to ${deviceName} successfully.`);
+  Log.debug("Start opening app");
+  await android.adb(
+    deviceName,
+    `shell am start -n ${manifest["app-plus"].distribute.android.packagename}/io.dcloud.PandoraEntry`
+  );
+  return deviceName;
+}
+
+export async function refresh(deviceName: string, manifest: ManifestConfig) {
+  if (!manifest) {
+    throw Error("Failed to parse manifest.json.");
   }
-  if (list) {
-    // let user to choose device
-    return;
+
+  // copy file
+  const wwwDir = resolve(androidDir, `app/src/main/assets/apps/${manifest.appid}`);
+  if (existsSync(wwwDir)) {
+    rmSync(wwwDir, { recursive: true });
   }
-  if (target) {
-    // adb install to special target
-    return;
-  }
+  mkdirSync(wwwDir, { recursive: true });
+
+  cpSync(resolve(global.projectRoot, "dist/dev/app"), wwwDir, { recursive: true });
+
+  // adb shell am start -a android.intent.action.VIEW https://example.com/
+  return android.adb(deviceName, "shell am refresh");
 }

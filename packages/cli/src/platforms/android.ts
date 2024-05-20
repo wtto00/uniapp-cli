@@ -7,7 +7,7 @@ import {
   spawnExec,
   Log,
 } from "@uniapp-cli/common";
-import { type RunOptions, type ModuleClass } from "./index.js";
+import { type BuildOptions, type ModuleClass } from "./index.js";
 import { resolve } from "path";
 import { existsSync } from "fs";
 import { getOutput } from "@uniapp-cli/common";
@@ -51,20 +51,42 @@ const android: ModuleClass = {
       Log.error("File `node_modules/uniapp-android/dist/index.js` not found.");
       return;
     }
-    spawnExecSync(`node ${scriptPath}`, { stdio: "inherit" });
+
+    const addAndroid = ((await import(scriptPath)) as { default: () => Promise<void> }).default;
+
+    try {
+      addAndroid();
+      Log.success("Patform android has been added successfully.");
+    } catch (error) {}
   },
 
   async platformRemove({ packages }) {
     if (isInstalled(packages, "uniapp-android")) {
       const scriptPath = resolve(global.projectRoot, "node_modules/uniapp-android/dist/remove.js");
       if (existsSync(scriptPath)) {
-        spawnExecSync(`node ${scriptPath}`, { stdio: "inherit" });
+        const removeAndroid = ((await import(scriptPath)) as { default: () => void }).default;
+        try {
+          removeAndroid();
+        } catch (error) {}
       }
     }
     uninstallPackages(["uniapp-android"]);
   },
 
   run(options) {
+    let deviceName = "";
+    let runKey = 0;
+
+    async function refreshAndroid(refresh: () => Promise<void>) {
+      if (runKey === 1) {
+        runKey = 2;
+        await refresh();
+        await refreshAndroid(refresh);
+      } else if (runKey === 2) {
+        runKey = 0;
+      }
+    }
+
     const uniappProc = spawnExec(`npx uni -p app-android`, async (msg) => {
       const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange) return;
@@ -74,14 +96,33 @@ const android: ModuleClass = {
       const scriptPath = resolve(global.projectRoot, "node_modules/uniapp-android/dist/run.js");
       if (!existsSync(scriptPath)) {
         Log.error(`File \`${scriptPath}\` does't exist.`);
+        uniappProc.kill();
         return;
       }
 
-      const runAndroid = ((await import(scriptPath)) as { default: (options: RunOptions) => Promise<boolean> }).default;
+      if (runKey) {
+        // mark refresh
+        runKey = 1;
+        return;
+      } else {
+        // mark building
+        runKey = 2;
+      }
+
+      const runModule = (await import(scriptPath)) as {
+        run: (options: BuildOptions) => Promise<string>;
+        refresh: (deviceName: string) => Promise<void>;
+      };
 
       try {
-        runAndroid(options);
+        if (!deviceName) {
+          deviceName = await runModule.run(options);
+        } else {
+          await runModule.refresh(deviceName);
+        }
+        await refreshAndroid(() => runModule.refresh(deviceName));
       } catch (error) {
+        Log.error((error as Error).message);
         uniappProc.kill();
       }
     });

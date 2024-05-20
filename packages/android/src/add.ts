@@ -4,12 +4,11 @@ import { androidDir, currentDir } from "./common.js";
 import { dirname, resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
 
-async function add() {
+export default async function add() {
   const manifest = getManifestJson();
 
   if (!manifest) {
-    Log.warn("Failed to parse manifest.json.");
-    return false;
+    throw Error("Failed to parse manifest.json.");
   }
   // require these field in src/manifest.json before platform add
   const reuiqreFields = [
@@ -36,15 +35,13 @@ async function add() {
     });
   });
   if (isFailed) {
-    Log.warn("Some fields are missing in `src/manifest.json`.");
-    return false;
+    throw Error("Some fields are missing in `src/manifest.json`.");
   }
 
   if (existsSync(androidDir)) {
-    Log.warn(
+    throw Error(
       "The android platform has been added, please execute `uniapp platform rm android` to remove the android platform."
     );
-    return false;
   }
   mkdirSync(androidDir, { recursive: true });
 
@@ -97,8 +94,4 @@ async function add() {
     stringXml.resources.string[index]._ = manifest.name;
   }
   xmlBuild(stringXml, resolve(androidDir, stringXmlPath));
-
-  return true;
 }
-
-add();
