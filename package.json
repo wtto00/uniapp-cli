@@ -4,6 +4,7 @@
   "description": "CLI for uniapp.",
   "main": "index.js",
   "type": "module",
+  "packageManager": "pnpm@9.1.1",
   "scripts": {
     "uniapp": "pnpm -F unicli dev",
     "build": "pnpm -r build",

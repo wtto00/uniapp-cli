@@ -3,9 +3,10 @@
 buildscript {
     
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/google' } // google
-        maven { url 'https://maven.aliyun.com/repository/public' } // public
-        maven { url 'https://mirrors.huaweicloud.com/repository/maven' } // huawei
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
@@ -17,9 +18,10 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/google' } // google
-        maven { url 'https://maven.aliyun.com/repository/public' } // public
-        maven { url 'https://mirrors.huaweicloud.com/repository/maven' } // huawei
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
         maven { url 'https://mvn.getui.com/nexus/content/repositories/releases' }
     }
 }

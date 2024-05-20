@@ -75,11 +75,6 @@ android {
     }
 
 }
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     /*uniapp所需库-----------------------开始*/
@@ -117,10 +112,9 @@ dependencies {
 export function buildAndroidManifest(manifest: ManifestConfig) {
   return `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="${manifest["app-plus"].distribute.android.packagename}">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    ${manifest["app-plus"].distribute.android.permissions.join("\n")}
+    ${manifest["app-plus"].distribute.android.permissions.join("\n    ")}
 
     <application
         android:name="io.dcloud.application.DCloudApplication"

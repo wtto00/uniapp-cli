@@ -6,6 +6,8 @@ import {
   spawnExecSync,
   spawnExec,
   Log,
+  dynamicImport,
+  killChildProcess,
 } from "@uniapp-cli/common";
 import { type BuildOptions, type ModuleClass } from "./index.js";
 import { resolve } from "path";
@@ -52,7 +54,7 @@ const android: ModuleClass = {
       return;
     }
 
-    const addAndroid = ((await import(scriptPath)) as { default: () => Promise<void> }).default;
+    const addAndroid = await dynamicImport<() => Promise<void>>(scriptPath);
 
     try {
       addAndroid();
@@ -64,7 +66,7 @@ const android: ModuleClass = {
     if (isInstalled(packages, "uniapp-android")) {
       const scriptPath = resolve(global.projectRoot, "node_modules/uniapp-android/dist/remove.js");
       if (existsSync(scriptPath)) {
-        const removeAndroid = ((await import(scriptPath)) as { default: () => void }).default;
+        const removeAndroid = await dynamicImport<() => void>(scriptPath);
         try {
           removeAndroid();
         } catch (error) {}
@@ -87,7 +89,7 @@ const android: ModuleClass = {
       }
     }
 
-    const uniappProc = spawnExec(`npx uni -p app-android`, async (msg) => {
+    const uniappProcess = spawnExec(`npx uni -p app-android`, async (msg) => {
       const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange) return;
 
@@ -96,7 +98,7 @@ const android: ModuleClass = {
       const scriptPath = resolve(global.projectRoot, "node_modules/uniapp-android/dist/run.js");
       if (!existsSync(scriptPath)) {
         Log.error(`File \`${scriptPath}\` does't exist.`);
-        uniappProc.kill();
+        killChildProcess(uniappProcess);
         return;
       }
 
@@ -108,11 +110,10 @@ const android: ModuleClass = {
         // mark building
         runKey = 2;
       }
-
-      const runModule = (await import(scriptPath)) as {
+      const runModule = await dynamicImport<{
         run: (options: BuildOptions) => Promise<string>;
         refresh: (deviceName: string) => Promise<void>;
-      };
+      }>(scriptPath, true);
 
       try {
         if (!deviceName) {
@@ -123,7 +124,7 @@ const android: ModuleClass = {
         await refreshAndroid(() => runModule.refresh(deviceName));
       } catch (error) {
         Log.error((error as Error).message);
-        uniappProc.kill();
+        killChildProcess(uniappProcess);
       }
     });
   },

@@ -5,7 +5,8 @@ import {
   type SpawnOptionsWithStdioTuple,
   type StdioPipe,
   type StdioNull,
-  SpawnSyncReturns,
+  type SpawnSyncReturns,
+  type ChildProcess,
 } from "node:child_process";
 import { detectPackageManager } from "./package.js";
 import { Log } from "./log.js";
@@ -37,6 +38,12 @@ export function spawnExec(
   proc.stderr.on("data", Log.error);
 
   return proc;
+}
+
+export function killChildProcess(proc: ChildProcess) {
+  proc.stdout?.destroy();
+  proc.stderr?.destroy();
+  proc.kill("SIGKILL");
 }
 
 /**
