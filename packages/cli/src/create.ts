@@ -4,7 +4,6 @@ import inquirer from "inquirer";
 import ora from "ora";
 import degit from "degit";
 import {
-  projectRoot,
   createVueProject,
   installVueCli,
   isVueCliInstalled,
@@ -33,7 +32,7 @@ export interface CreateOptoins {
 export async function create(appName: string, options: CreateOptoins) {
   const { force, cache } = options;
 
-  const projectPath = resolve(projectRoot, `./${appName}`);
+  const projectPath = resolve(global.projectRoot, `./${appName}`);
 
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {

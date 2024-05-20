@@ -1,14 +1,13 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { type PackageJson, readPackageJSON } from "pkg-types";
-import { projectRoot } from "./path.js";
 import { Log } from "./log.js";
 
 export * from "pkg-types";
 
 export async function getPackageJson() {
   try {
-    return await readPackageJSON(projectRoot);
+    return await readPackageJSON(global.projectRoot);
   } catch (error) {
     Log.warn((error as Error).message);
     process.exit();
@@ -25,7 +24,7 @@ export function isInstalled(packages: PackageJson, module: string) {
 }
 export async function getModuleVersion(packages: PackageJson, module: string) {
   if (!isInstalled(packages, module)) return "";
-  const modulePackage = resolve(projectRoot, `./node_modules/${module}/package.json`);
+  const modulePackage = resolve(global.projectRoot, `./node_modules/${module}/package.json`);
   if (!existsSync(modulePackage)) {
     Log.warn("Please run `npm install` first!");
     return "";
@@ -47,7 +46,7 @@ export function checkIsUniapp(packages: PackageJson) {
 }
 
 export function detectPackageManager() {
-  if (existsSync(resolve(projectRoot, "./pnpm-lock.yaml"))) return "pnpm";
-  if (existsSync(resolve(projectRoot, "./yarn.lock"))) return "yarn";
+  if (existsSync(resolve(global.projectRoot, "./pnpm-lock.yaml"))) return "pnpm";
+  if (existsSync(resolve(global.projectRoot, "./yarn.lock"))) return "yarn";
   return "npm";
 }

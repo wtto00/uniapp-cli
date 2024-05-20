@@ -1,6 +1,8 @@
 import { program } from "commander";
 import packages from "../package.json" with { type: "json" };
 
+global.projectRoot = process.cwd();
+
 program
   .name("uniapp")
   .version(`uniapp-cli v${packages.version}`)

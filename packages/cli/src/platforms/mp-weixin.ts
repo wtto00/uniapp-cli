@@ -1,13 +1,5 @@
 import { resolve } from "node:path";
-import {
-  isInstalled,
-  projectRoot,
-  installPackages,
-  outputRemoveColor,
-  spawnExec,
-  uninstallPackages,
-  Log,
-} from "@uniapp-cli/common";
+import { isInstalled, installPackages, outputRemoveColor, spawnExec, uninstallPackages, Log } from "@uniapp-cli/common";
 import { existsSync } from "node:fs";
 import type { ModuleClass } from "./index.js";
 
@@ -63,7 +55,7 @@ const mpWeixin: ModuleClass = {
         automator
           .launch({
             cliPath: process.env.WEIXIN_DEV_TOOL,
-            projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
+            projectPath: resolve(global.projectRoot, "./dist/dev/mp-weixin"),
           })
           .then(() => {
             Log.success("Wechat web devTools has been opened.");
@@ -89,7 +81,7 @@ const mpWeixin: ModuleClass = {
         automator
           .launch({
             cliPath: process.env.WEIXIN_DEV_TOOL,
-            projectPath: resolve(projectRoot, "./dist/dev/mp-weixin"),
+            projectPath: resolve(global.projectRoot, "./dist/dev/mp-weixin"),
           })
           .then(() => {
             Log.success("Wechat web devTools has been opened.");
