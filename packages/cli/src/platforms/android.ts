@@ -50,7 +50,7 @@ const android: ModuleClass = {
     }
     const scriptPath = resolve(global.projectRoot, "node_modules/uniapp-android/dist/add.js");
     if (!existsSync(scriptPath)) {
-      Log.error("File `node_modules/uniapp-android/dist/index.js` not found.");
+      Log.error("File `node_modules/uniapp-android/dist/add.js` not found.");
       return;
     }
 
@@ -59,7 +59,9 @@ const android: ModuleClass = {
     try {
       addAndroid();
       Log.success("Patform android has been added successfully.");
-    } catch (error) {}
+    } catch (error) {
+      Log.error((error as Error).message);
+    }
   },
 
   async platformRemove({ packages }) {
@@ -69,7 +71,9 @@ const android: ModuleClass = {
         const removeAndroid = await dynamicImport<() => void>(scriptPath);
         try {
           removeAndroid();
-        } catch (error) {}
+        } catch (error) {
+          Log.error((error as Error).message);
+        }
       }
     }
     uninstallPackages(["uniapp-android"]);

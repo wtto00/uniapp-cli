@@ -1,8 +1,8 @@
 import { Log, ManifestConfig, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { androidDir } from "./common.js";
-import { resolve } from "node:path";
-import { buildAndroidManifest, buildBuildGradle } from "./build-files.js";
+import { dirname, resolve } from "node:path";
+import { buildAndroidManifest, buildBuildGradle, buildDcloudControlXml, buildStringXml } from "./build-files.js";
 import Android from "@wtto00/android-tools";
 
 interface RunOptions {
@@ -24,9 +24,6 @@ export async function run(options: RunOptions): Promise<string> {
     "name",
     "appid",
     "app-plus.distribute.android.packagename",
-    "app-plus.distribute.android.keystore",
-    "app-plus.distribute.android.password",
-    "app-plus.distribute.android.aliasname",
     "app-plus.distribute.android.dcloud_appkey",
   ];
 
@@ -55,27 +52,58 @@ export async function run(options: RunOptions): Promise<string> {
 
   // app/build.gradle
   const buildGradlePath = resolve(androidDir, "app/build.gradle");
-  const gradleStr = buildBuildGradle(manifest);
-  writeFileSync(buildGradlePath, gradleStr, { encoding: "utf8" });
+  writeFileSync(buildGradlePath, buildBuildGradle(manifest), { encoding: "utf8" });
 
   // AndroidManifest.xml
   const androidManifestPath = resolve(androidDir, "app/src/main/AndroidManifest.xml");
-  mkdirSync(resolve(androidDir, "app/src/main"), { recursive: true });
-  const androidManifestStr = buildAndroidManifest(manifest);
-  writeFileSync(androidManifestPath, androidManifestStr, { encoding: "utf8" });
+  writeFileSync(androidManifestPath, buildAndroidManifest(manifest), { encoding: "utf8" });
 
-  // appid dir
-  const wwwDir = resolve(androidDir, `app/src/main/assets/apps/${manifest.appid}`);
-  if (existsSync(wwwDir)) {
-    rmSync(wwwDir, { recursive: true });
+  // www dir
+  const appsDir = resolve(androidDir, "app/src/main/assets/apps");
+  if (existsSync(appsDir)) {
+    rmSync(appsDir, { recursive: true });
   }
-  mkdirSync(wwwDir, { recursive: true });
-
+  const wwwDir = resolve(appsDir, `${manifest.appid}/www`);
   cpSync(resolve(global.projectRoot, "dist/dev/app"), wwwDir, { recursive: true });
+
+  // app/src/main/res/values/strings.xml
+  const stringXmlPath = resolve(androidDir, "app/src/main/res/values/strings.xml");
+  const stringXmlDir = dirname(stringXmlPath);
+  if (!existsSync(stringXmlDir)) {
+    mkdirSync(stringXmlDir, { recursive: true });
+  }
+  writeFileSync(stringXmlPath, buildStringXml(manifest), { encoding: "utf8" });
+
+  // app/src/main/assets/data/dcloud_control.xml
+  const dcloudControlPath = resolve(androidDir, "app/src/main/assets/data/dcloud_control.xml");
+  const dcloudControlDir = dirname(dcloudControlPath);
+  if (!existsSync(dcloudControlDir)) {
+    mkdirSync(dcloudControlDir, { recursive: true });
+  }
+  writeFileSync(dcloudControlPath, buildDcloudControlXml(manifest), { encoding: "utf8" });
 
   const { debug, release } = options;
 
   const isRelease = release || debug === false;
+
+  // build.json
+  const envVars = process.env;
+  const buildJsonPath = resolve(global.projectRoot, "build.json");
+  if (existsSync(buildJsonPath)) {
+    try {
+      const buildJsonStr = readFileSync(buildJsonPath, { encoding: "utf8" });
+      const buildJson = JSON.parse(buildJsonStr);
+      const buildConfig = buildJson?.android?.[isRelease ? "release" : "debug"];
+      if (buildConfig) {
+        envVars["KEY_ALIAS"] = buildConfig["alias"];
+        envVars["KEY_PASSWORD"] = buildConfig["password"];
+        envVars["KEYSTORE_PATH"] = buildConfig["keystore"];
+        envVars["STORE_PASSWORD"] = buildConfig["storePassword"];
+      }
+    } catch (error) {
+      throw Error("Failed to parse build.json");
+    }
+  }
 
   const isWin = process.platform === "win32";
   const gradleExePath = resolve(global.projectRoot, `${androidPath}/gradlew${isWin ? ".bat" : ""}`);
@@ -90,7 +118,7 @@ export async function run(options: RunOptions): Promise<string> {
   process.chdir(resolve(global.projectRoot, androidPath));
   const proc = spawnExecSync(
     `${isWin ? gradleExePath : `sh ${gradleExePath}`} ${isRelease ? "assembleRelease" : "assembleDebug"}`,
-    { stdio: "inherit" }
+    { stdio: "inherit", env: envVars }
   );
   if (proc.stderr?.trim()) {
     throw Error(proc.stderr.trim());
