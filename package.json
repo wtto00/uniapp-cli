@@ -4,7 +4,7 @@
   "description": "CLI for uniapp.",
   "main": "index.js",
   "type": "module",
-  "packageManager": "pnpm@9.1.1",
+  "packageManager": "pnpm@9.1.2",
   "scripts": {
     "uniapp": "pnpm -F unicli dev",
     "build": "pnpm -r build",
@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "devDependencies": {
-    "@changesets/cli": "^2.27.1",
     "@types/node": "^20.11.25",
     "tslib": "^2.6.2",
     "tsx": "^4.7.1",
