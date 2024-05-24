@@ -1,6 +1,6 @@
 import { Log, ManifestConfig, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { androidDir } from "./common.js";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { androidDir, getSignConfigEnv } from "./common.js";
 import { dirname, resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle, buildDcloudControlXml, buildStringXml } from "./build-files.js";
 import Android from "@wtto00/android-tools";
@@ -86,25 +86,6 @@ export async function run(options: RunOptions): Promise<string> {
 
   const isRelease = release || debug === false;
 
-  // build.json
-  const envVars = process.env;
-  const buildJsonPath = resolve(global.projectRoot, "build.json");
-  if (existsSync(buildJsonPath)) {
-    try {
-      const buildJsonStr = readFileSync(buildJsonPath, { encoding: "utf8" });
-      const buildJson = JSON.parse(buildJsonStr);
-      const buildConfig = buildJson?.android?.[isRelease ? "release" : "debug"];
-      if (buildConfig) {
-        envVars["KEY_ALIAS"] = buildConfig["alias"];
-        envVars["KEY_PASSWORD"] = buildConfig["password"];
-        envVars["KEYSTORE_PATH"] = buildConfig["keystore"];
-        envVars["STORE_PASSWORD"] = buildConfig["storePassword"];
-      }
-    } catch (error) {
-      throw Error("Failed to parse build.json");
-    }
-  }
-
   const isWin = process.platform === "win32";
   const gradleExePath = resolve(global.projectRoot, `${androidPath}/gradlew${isWin ? ".bat" : ""}`);
   if (!existsSync(gradleExePath)) {
@@ -118,7 +99,7 @@ export async function run(options: RunOptions): Promise<string> {
   process.chdir(resolve(global.projectRoot, androidPath));
   const proc = spawnExecSync(
     `${isWin ? gradleExePath : `sh ${gradleExePath}`} ${isRelease ? "assembleRelease" : "assembleDebug"}`,
-    { stdio: "inherit", env: envVars }
+    { stdio: "inherit", env: getSignConfigEnv(manifest, isRelease) }
   );
   if (proc.stderr?.trim()) {
     throw Error(proc.stderr.trim());
