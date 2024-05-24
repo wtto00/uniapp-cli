@@ -71,6 +71,30 @@ dependencies {
 `;
 }
 
+function buildSchemes(schemes: string = "") {
+  const schemesArr = schemes
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item);
+  if (schemesArr.length === 0) {
+    return `<intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>`;
+  }
+  return schemesArr
+    .map(
+      (item) => `<intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="${item}" />
+            </intent-filter>`
+    )
+    .join("\n            ");
+}
+
 export function buildAndroidManifest(manifest: ManifestConfig) {
   return `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -108,12 +132,7 @@ export function buildAndroidManifest(manifest: ManifestConfig) {
             android:screenOrientation="user"
             android:theme="@style/DCloudTheme"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <action android:name="android.intent.action.VIEW" />
-                <data android:scheme=" " />
-            </intent-filter>
+            ${buildSchemes(manifest["app-plus"].distribute.android.schemes)}
         </activity>
         <meta-data
             android:name="dcloud_appkey"
