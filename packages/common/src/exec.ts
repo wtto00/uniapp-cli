@@ -11,24 +11,21 @@ import {
 import { detectPackageManager } from "./package.js";
 import { Log } from "./log.js";
 
-export function spawnExecSync(command: string, option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">) {
-  const [cmd, ...args] = command
-    .split(" ")
-    .map((item) => item.trim())
-    .filter((item) => item);
-  return spawnSync(cmd, args, { encoding: "utf8", shell: true, ...option });
+export function spawnExecSync(
+  cmd: string,
+  args: string[] = [],
+  option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">
+) {
+  return spawnSync(`"${cmd}"`, args, { encoding: "utf8", shell: true, ...option });
 }
 
 export function spawnExec(
-  command: string,
+  cmd: string,
+  args: string[],
   callback: (log: string) => void,
   option?: Omit<SpawnOptionsWithStdioTuple<StdioNull, StdioPipe, StdioPipe>, "stdio">
 ) {
-  const [cmd, ...args] = command
-    .split(" ")
-    .map((item) => item.trim())
-    .filter((item) => item);
-  const proc = spawn(cmd, args, { stdio: ["inherit", "pipe", "pipe"], shell: true, ...option });
+  const proc = spawn(`"${cmd}"`, args, { stdio: ["inherit", "pipe", "pipe"], shell: true, ...option });
 
   proc.stdout.pipe(process.stdout);
   proc.stdout.setEncoding("utf8");
@@ -72,7 +69,7 @@ export function isVueCliInstalled() {
 
 export function installVueCli() {
   Log.info("@vue/cli not installed, starting global installation of @vue/cli.");
-  spawnExecSync("npm i -g @vue/cli", { stdio: "inherit" });
+  spawnExecSync("npm", ["i", "-g", "@vue/cli"], { stdio: "inherit" });
   if (isVueCliInstalled()) {
     Log.info("@vue/cli has been successfully installed.");
   } else {
@@ -82,20 +79,15 @@ export function installVueCli() {
 }
 
 export function createVueProject(appName: string, template: string, force = false) {
-  const cmd = `vue create -p ${template} ${appName} ${force ? "--force" : ""}`;
-  spawnExecSync(cmd, { stdio: "inherit" });
+  spawnExecSync("vue", ["create", "-p", template, appName, force ? "--force" : ""], { stdio: "inherit" });
 }
 
 export function installPackages(packages: string[]) {
   const pm = detectPackageManager();
-  const pmCmd = pm === "npm" ? `${pm} install` : `${pm} add`;
-  const cmd = `${pmCmd} ${packages.join(" ")}`;
-  spawnExecSync(cmd, { stdio: "inherit" });
+  spawnExecSync(pm, [pm === "npm" ? "install" : "add", ...packages], { stdio: "inherit" });
 }
 
 export function uninstallPackages(packages: string[]) {
   const pm = detectPackageManager();
-  const pmCmd = pm === "npm" ? `${pm} uninstall` : `${pm} remove`;
-  const cmd = `${pmCmd} ${packages.join(" ")}`;
-  spawnExecSync(cmd, { stdio: "inherit" });
+  spawnExecSync(pm, [pm === "npm" ? "uninstall" : "remove", ...packages], { stdio: "inherit" });
 }

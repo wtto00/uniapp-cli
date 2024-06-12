@@ -22,7 +22,7 @@ const android: ModuleClass = {
     if (process.env.JAVA_HOME) {
       const javaBinPath = resolve(process.env.JAVA_HOME, `bin/java${process.platform === "win32" ? ".exe" : ""}`);
       if (existsSync(javaBinPath)) {
-        const res = getOutput(spawnExecSync(`${javaBinPath} -version`));
+        const res = getOutput(spawnExecSync(javaBinPath, ["-version"]));
         const version = res.split("\n")[0];
         Log.success(`${Log.emoji.success} ${version}`);
       } else {
@@ -93,7 +93,7 @@ const android: ModuleClass = {
       }
     }
 
-    const uniappProcess = spawnExec(`npx uni -p app-android`, async (msg) => {
+    const uniappProcess = spawnExec("npx", ["uni", "-p", "app-android"], async (msg) => {
       const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange) return;
 

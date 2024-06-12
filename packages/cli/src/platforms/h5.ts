@@ -21,7 +21,7 @@ const h5: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni -p h5`, (msg) => {
+    spawnExec("npx", ["uni", "-p", "h5"], (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -50,7 +50,7 @@ const h5: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni build -p h5`, (msg) => {
+    spawnExec("npx", ["uni", "build", "-p", "h5"], (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));

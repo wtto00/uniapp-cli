@@ -44,7 +44,7 @@ const mpWeixin: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni -p mp-weixin`, (msg) => {
+    spawnExec("npx", ["uni", "-p", "mp-weixin"], (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));
@@ -70,7 +70,7 @@ const mpWeixin: ModuleClass = {
     let success = false;
     let over = false;
     let output: string[] = [];
-    spawnExec(`npx uni build -p mp-weixin`, (msg) => {
+    spawnExec("npx", ["uni", "build", "-p", "mp-weixin"], (msg) => {
       if (options.open === false) return;
       if (over) return;
       output.push(outputRemoveColor(msg));

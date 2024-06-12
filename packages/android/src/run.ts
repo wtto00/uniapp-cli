@@ -98,7 +98,8 @@ export async function run(options: RunOptions): Promise<string> {
   rmSync(apkFullPath, { force: true });
   process.chdir(resolve(global.projectRoot, androidPath));
   const proc = spawnExecSync(
-    `${isWin ? gradleExePath : `sh ${gradleExePath}`} ${isRelease ? "assembleRelease" : "assembleDebug"}`,
+    isWin ? gradleExePath : "sh",
+    [isWin ? "" : gradleExePath, isRelease ? "assembleRelease" : "assembleDebug"],
     { stdio: "inherit", env: getSignConfigEnv(manifest, isRelease) }
   );
   if (proc.stderr?.trim()) {
