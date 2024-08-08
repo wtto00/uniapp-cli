@@ -1,5 +1,5 @@
-import { allPlatforms, type BuildOptions, importPlatform, type PLATFORM } from "./platforms/index.js";
-import { checkIsUniapp, getPackageJson, isInstalled, Log } from "@uniapp-cli/common";
+import { allPlatforms, importPlatform, type PLATFORM } from "./platforms/index.js";
+import { type BuildOptions, checkIsUniapp, getPackageJson, isInstalled, Log } from "@uniapp-cli/common";
 
 export async function build(platform: PLATFORM, options: BuildOptions) {
   const packages = await getPackageJson();

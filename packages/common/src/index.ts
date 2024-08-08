@@ -6,3 +6,4 @@ export * from "./package.js";
 export * from "./exec.js";
 export * from "./xml.js";
 export * from "./import.js";
+export * from "./types.js";

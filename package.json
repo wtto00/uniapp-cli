@@ -7,6 +7,7 @@
   "packageManager": "pnpm@9.3.0",
   "scripts": {
     "uniapp": "pnpm -F unicli dev",
+    "dev": "pnpm -C packages/cli dev & pnpm -C packages/common dev & pnpm -C packages/android dev",
     "build": "pnpm -r build",
     "build:cli": "pnpm -C packages/cli build",
     "build:common": "pnpm -C packages/common build",

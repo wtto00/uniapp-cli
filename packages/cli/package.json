@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "pnpm build:js --watch",
     "build": "pnpm build:js && pnpm build:type",
     "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
     "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly"

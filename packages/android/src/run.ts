@@ -1,20 +1,15 @@
-import { Log, ManifestConfig, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
+import { Log, type BuildOptions, androidPath, getManifestJson, spawnExecSync } from "@uniapp-cli/common";
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { androidDir, getSignConfigEnv } from "./common.js";
 import { dirname, resolve } from "node:path";
 import { buildAndroidManifest, buildBuildGradle, buildDcloudControlXml, buildStringXml } from "./build-files.js";
 import Android from "@wtto00/android-tools";
 
-interface RunOptions {
-  debug?: boolean;
-  release?: boolean;
-}
-
 const android = new Android();
 
 const manifest = getManifestJson();
 
-export async function run(options: RunOptions): Promise<string> {
+export default async function run(options: BuildOptions): Promise<string | undefined> {
   if (!manifest) {
     throw Error("Failed to parse manifest.json.");
   }
@@ -82,7 +77,7 @@ export async function run(options: RunOptions): Promise<string> {
   }
   writeFileSync(dcloudControlPath, buildDcloudControlXml(manifest), { encoding: "utf8" });
 
-  const { debug, release } = options;
+  const { debug, release, open, device } = options;
 
   const isRelease = release || debug === false;
 
@@ -109,37 +104,27 @@ export async function run(options: RunOptions): Promise<string> {
     throw Error("Build failed.");
   }
   Log.success(`Build success: ${apkPath}`);
+
+  if (!open) return;
+
   const allDevices = await android.devices();
   const devices = allDevices.filter((item) => item.status === "device");
   if (devices.length == 0) {
     throw Error("No device connected");
   }
-  const deviceName = devices[0].name;
+  if (device && !devices.find((item) => item.name === device)) {
+    throw Error(`Device: ${device} is not connected.`);
+  }
+
+  const deviceName = device || devices[0].name;
   Log.debug(`Install ${apkPath} to device \`${deviceName}\``);
   await android.install(deviceName, apkFullPath, { r: true });
   Log.success(`Deploy ${apkPath} to ${deviceName} successfully.`);
   Log.debug("Start opening app");
+
   await android.adb(
     deviceName,
     `shell am start -n ${manifest["app-plus"].distribute.android.packagename}/io.dcloud.PandoraEntry`
   );
   return deviceName;
-}
-
-export async function refresh(deviceName: string, manifest: ManifestConfig) {
-  if (!manifest) {
-    throw Error("Failed to parse manifest.json.");
-  }
-
-  // copy file
-  const wwwDir = resolve(androidDir, `app/src/main/assets/apps/${manifest.appid}`);
-  if (existsSync(wwwDir)) {
-    rmSync(wwwDir, { recursive: true });
-  }
-  mkdirSync(wwwDir, { recursive: true });
-
-  cpSync(resolve(global.projectRoot, "dist/dev/app"), wwwDir, { recursive: true });
-
-  // adb shell am start -a android.intent.action.VIEW https://example.com/
-  return android.adb(deviceName, "shell am refresh");
 }

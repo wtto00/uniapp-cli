@@ -5,7 +5,7 @@ global.projectRoot = process.cwd();
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${packages.version}`)
+  .version(`uniapp-cli v${packages.version}`,'-v, --version')
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()
@@ -82,9 +82,10 @@ program
   .option("--no-open", "Do not automatically deploy to a device or emulator")
   .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
   .option("--release", "Deploy a release build\nOnly available on Android and iOS")
+  .option("--device <device>", "Deploy a build to specified device.\nOnly available on Android and iOS")
   .addHelpText(
     "after",
-    "\nExample:\n  uniapp run android --release --target=myEmulator\n  uniapp run ios --device --debug\n  uniapp run mp-weixin"
+    "\nExample:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin"
   )
   .action((platform, options) => {
     void import("./run.js").then(({ run }) => run(platform, options));
@@ -99,9 +100,10 @@ program
   .option("--no-open", "Do not automatically open preview")
   .option("--debug", "Deploy a debug build\nOnly available on Android and iOS")
   .option("--release", "Deploy a release build\nOnly available on Android and iOS")
+  .option("--device <device>", "Deploy a build to specified device.\nOnly available on Android and iOS")
   .addHelpText(
     "after",
-    "\nExample:\n  uniapp build android --release --emulator\n  uniapp build ios --device --debug\n  uniapp build mp-weixin"
+    "\nExample:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin"
   )
   .action((platform, options) => {
     void import("./build.js").then(({ build }) => build(platform, options));

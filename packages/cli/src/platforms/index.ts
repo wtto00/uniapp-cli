@@ -1,4 +1,4 @@
-import { type ManifestConfig, type PackageJson, Log } from "@uniapp-cli/common";
+import { type ManifestConfig, type BuildOptions, type PackageJson, Log } from "@uniapp-cli/common";
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -10,11 +10,6 @@ export interface PlatformAddOptions extends CommonOptions {
   /** Current project UniApp version  */
   version: string;
   manifest?: ManifestConfig;
-}
-export interface BuildOptions {
-  open: boolean;
-  debug?: boolean;
-  release?: boolean;
 }
 export interface ModuleClass {
   modules: string[];

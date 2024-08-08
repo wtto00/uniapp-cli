@@ -9,10 +9,10 @@ import {
   dynamicImport,
   killChildProcess,
 } from "@uniapp-cli/common";
-import { type BuildOptions, type ModuleClass } from "./index.js";
+import { type ModuleClass } from "./index.js";
 import { resolve } from "path";
 import { existsSync } from "fs";
-import { getOutput } from "@uniapp-cli/common";
+import { type BuildOptions, getOutput } from "@uniapp-cli/common";
 
 const android: ModuleClass = {
   modules: ["@dcloudio/uni-app-plus", "uniapp-android"],
@@ -80,19 +80,6 @@ const android: ModuleClass = {
   },
 
   run(options) {
-    let deviceName = "";
-    let runKey = 0;
-
-    async function refreshAndroid(refresh: () => Promise<void>) {
-      if (runKey === 1) {
-        runKey = 2;
-        await refresh();
-        await refreshAndroid(refresh);
-      } else if (runKey === 2) {
-        runKey = 0;
-      }
-    }
-
     const uniappProcess = spawnExec("npx", ["uni", "-p", "app-android"], async (msg) => {
       const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange) return;
@@ -106,26 +93,11 @@ const android: ModuleClass = {
         return;
       }
 
-      if (runKey) {
-        // mark refresh
-        runKey = 1;
-        return;
-      } else {
-        // mark building
-        runKey = 2;
-      }
-      const runModule = await dynamicImport<{
-        run: (options: BuildOptions) => Promise<string>;
-        refresh: (deviceName: string) => Promise<void>;
-      }>(scriptPath, true);
+      const build = await dynamicImport<(options: BuildOptions) => Promise<string>>(scriptPath);
 
       try {
-        if (!deviceName) {
-          deviceName = await runModule.run(options);
-        } else {
-          await runModule.refresh(deviceName);
-        }
-        await refreshAndroid(() => runModule.refresh(deviceName));
+        const deviceName = await build(options);
+        if (!options.device) options.device = deviceName;
       } catch (error) {
         Log.error((error as Error).message);
         killChildProcess(uniappProcess);
