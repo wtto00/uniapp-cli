@@ -6,12 +6,12 @@
   "type": "module",
   "packageManager": "pnpm@9.1.2",
   "scripts": {
-    "uniapp": "pnpm -F unicli dev",
+    "dev": "concurrently \"pnpm -C packages/common dev\" \"pnpm -C packages/android dev\" \"pnpm -C packages/cli dev\"",
+    "uniapp": "node packages/cli/bin/uniapp.js",
     "build": "pnpm -r build",
     "build:cli": "pnpm -C packages/cli build",
     "build:common": "pnpm -C packages/common build",
     "build:android": "pnpm -C packages/android build",
-    "docker:build": "pnpm build && docker build -t uniapp-cli-test .",
     "preinstall": "npx -y only-allow pnpm"
   },
   "keywords": [
@@ -29,9 +29,10 @@
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "devDependencies": {
-    "@types/node": "^20.11.25",
-    "tslib": "^2.6.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.2"
+    "@types/node": "^22.7.5",
+    "concurrently": "^9.0.1",
+    "tslib": "^2.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
   }
 }
