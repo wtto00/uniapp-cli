@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "devDependencies": {
-    "@types/node": "^20.11.25",
+    "@types/node": "^22.7.5",
     "tslib": "^2.6.2",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2"
