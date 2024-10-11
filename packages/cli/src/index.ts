@@ -1,11 +1,12 @@
 import { program } from "commander";
-import packages from "../package.json" with { type: "json" };
+import { readPackageJSONSync } from "@uniapp-cli/common";
+import { resolve } from "node:path";
 
 global.projectRoot = process.cwd();
 
 program
   .name("uniapp")
-  .version(`uniapp-cli v${packages.version}`,'-v, --version')
+  .version(`uniapp-cli v${readPackageJSONSync(resolve(import.meta.dirname, "..")).version}`)
   .usage("<command> [options]")
   .option("-d, --verbose", "debug mode produces verbose log output for all activity")
   .helpOption()

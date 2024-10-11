@@ -13,7 +13,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "dev": "pnpm build:js --watch",
+    "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
     "build": "pnpm build:js && pnpm build:type",
     "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
     "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly"
@@ -36,10 +36,6 @@
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "dependencies": {
     "@uniapp-cli/common": "workspace:^",
-    "@wtto00/android-tools": "^1.0.5",
-    "yargs": "^17.7.2"
-  },
-  "devDependencies": {
-    "@types/yargs": "^17.0.32"
+    "@wtto00/android-tools": "^1.0.5"
   }
 }

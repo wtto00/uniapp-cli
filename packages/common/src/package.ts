@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type PackageJson, readPackageJSON } from "pkg-types";
 import { Log } from "./log.js";
@@ -49,4 +49,14 @@ export function detectPackageManager() {
   if (existsSync(resolve(global.projectRoot, "./pnpm-lock.yaml"))) return "pnpm";
   if (existsSync(resolve(global.projectRoot, "./yarn.lock"))) return "yarn";
   return "npm";
+}
+
+export function readPackageJSONSync(filePath: string): PackageJson {
+  try {
+    const packagePath = filePath.endsWith("/package.json") ? filePath : resolve(filePath, "package.json");
+    const content = readFileSync(packagePath, { encoding: "utf8" });
+    return JSON.parse(content) as PackageJson;
+  } catch (error) {
+    return {};
+  }
 }
