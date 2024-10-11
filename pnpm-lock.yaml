@@ -18,8 +18,8 @@ importers:
         specifier: ^4.7.1
         version: 4.10.5
       typescript:
-        specifier: ^5.4.2
-        version: 5.4.5
+        specifier: ^5.6.3
+        version: 5.6.3
 
   packages/android:
     dependencies:
@@ -911,8 +911,8 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
 
-  typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+  typescript@5.6.3:
+    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -1801,7 +1801,7 @@ snapshots:
 
   type-fest@0.21.3: {}
 
-  typescript@5.4.5: {}
+  typescript@5.6.3: {}
 
   ufo@1.5.3: {}
 
