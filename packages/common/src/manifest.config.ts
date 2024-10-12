@@ -1,4 +1,4 @@
-interface NetworkTimeout {
+export interface NetworkTimeout {
   /**
    * uni.request 超时时间
    * 单位为 ms
@@ -24,7 +24,7 @@ interface NetworkTimeout {
    */
   downloadFile?: number;
 }
-interface UniStatistics {
+export interface UniStatistics {
   /**
    * 是否开启 uni 统计
    * 默认为 false
@@ -55,11 +55,11 @@ interface UniStatistics {
     uniPushClientID: boolean;
   };
 }
-interface SimpleUniStatistics extends Pick<UniStatistics, "enable"> {}
+export interface SimpleUniStatistics extends Pick<UniStatistics, "enable"> {}
 /** PNG格式的图片 */
-type PNG = `${string}.png` | `${string}.PNG`;
+export type PNG = `${string}.png` | `${string}.PNG`;
 /** App图标配置 */
-interface AppPlusIcons {
+export interface AppPlusIcons {
   /** Android平台 */
   android: {
     /** 2K屏设备程序图标，分辨率要求192x192 */
@@ -121,7 +121,375 @@ interface AppPlusIcons {
     };
   };
 }
-interface AppPlus {
+export enum PermissionRequest {
+  ALWAYS = "always",
+  ONCE = "once",
+  NONE = "none",
+}
+export interface AppPlusDistributeAndroid {
+  /** Android平台云端打包的包名 */
+  packagename?: string;
+  /** Android平台云端打包使用的签名证书文件路径 */
+  keystore?: string;
+  /** Android平台云端打包使用的签名证书的密码，要求证书存储密码和证书密码相同 */
+  password?: string;
+  /** Android平台云端打包使用的证书别名 */
+  aliasname?: string;
+  /** Android平台App注册的scheme，多个scheme使用“,”分割，详情参考：Android平台设置UrlSchemes */
+  schemes?: string;
+  /** Android平台App支持的cpu类型，详情参考：Android平台设置CPU类型 */
+  abiFilters?: string[];
+  /** Android平台App使用的权限 */
+  permissions?: string[];
+  /** 是否自定义Android权限配置 */
+  custompermissions?: boolean;
+  /** Android平台应用启动时申请读写手机存储权限策略配置，详情参考：Android平台应用启动时读写手机存储权限策略，支持request、prompt属性
+   * @link https://ask.dcloud.net.cn/article/36549
+   */
+  permissionExternalStorage?: {
+    /**
+     * 字符串类型，必填，申请读写手机存储权限策略，可取值none、once、always。
+     * HBuilderX3.5.5+版本默认值调整为none
+     * HBuilderX3.0以下版本默认值always
+     * - none: 应用启动时不申请
+     * - once: 应用第一次启动时申请，用户可以拒绝
+     * - always: 应用每次启动都申请，并且用户必须允许，用户拒绝时会弹出以下提示框引导用户重新允许
+     */
+    request: PermissionRequest;
+    /**
+     * 字符串类型，可选，用户拒绝时弹出提示框上的内容。
+     * 默认值为：应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。
+     * 设置自定义键名称为“dcloud_permission_write_external_storage_message”。
+     */
+    prompt: string;
+  };
+  /** Android平台应用启动时申请读取设备信息权限配置，详情参考：Android平台应用启动时访问设备信息(如IMEI)权限策略，支持request、prompt属性
+   * @link https://ask.dcloud.net.cn/article/36549
+   */
+  permissionPhoneState?: {
+    /**
+     * 字符串类型，必填，申请设备信息权限策略，可取值none、once、always。默认值为once。
+     * - none: 应用启动时不申请
+     * - once: 应用第一次启动时申请，用户可以拒绝
+     * - always: 应用每次启动都申请，并且用户必须允许，用户拒绝时会弹出以下提示框引导用户重新允许
+     */
+    request: PermissionRequest;
+    /**
+     * 字符串类型，可选，用户拒绝时弹出提示框上的内容。
+     * 默认值为：为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。
+     * 设置自定义键名称为“dcloud_permission_read_phone_state_message”。
+     */
+    prompt: string;
+  };
+  /** Android平台最低支持版本，详情参考：Android平台设置minSdkVersion
+   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-minsdkversion.html
+   */
+  minSdkVersion?: string;
+  /** Android平台目标版本，详情参考：Android平台设置targetSdkVersion
+   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-targetsdkversion.html
+   */
+  targetSdkVersion?: string;
+  /** Android平台云端打包时build.gradle的packagingOptions配置项，
+   * @example
+   * "packagingOptions": ["doNotStrip '/armeabi-v7a/.so'","merge '**\/LICENSE.txt'"]
+   */
+  packagingOptions?: string[];
+  /**
+   * @deprecated
+   * uni-app使用的JS引擎，可取值v8、jsc，将废弃，后续不再支持jsc引擎 */
+  jsEngine?: "v8" | "jsc";
+  /** 是否开启Android调试开关 */
+  debuggable?: boolean;
+  /** 应用的默认语言 */
+  locale?: string;
+  /** 是否强制允许暗黑模式 */
+  forceDarkAllowed?: boolean;
+  /** 是否支持分屏调整窗口大小 */
+  resizeableActivity?: boolean;
+  /** 是否设置android：taskAffinity，详见 */
+  hasTaskAffinity?: boolean;
+  /** Android平台云端打包时build.gradle的buildFeatures配置项，[详见](https://developer.android.google.cn/reference/tools/gradle-api/7.1/com/android/build/api/dsl/BuildFeatures) */
+  buildFeatures?: {
+    aidl?: boolean;
+    buildConfig?: boolean;
+    compose?: boolean;
+    prefab?: boolean;
+    renderScript?: boolean;
+    resValues?: boolean;
+    shaders?: boolean;
+    viewBinding?: boolean;
+  };
+  /** 延迟初始化UniPush的配置，当配置此项值为manual后UniPush不会初始化，
+   * 直到首次调用getPushClientId、getClientInfo、getClientInfoAsync时才会初始化，
+   * 注:一旦调用获取cid的方法后，下次App启动就不再延迟初始化UniPush了。(manual为延迟，其他值表示不延迟。)
+   */
+  pushRegisterMode?: "manual";
+  /** 是否支持获取OAID，默认值为true，[详见](https://uniapp.dcloud.net.cn/collocation/manifest-app.html#enableoaid) */
+  enableOAID?: boolean;
+}
+/**
+ * 功能模块
+ * @link https://uniapp.dcloud.net.cn/tutorial/app-modules.html#%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97
+ */
+export interface AppPlusModules {
+  /** 登录授权 */
+  OAuth?: {};
+  /** BLE蓝牙 */
+  Bluetooth?: {};
+  /** 语音识别 */
+  Speech?: {};
+  /** 调用相机拍照，访问或修改相册 */
+  Camera?: {};
+  /** 社交分享 */
+  Share?: {};
+  /** 获取位置信息 */
+  Geolocation?: {};
+  /** 消息推送 */
+  Push?: {};
+  /** 统计 */
+  Statistic?: {};
+  /** 调用相机扫码功能 */
+  Barcode?: {};
+  /** 系统通讯录 */
+  Contacts?: {};
+  /** 访问系统人脸识别 */
+  FaceID?: {};
+  /** 指纹识别 */
+  Fingerprint?: {};
+  /**
+   * 实人认证
+   * - 为对抗攻击，实人认证SDK返回的错误原因比较模糊。
+   * - App-Android平台要求Android5（API Leavel 21）及以上系统，App-iOS平台要求iOS9及以上系统
+   * - App端使用实人认证SDK，需在隐私政策的三方SDK中添加实人认证功能描述，参考[详情](https://ask.dcloud.net.cn/article/39484#FacialRecognitionVerify)
+   * - [离线打包](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/facialRecognitionVerify.html)
+   * @link https://uniapp.dcloud.net.cn/tutorial/app-facialRecognitionVerify.html
+   * @link https://doc.dcloud.net.cn/uniCloud/frv/intro.html
+   */
+  FacialRecognitionVerify?: {};
+  /** iBeacon */
+  iBeacon?: {};
+  /** 直播推流 */
+  LivePusher?: {};
+  /** 地图 */
+  Maps?: {};
+  /** 短彩邮件消息 */
+  Messaging?: {};
+  /** 支付 */
+  Payment?: {};
+  /** 录音 */
+  Record?: {};
+  /**
+   * 安全网络
+   * - 安全网络暂未支持离线打包，后续会提供离线打包的方案
+   * @link https://doc.dcloud.net.cn/uniCloud/secure-network.html
+   */
+  SecureNetwork?: {};
+  /** SQLite数据库 */
+  SQLite?: {};
+  /** 视频播放 */
+  VideoPlayer?: {};
+  /**
+   * Android X5 Webview(腾讯TBS)
+   * - CPU类型配置不支持“x86”
+   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-x5.html
+   */
+  "Webview-x5"?: {};
+  /**
+   * iOS UIWebview,
+   * - 使用UIWebview模块后应用无法通过App Store审核
+   * @link https://uniapp.dcloud.net.cn/tutorial/app-ios-uiwebview.html#uiwebview
+   * @link https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/uiwebview.html
+   */
+  UIWebview?: {};
+}
+export enum AppPlusOS {
+  iOS = "ios",
+  Android = "android",
+}
+export interface AppPlusDistributeSdkConfigs {
+  oauth: {
+    /**
+     * 微信授权登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-weixin.html
+     */
+    weixin?: {
+      appid?: string;
+      UniversalLinks?: string;
+    };
+    /**
+     * 苹果登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-apple.html
+     */
+    apple?: {};
+    /**
+     * uni一键登录
+     */
+    univerify?: {};
+    /**
+     * QQ登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-qq.html
+     */
+    qq?: {
+      appid?: string;
+      UniversalLinks?: string;
+    };
+    /**
+     * 新浪微博登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-weibo.html
+     */
+    sina?: {
+      appkey?: string;
+      redirect_uri?: string;
+      UniversalLinks?: string;
+    };
+    /**
+     * Google登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-google.html
+     */
+    google?: {
+      clientid?: string;
+    };
+    /**
+     * Facebook登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-facebook.html
+     */
+    facebook?: {
+      appid?: string;
+      client_token?: string;
+    };
+    /**
+     * 华为登录
+     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-huawei.html
+     */
+    huawei?: {};
+  };
+  ad?: {
+    /** 腾讯优量 */
+    gdt?: {};
+    /** 快手广告联盟 */
+    ks?: {};
+    /** 快手内容联盟 */
+    "ks-content"?: {};
+    /** Sigmob广告联盟 */
+    sigmob?: {};
+    /** 华为广告联盟 */
+    hw?: {};
+    /** 百度百青藤广告联盟 */
+    bd?: {};
+    /** Google AdMob谷歌广告 */
+    gg?: {};
+    /** 海外穿山甲 */
+    pg?: {};
+    /** Octopus章鱼移动广告 */
+    zy?: {};
+    /** AdScope倍孜广告 */
+    bz?: {};
+    /** 穿山甲GroMore */
+    gm?: {};
+  };
+  share?: {
+    weixin?: {
+      appid?: string;
+      UniversalLinks?: string;
+    };
+    sina?: {
+      appkey?: string;
+      redirect_uri?: string;
+      UniversalLinks?: string;
+    };
+    qq?: {
+      appid?: string;
+      UniversalLinks?: string;
+    };
+  };
+  /** 定位 */
+  geolocation?: {
+    /** OS自带的系统定位 */
+    system?: {
+      __platform__?: AppPlusOS[];
+    };
+    /** 高德定位 */
+    amap?: {
+      name?: string;
+      __platform__?: AppPlusOS[];
+      appkey_ios?: string;
+      appkey_android?: string;
+    };
+    /** 百度定位 */
+    baidu?: {
+      __platform__?: AppPlusOS[];
+      appkey_ios?: string;
+      appkey_android?: string;
+    };
+  };
+  statics?: {
+    umeng?: {
+      appkey_ios?: string;
+      channelid_ios?: string;
+      appkey_android?: string;
+      channelid_android?: string;
+    };
+  };
+  push?: {
+    unipush?: {
+      offline?: boolean;
+      icons?: {
+        small?: {
+          ldpi?: string;
+          mdpi?: string;
+          hdpi?: string;
+          xhdpi?: string;
+          xxhdpi?: string;
+        };
+      };
+      hms?: {};
+      oppo?: {};
+      vivo?: {};
+      mi?: {};
+      version?: "2";
+      meizu?: {};
+      honor?: {};
+      fcm?: {};
+    };
+  };
+  maps?: {
+    google?: {
+      APIKey_ios?: string;
+      APIKey_android?: string;
+    };
+    amap?: {
+      name?: string;
+      appkey_ios?: string;
+      appkey_android?: string;
+    };
+    baidu?: {
+      appkey_ios?: string;
+      appkey_android?: string;
+    };
+  };
+  payment?: {
+    appleiap?: {};
+    alipay?: {
+      __platform__?: AppPlusOS[];
+    };
+    weixin?: {
+      __platform__?: AppPlusOS[];
+      appid?: string;
+      UniversalLinks?: string;
+    };
+    paypal?: {
+      __platform__?: AppPlusOS[];
+      returnURL_ios?: string;
+      returnURL_android?: string;
+    };
+    stripe?: {
+      __platform__?: AppPlusOS[];
+      returnURL_ios?: string;
+    };
+    google?: {};
+  };
+}
+export interface AppPlus {
   /** 编译器兼容性配置 */
   compatible: {
     /** 是否忽略运行环境与编译环境不一致的问题 */
@@ -161,11 +529,11 @@ interface AppPlus {
   /** 重力感应、横竖屏配置 */
   screenOrientation: ("portrait-primary" | "portrait-secondary" | "landscape-primary" | "landscape-secondary")[];
   /** APP 权限模块 */
-  modules: Record<string, any>;
+  modules: AppPlusModules;
   /** APP 发布信息 */
   distribute: {
     /** Android 专用配置 */
-    android: Record<string, any>;
+    android: AppPlusDistributeAndroid;
     /** iOS 专用配置 */
     ios: Record<string, any>;
     /**
@@ -184,7 +552,7 @@ interface AppPlus {
      * SDK 配置
      * 仅打包生效
      */
-    sdkConfigs: Record<string, any>;
+    sdkConfigs: AppPlusDistributeSdkConfigs;
     /**
      * Android使用原生隐私政策提示框
      *
@@ -271,7 +639,7 @@ interface AppPlus {
   };
   [x: string]: any;
 }
-interface H5 {
+export interface H5 {
   /**
    * 页面标题
    * 默认使用顶层 name 字段
@@ -362,7 +730,7 @@ interface H5 {
   uniStatistics: SimpleUniStatistics;
   [x: string]: any;
 }
-interface QuickappWebview {
+export interface QuickappWebview {
   /** 应用图标，推荐尺寸 192x192 */
   icon: string;
   /** 应用包名 */
@@ -375,15 +743,15 @@ interface QuickappWebview {
   versionCode: number;
   [x: string]: any;
 }
-interface QuickappWebviewUnion {
+export interface QuickappWebviewUnion {
   /** 最小平台支持，最低 1063 */
   minPlatformVersion: number;
 }
-interface QuickappWebviewHuawei {
+export interface QuickappWebviewHuawei {
   /** 最小平台支持，最低 1070 */
   minPlatformVersion: number;
 }
-interface MpWeixin {
+export interface MpWeixin {
   /** 微信小程序的 appid */
   appid: string;
   /**
@@ -535,7 +903,7 @@ interface MpWeixin {
   lazyCodeLoading: "requiredComponents";
   [x: string]: any;
 }
-interface MpAlipay {
+export interface MpAlipay {
   /** 使用到的插件 */
   plugins: Record<string, any>;
   /**
@@ -579,7 +947,7 @@ interface MpAlipay {
   lazyCodeLoading: "requiredComponents";
   [x: string]: any;
 }
-interface MpBaidu {
+export interface MpBaidu {
   /** 百度小程序的 appid */
   appid: string;
   /** 需要在后台使用的能力 */
@@ -600,7 +968,7 @@ interface MpBaidu {
   scopedSlotsCompiler: "auto" | "legacy" | "augmented";
   [x: string]: any;
 }
-interface MpToutiao {
+export interface MpToutiao {
   /** 字节跳动小程序的 appid */
   appid: string;
   /** 字节跳动小程序小程序项目设置 */
@@ -638,7 +1006,7 @@ interface MpToutiao {
   scopedSlotsCompiler: "auto" | "legacy" | "augmented";
   [x: string]: any;
 }
-interface MpLark {
+export interface MpLark {
   /** 飞书小程序的 appid */
   appid: string;
   /** 飞书小程序小程序项目设置 */
@@ -666,7 +1034,7 @@ interface MpLark {
   scopedSlotsCompiler: "auto" | "legacy" | "augmented";
   [x: string]: any;
 }
-interface MpQq {
+export interface MpQq {
   /** QQ 小程序的 appid */
   appid: string;
   /** 需要在后台使用的能力 */
@@ -693,7 +1061,7 @@ interface MpQq {
   scopedSlotsCompiler: "auto" | "legacy" | "augmented";
   [x: string]: any;
 }
-interface MpKuaishou {
+export interface MpKuaishou {
   /** 快手小程序的 appid */
   appid: string;
   /** 优化配置 */
@@ -710,7 +1078,7 @@ interface MpKuaishou {
   scopedSlotsCompiler: "auto" | "legacy" | "augmented";
   [x: string]: any;
 }
-interface ManifestConfig {
+export interface ManifestConfig {
   /** 应用名称，安装 APP 后显示的名称 */
   name: string;
   /**
@@ -773,23 +1141,3 @@ interface ManifestConfig {
   "mp-kuaishou": MpKuaishou;
   [x: string]: any;
 }
-
-export {
-  type AppPlus,
-  type AppPlusIcons,
-  type H5,
-  type ManifestConfig,
-  type MpAlipay,
-  type MpBaidu,
-  type MpKuaishou,
-  type MpLark,
-  type MpQq,
-  type MpToutiao,
-  type MpWeixin,
-  type NetworkTimeout,
-  type QuickappWebview,
-  type QuickappWebviewHuawei,
-  type QuickappWebviewUnion,
-  type SimpleUniStatistics,
-  type UniStatistics,
-};
