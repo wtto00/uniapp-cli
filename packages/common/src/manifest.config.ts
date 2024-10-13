@@ -84,40 +84,40 @@ export interface AppPlusIcons {
       /** iOS7+设备程序主图标，分辨率要求76x76 */
       app?: PNG;
       /** iOS7+高分屏设备程序主图标，分辨率要求152x152 */
-      "app@2x": PNG;
+      "app@2x"?: PNG;
       /** iOS7+设备通知栏图标，分辨率要求20x20 */
       notification?: PNG;
       /** iOS7+高分屏设备通知栏图标，分辨率要求40x40 */
-      "notification@2x": PNG;
+      "notification@2x"?: PNG;
       /** iOS9+ iPad Pro(12.9英寸)设备程序主图标，分辨率要求167x167 */
-      "proapp@2x": PNG;
+      "proapp@2x"?: PNG;
       /** iOS5+设备Settings设置图标，分辨率要求29x29 */
       settings?: PNG;
       /** iOS5+高分屏设备Settings设置图标，分辨率要求58x58 */
-      "settings@2x": PNG;
+      "settings@2x"?: PNG;
       /** iOS7+设备Spotlight搜索图标，分辨率要求40x40 */
       spotlight?: PNG;
       /** iOS7+高分屏设备Spotlight搜索图标，分辨率要求80x80 */
-      "spotlight@2x": PNG;
+      "spotlight@2x"?: PNG;
     };
     /** iPhone设备程序图标 */
     iphone?: {
       /** iOS7+设备程序主图标，分辨率要求120x120 */
-      "app@2x": PNG;
+      "app@2x"?: PNG;
       /** iOS7+设备程序主图标，分辨率要求180x180 */
-      "app@3x": PNG;
+      "app@3x"?: PNG;
       /** iOS7+设备通知栏图标，分辨率要求40x40 */
-      "notification@2x": PNG;
+      "notification@2x"?: PNG;
       /** iOS7+设备通知栏图标，分辨率要求60x60 */
-      "notification@3x": PNG;
+      "notification@3x"?: PNG;
       /** iOS7+设备Settings设置图标，分辨率要求58x58 */
-      "settings@2x": PNG;
+      "settings@2x"?: PNG;
       /** iOS7+设备Settings设置图标，分辨率要求87x87 */
-      "settings@3x": PNG;
+      "settings@3x"?: PNG;
       /** iOS7+设备Spotlight搜索图标，分辨率要求80x80 */
-      "spotlight@2x": PNG;
+      "spotlight@2x"?: PNG;
       /** iOS7+设备Spotlight搜索图标，分辨率要求120x120 */
-      "spotlight@3x": PNG;
+      "spotlight@3x"?: PNG;
     };
   };
 }
@@ -127,6 +127,11 @@ export enum PermissionRequest {
   NONE = "none",
 }
 export interface AppPlusDistributeAndroid {
+  /**
+   * 从3.1.10版本开始使用App离线SDK需要申请Appkey
+   * @link https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
+   */
+  dcloud_appkey?: string;
   /** Android平台云端打包的包名 */
   packagename?: string;
   /** Android平台云端打包使用的签名证书文件路径 */
@@ -324,7 +329,12 @@ export interface AppPlusDistributeSdkConfigs {
     /**
      * uni一键登录
      */
-    univerify?: {};
+    univerify?: {
+      /**
+       * GETUI_APPID与GY_APP_ID对[应开发者中心](https://dev.dcloud.net.cn/)一键登录->基础配置->一键登录应用ID（离线打包使用），GETUI_APPID与GY_APP_ID取值相同。
+       */
+      appid?: string;
+    };
     /**
      * QQ登录
      * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-qq.html
@@ -429,6 +439,10 @@ export interface AppPlusDistributeSdkConfigs {
       appkey_android?: string;
       channelid_android?: string;
     };
+    google?: {
+      config_ios?: string;
+      config_android?: string;
+    };
   };
   push?: {
     unipush?: {
@@ -489,6 +503,101 @@ export interface AppPlusDistributeSdkConfigs {
     google?: {};
   };
 }
+export interface AppPlusDistributeIOS {
+  /**
+   * 从3.1.10版本开始使用App离线SDK需要申请Appkey
+   * @link https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
+   */
+  dcloud_appkey?: string;
+  /** iOS平台云端打包使用的Bundle ID */
+  appid?: string;
+  /** iOS平台云端打包使用的profile文件路径 */
+  mobileprovision?: string;
+  /** iOS平台云端打包使用的证书文件路径 */
+  p12?: string;
+  /** iOS打包使用的证书密码 */
+  password?: string;
+  /** iOS支持的设备类型，可取值iphone（仅支持iPhone设备）、ipad（仅支持iPad设备）、universal（同时支持iPhone和iPad设备） */
+  devices?: string;
+  /** 应用访问白名单列表，多个白名单使用“,”分割，详情参考：iOS设置应用访问白名单 */
+  urlschemewhitelist?: string;
+  /** Android平台App注册的scheme，多个scheme使用“,”分割，详情参考：iOS设置应用UrlSchemes */
+  urltypes?: string;
+  /** 应用后台运行模式，详情参考：[iOS设置应用后台运行能力](https://uniapp.dcloud.io/tutorial/app-ios-uibackgroundmodes) */
+  UIBackgroundModes?: string;
+  /**
+   * @deprecated
+   * 依赖的系统库，已废弃，推荐使用uni原生插件扩展使用系统依赖库 */
+  frameworks?: string[];
+  /** iOS支持的最低版本 */
+  deploymentTarget?: string;
+  /** iOS隐私信息访问的许可描述 */
+  privacyDescription?: {
+    /** 可选，字符串类型，系统相册读取权限描述 */
+    NSPhotoLibraryUsageDescription?: string;
+    /** 可选，字符串类型，系统相册写入权限描述 */
+    NSPhotoLibraryAddUsageDescription?: string;
+    /** 可选，字符串类型，摄像头使用权限描述 */
+    NSCameraUsageDescription?: string;
+    /** 可选，字符串类型，麦克风使用权限描述 */
+    NSMicrophoneUsageDescription?: string;
+    /** 可选，字符串类型，运行期访问位置权限描述 */
+    NSLocationWhenInUseUsageDescription?: string;
+    /** 可选，字符串类型，后台运行访问位置权限描述 */
+    NSLocationAlwaysUsageDescription?: string;
+    /** 可选，字符串类型，运行期后后台访问位置权限描述 */
+    NSLocationAlwaysAndWhenInUseUsageDescription?: string;
+    /** 可选，字符串类型，使用日历权限描述 */
+    NSCalendarsUsageDescription?: string;
+    /** 可选，字符串类型，使用通讯录权限描述 */
+    NSContactsUsageDescription?: string;
+    /** 可选，字符串类型，使用蓝牙权限描述 */
+    NSBluetoothPeripheralUsageDescription?: string;
+    /** 可选，字符串类型，后台使用蓝牙权限描述 */
+    NSBluetoothAlwaysUsageDescription?: string;
+    /** 可选，字符串类型，系统语音识别权限描述 */
+    NSSpeechRecognitionUsageDescription?: string;
+    /** 可选，字符串类型，系统提醒事项权限描述 */
+    NSRemindersUsageDescription?: string;
+    /** 可选，字符串类型，使用运动与健康权限描述 */
+    NSMotionUsageDescription?: string;
+    /** 可选，字符串类型，使用健康更新权限描述 */
+    NSHealthUpdateUsageDescription?: string;
+    /** 可选，字符串类型，使用健康分享权限描述 */
+    NSHealthShareUsageDescription?: string;
+    /** 可选，字符串类型，使用媒体资料库权限描述 */
+    NSAppleMusicUsageDescription?: string;
+    /** 可选，字符串类型，使用NFC权限描述 */
+    NFCReaderUsageDescription?: string;
+    /** 可选，字符串类型，访问临床记录权限描述 */
+    NSHealthClinicalHealthRecordsShareUsageDescription?: string;
+    /** 可选，字符串类型，访问HomeKit权限描述 */
+    NSHomeKitUsageDescription?: string;
+    /** 可选，字符串类型，访问Siri权限描述 */
+    NSSiriUsageDescription?: string;
+    /** 可选，字符串类型，使用FaceID权限描述 */
+    NSFaceIDUsageDescription?: string;
+    /** 可选，字符串类型，访问本地网络权限描述 */
+    NSLocalNetworkUsageDescription?: string;
+    /** 可选，字符串类型，跟踪用户活动权限描述 */
+    NSUserTrackingUsageDescription?: string;
+  };
+  /** 是否使用广告标识 */
+  idfa?: boolean;
+  /** 应用的能力配置（Capabilities） */
+  capabilities?: {
+    entitlements: object;
+    plists: object;
+  };
+  /** 应用的CFBundleName名称，默认值为HBuilder */
+  CFBundleName?: string;
+  /** 编译时支持的CPU指令，可取值arm64、arm64e、armv7、armv7s、x86_64 */
+  validArchitectures?: ("arm64" | "arm64e" | "armv7" | "armv7s" | "x86_64")[];
+  /** 使用“Push(消息推送)”模块时申请系统推送权限模式，设置为manual表示调用push相关API时申请，设置为其它值表示应用启动时自动申请 */
+  pushRegisterMode?: string;
+  /** 设置为manual表示同意隐私政策后再获取相关隐私信息，设置为其它值表示应用启动时自动获取详见 */
+  privacyRegisterMode?: string;
+}
 export interface AppPlus {
   /** 编译器兼容性配置 */
   compatible?: {
@@ -535,7 +644,7 @@ export interface AppPlus {
     /** Android 专用配置 */
     android?: AppPlusDistributeAndroid;
     /** iOS 专用配置 */
-    ios?: Record<string, any>;
+    ios?: AppPlusDistributeIOS;
     /**
      * App图标配置
      *
@@ -587,7 +696,7 @@ export interface AppPlus {
      * flex 项目的排列方向
      * 默认为 column
      */
-    "flex-direction": "row" | "row-reverse" | "column" | "column-reverse";
+    "flex-direction"?: "row" | "row-reverse" | "column" | "column-reverse";
   };
   /** uni 统计配置项 */
   uniStatistics?: SimpleUniStatistics;
@@ -1116,28 +1225,28 @@ export interface ManifestConfig {
    */
   uniStatistics?: UniStatistics;
   /** APP 特有配置 */
-  "app-plus": AppPlus;
+  "app-plus"?: AppPlus;
   /** H5 特有配置 */
   h5?: H5;
   /** 快应用特有配置 */
-  "quickapp-webview": QuickappWebview;
+  "quickapp-webview"?: QuickappWebview;
   /** 快应用联盟特有配置 */
-  "quickapp-webview-union": QuickappWebviewUnion;
+  "quickapp-webview-union"?: QuickappWebviewUnion;
   /** 快应用华为特有配置 */
-  "quickapp-webview-huawei": QuickappWebviewHuawei;
+  "quickapp-webview-huawei"?: QuickappWebviewHuawei;
   /** 微信小程序特有配置 */
-  "mp-weixin": MpWeixin;
+  "mp-weixin"?: MpWeixin;
   /** 支付宝小程序特有配置 */
-  "mp-alipay": MpAlipay;
+  "mp-alipay"?: MpAlipay;
   /** 百度小程序特有配置 */
-  "mp-baidu": MpBaidu;
+  "mp-baidu"?: MpBaidu;
   /** 字节跳动小程序特有配置 */
-  "mp-toutiao": MpToutiao;
+  "mp-toutiao"?: MpToutiao;
   /** 飞书小程序特有配置 */
-  "mp-lark": MpLark;
+  "mp-lark"?: MpLark;
   /** QQ 小程序特有配置 */
-  "mp-qq": MpQq;
+  "mp-qq"?: MpQq;
   /** 快手小程序特有配置 */
-  "mp-kuaishou": MpKuaishou;
+  "mp-kuaishou"?: MpKuaishou;
   [x: string]: any;
 }

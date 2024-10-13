@@ -33,6 +33,7 @@
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
   "dependencies": {
     "@uniapp-cli/common": "workspace:^",
+    "@wtto00/android-tools": "^1.0.5",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "degit": "^2.8.4",
