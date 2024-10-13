@@ -23,6 +23,7 @@ export interface ModuleClass {
 export enum PLATFORM {
   ANDROID = "android",
   IOS = "ios",
+  HARMONY = "harmony",
   H5 = "h5",
   MP_WEIXIN = "mp-weixin",
   MP_ALIPAY = "mp-alipay",
@@ -61,6 +62,8 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
       return (await import("./android.js")).default;
     case PLATFORM.IOS:
       return (await import("./ios.js")).default;
+    case PLATFORM.HARMONY:
+      return (await import("./harmony.js")).default;
     case PLATFORM.H5:
       return (await import("./h5.js")).default;
     case PLATFORM.MP_WEIXIN:
