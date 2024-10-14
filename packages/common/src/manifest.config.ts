@@ -129,7 +129,7 @@ export enum PermissionRequest {
 export interface AppPlusDistributeAndroid {
   /**
    * 从3.1.10版本开始使用App离线SDK需要申请Appkey
-   * @link https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
+   * @see https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
    */
   dcloud_appkey?: string;
   /** Android平台云端打包的包名 */
@@ -149,7 +149,7 @@ export interface AppPlusDistributeAndroid {
   /** 是否自定义Android权限配置 */
   custompermissions?: boolean;
   /** Android平台应用启动时申请读写手机存储权限策略配置，详情参考：Android平台应用启动时读写手机存储权限策略，支持request、prompt属性
-   * @link https://ask.dcloud.net.cn/article/36549
+   * @see https://ask.dcloud.net.cn/article/36549
    */
   permissionExternalStorage?: {
     /**
@@ -169,7 +169,7 @@ export interface AppPlusDistributeAndroid {
     prompt?: string;
   };
   /** Android平台应用启动时申请读取设备信息权限配置，详情参考：Android平台应用启动时访问设备信息(如IMEI)权限策略，支持request、prompt属性
-   * @link https://ask.dcloud.net.cn/article/36549
+   * @see https://ask.dcloud.net.cn/article/36549
    */
   permissionPhoneState?: {
     /**
@@ -187,11 +187,11 @@ export interface AppPlusDistributeAndroid {
     prompt?: string;
   };
   /** Android平台最低支持版本，详情参考：Android平台设置minSdkVersion
-   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-minsdkversion.html
+   * @see https://uniapp.dcloud.net.cn/tutorial/app-android-minsdkversion.html
    */
   minSdkVersion?: string;
   /** Android平台目标版本，详情参考：Android平台设置targetSdkVersion
-   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-targetsdkversion.html
+   * @see https://uniapp.dcloud.net.cn/tutorial/app-android-targetsdkversion.html
    */
   targetSdkVersion?: string;
   /** Android平台云端打包时build.gradle的packagingOptions配置项，
@@ -234,7 +234,7 @@ export interface AppPlusDistributeAndroid {
 }
 /**
  * 功能模块
- * @link https://uniapp.dcloud.net.cn/tutorial/app-modules.html#%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97
+ * @see https://uniapp.dcloud.net.cn/tutorial/app-modules.html#%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97
  */
 export interface AppPlusModules {
   /** 登录授权 */
@@ -267,8 +267,8 @@ export interface AppPlusModules {
    * - App-Android平台要求Android5（API Leavel 21）及以上系统，App-iOS平台要求iOS9及以上系统
    * - App端使用实人认证SDK，需在隐私政策的三方SDK中添加实人认证功能描述，参考[详情](https://ask.dcloud.net.cn/article/39484#FacialRecognitionVerify)
    * - [离线打包](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/facialRecognitionVerify.html)
-   * @link https://uniapp.dcloud.net.cn/tutorial/app-facialRecognitionVerify.html
-   * @link https://doc.dcloud.net.cn/uniCloud/frv/intro.html
+   * @see https://uniapp.dcloud.net.cn/tutorial/app-facialRecognitionVerify.html
+   * @see https://doc.dcloud.net.cn/uniCloud/frv/intro.html
    */
   FacialRecognitionVerify?: {};
   /** iBeacon */
@@ -286,7 +286,7 @@ export interface AppPlusModules {
   /**
    * 安全网络
    * - 安全网络暂未支持离线打包，后续会提供离线打包的方案
-   * @link https://doc.dcloud.net.cn/uniCloud/secure-network.html
+   * @see https://doc.dcloud.net.cn/uniCloud/secure-network.html
    */
   SecureNetwork?: {};
   /** SQLite数据库 */
@@ -296,14 +296,14 @@ export interface AppPlusModules {
   /**
    * Android X5 Webview(腾讯TBS)
    * - CPU类型配置不支持“x86”
-   * @link https://uniapp.dcloud.net.cn/tutorial/app-android-x5.html
+   * @see https://uniapp.dcloud.net.cn/tutorial/app-android-x5.html
    */
   "Webview-x5"?: {};
   /**
    * iOS UIWebview,
    * - 使用UIWebview模块后应用无法通过App Store审核
-   * @link https://uniapp.dcloud.net.cn/tutorial/app-ios-uiwebview.html#uiwebview
-   * @link https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/uiwebview.html
+   * @see https://uniapp.dcloud.net.cn/tutorial/app-ios-uiwebview.html#uiwebview
+   * @see https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/uiwebview.html
    */
   UIWebview?: {};
 }
@@ -315,7 +315,7 @@ export interface AppPlusDistributeSdkConfigs {
   oauth?: {
     /**
      * 微信授权登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-weixin.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-weixin.html
      */
     weixin?: {
       appid?: string;
@@ -323,7 +323,7 @@ export interface AppPlusDistributeSdkConfigs {
     };
     /**
      * 苹果登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-apple.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-apple.html
      */
     apple?: {};
     /**
@@ -337,7 +337,7 @@ export interface AppPlusDistributeSdkConfigs {
     };
     /**
      * QQ登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-qq.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-qq.html
      */
     qq?: {
       appid?: string;
@@ -345,7 +345,7 @@ export interface AppPlusDistributeSdkConfigs {
     };
     /**
      * 新浪微博登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-weibo.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-weibo.html
      */
     sina?: {
       appkey?: string;
@@ -354,14 +354,14 @@ export interface AppPlusDistributeSdkConfigs {
     };
     /**
      * Google登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-google.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-google.html
      */
     google?: {
       clientid?: string;
     };
     /**
      * Facebook登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-facebook.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-facebook.html
      */
     facebook?: {
       appid?: string;
@@ -369,7 +369,7 @@ export interface AppPlusDistributeSdkConfigs {
     };
     /**
      * 华为登录
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-oauth-huawei.html
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-huawei.html
      */
     huawei?: {};
   };
@@ -506,7 +506,7 @@ export interface AppPlusDistributeSdkConfigs {
 export interface AppPlusDistributeIOS {
   /**
    * 从3.1.10版本开始使用App离线SDK需要申请Appkey
-   * @link https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
+   * @see https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html
    */
   dcloud_appkey?: string;
   /** iOS平台云端打包使用的Bundle ID */
@@ -648,7 +648,7 @@ export interface AppPlus {
     /**
      * App图标配置
      *
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-icons.html#%E4%BA%91%E7%AB%AF%E6%89%93%E5%8C%85
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-icons.html#%E4%BA%91%E7%AB%AF%E6%89%93%E5%8C%85
      *
      * 注意事项：
      *
@@ -665,7 +665,7 @@ export interface AppPlus {
     /**
      * Android使用原生隐私政策提示框
      *
-     * @link https://uniapp.dcloud.net.cn/tutorial/app-privacy-android.html#
+     * @see https://uniapp.dcloud.net.cn/tutorial/app-privacy-android.html#
      */
     splashscreen?: {
       useOriginalMsgbox?: boolean;
@@ -873,7 +873,7 @@ export interface MpWeixin {
     /**
      * 是否使用增强编译
      *
-     * {@link https://developers.weixin.qq.com/community/develop/doc/0002ce07a58000a57c5da5e6456c09 regeneratorRuntime 相关报错排查指引}
+     * {@see https://developers.weixin.qq.com/community/develop/doc/0002ce07a58000a57c5da5e6456c09 regeneratorRuntime 相关报错排查指引}
      */
     es7?: boolean;
     /** 是否使用增强编译 */
@@ -908,7 +908,7 @@ export interface MpWeixin {
     babelSetting?: {
       /**
        * Babel 辅助函数的输出目录
-       * 默认为 @babel/runtime
+       * 默认为 `@babel/runtime`
        */
       outputPath?: string;
       /** 需要跳过 Babel 编译（包括代码压缩）处理的文件或目录 */

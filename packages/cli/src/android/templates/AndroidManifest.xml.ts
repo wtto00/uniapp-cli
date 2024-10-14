@@ -24,7 +24,7 @@ function getPermissionRequest(request: string | undefined, defaultValue: Permiss
 
 /**
  * 获取已勾选模块所使用的模块
- * @link https://uniapp.dcloud.net.cn/tutorial/app-permission-android.html#modules-permission
+ * @see https://uniapp.dcloud.net.cn/tutorial/app-permission-android.html#modules-permission
  * @param config 用户配置信息
  * @param permissionsDefinded 用户已声明的权限，防止重复
  */
@@ -121,11 +121,11 @@ export function generateAndroidManifest(config: ManifestConfig) {
 
         <meta-data android:name="DCLOUD_WRITE_EXTERNAL_STORAGE" android:value="${getPermissionRequest(
           config["app-plus"]?.distribute?.android?.permissionExternalStorage?.request,
-          PermissionRequest.NONE
+          PermissionRequest.NONE,
         )}"/>  
         <meta-data android:name="DCLOUD_READ_PHONE_STATE" android:value="${getPermissionRequest(
           config["app-plus"]?.distribute?.android?.permissionPhoneState?.request,
-          PermissionRequest.ONCE
+          PermissionRequest.ONCE,
         )}"/>  
 
     </application>

@@ -20,7 +20,7 @@ const h5: ModuleClass = {
   run(options) {
     let success = false;
     let over = false;
-    let output: string[] = [];
+    const output: string[] = [];
     spawnExec("npx", ["uni", "-p", "h5"], (msg) => {
       if (options.open === false) return;
       if (over) return;
@@ -38,7 +38,7 @@ const h5: ModuleClass = {
               .then(() => {
                 Log.success("Browser has been opened.");
               })
-              .catch(Log.error)
+              .catch(Log.error),
           );
         }
       }
@@ -49,7 +49,7 @@ const h5: ModuleClass = {
   build(options) {
     let success = false;
     let over = false;
-    let output: string[] = [];
+    const output: string[] = [];
     spawnExec("npx", ["uni", "build", "-p", "h5"], (msg) => {
       if (options.open === false) return;
       if (over) return;
@@ -67,7 +67,7 @@ const h5: ModuleClass = {
               .then(() => {
                 Log.success("Browser has been opened.");
               })
-              .catch(Log.error)
+              .catch(Log.error),
           );
         }
       }

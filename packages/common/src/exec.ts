@@ -14,7 +14,7 @@ import { Log } from "./log.js";
 export function spawnExecSync(
   cmd: string,
   args: string[] = [],
-  option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">
+  option?: Omit<SpawnSyncOptionsWithStringEncoding, "encoding">,
 ) {
   return spawnSync(`"${cmd}"`, args, { encoding: "utf8", shell: true, ...option });
 }
@@ -23,7 +23,7 @@ export function spawnExec(
   cmd: string,
   args: string[],
   callback: (log: string) => void,
-  option?: Omit<SpawnOptionsWithStdioTuple<StdioNull, StdioPipe, StdioPipe>, "stdio">
+  option?: Omit<SpawnOptionsWithStdioTuple<StdioNull, StdioPipe, StdioPipe>, "stdio">,
 ) {
   const proc = spawn(`"${cmd}"`, args, { stdio: ["inherit", "pipe", "pipe"], shell: true, ...option });
 
@@ -57,11 +57,12 @@ export function getOutput(proc: SpawnSyncReturns<string>) {
  * @param text output text
  */
 export function outputRemoveColor(text: string) {
+  // oxlint-disable no-control-regex
   return text.replace(/\x1B\[\d+m/g, "");
 }
 
 /**
- * @vue/cli has been installed or not
+ * `@vue/cli` has been installed or not
  */
 export function isVueCliInstalled() {
   return getOutput(spawnExecSync("vue")).includes("Usage: vue");

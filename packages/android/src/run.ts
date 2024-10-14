@@ -41,7 +41,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
 
   if (!existsSync(androidDir)) {
     throw Error(
-      "The android platform has not been added yet. Please execute `uniapp platform add android` to add the android platform."
+      "The android platform has not been added yet. Please execute `uniapp platform add android` to add the android platform.",
     );
   }
 
@@ -84,7 +84,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
   const isWin = process.platform === "win32";
   const gradleExePath = resolve(global.projectRoot, `${androidPath}/gradlew${isWin ? ".bat" : ""}`);
   if (!existsSync(gradleExePath)) {
-    throw Error(`File \`${gradleExePath}\` does\'t exist.`);
+    throw Error(`File \`${gradleExePath}\` does't exist.`);
   }
   const apkPath = `${androidPath}/app/build/outputs/apk/${
     isRelease ? "release/app-release.apk" : "debug/app-debug.apk"
@@ -95,7 +95,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
   const proc = spawnExecSync(
     isWin ? gradleExePath : "sh",
     [isWin ? "" : gradleExePath, isRelease ? "assembleRelease" : "assembleDebug"],
-    { stdio: "inherit", env: getSignConfigEnv(manifest, isRelease) }
+    { stdio: "inherit", env: getSignConfigEnv(manifest, isRelease) },
   );
   if (proc.stderr?.trim()) {
     throw Error(proc.stderr.trim());
@@ -124,7 +124,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
 
   await android.adb(
     deviceName,
-    `shell am start -n ${manifest["app-plus"].distribute.android.packagename}/io.dcloud.PandoraEntry`
+    `shell am start -n ${manifest["app-plus"].distribute.android.packagename}/io.dcloud.PandoraEntry`,
   );
   return deviceName;
 }

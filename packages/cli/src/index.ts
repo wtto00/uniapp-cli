@@ -86,7 +86,7 @@ program
   .option("--device <device>", "Deploy a build to specified device.\nOnly available on Android and iOS")
   .addHelpText(
     "after",
-    "\nExample:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin"
+    "\nExample:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin",
   )
   .action((platform, options) => {
     void import("./run.js").then(({ run }) => run(platform, options));
@@ -104,7 +104,7 @@ program
   .option("--device <device>", "Deploy a build to specified device.\nOnly available on Android and iOS")
   .addHelpText(
     "after",
-    "\nExample:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin"
+    "\nExample:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin",
   )
   .action((platform, options) => {
     void import("./build.js").then(({ build }) => build(platform, options));

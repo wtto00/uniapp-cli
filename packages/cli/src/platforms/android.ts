@@ -81,7 +81,7 @@ const android: ModuleClass = {
 
   run(options) {
     const uniappProcess = spawnExec("npx", ["uni", "-p", "app-android"], async (msg) => {
-      const doneChange = /DONE  Build complete\. Watching for changes\.\.\./.test(msg);
+      const doneChange = /DONE {2}Build complete\. Watching for changes\.\.\./.test(msg);
       if (!doneChange) return;
 
       Log.info("\nstart build android:");

@@ -36,7 +36,7 @@ export default async function add() {
 
   if (existsSync(androidDir)) {
     throw Error(
-      "The android platform has been added, please execute `uniapp platform rm android` to remove the android platform."
+      "The android platform has been added, please execute `uniapp platform rm android` to remove the android platform.",
     );
   }
   mkdirSync(androidDir, { recursive: true });

@@ -20,7 +20,7 @@ export function appendFeature(
     value: string;
     features?: PropertiesFeatures;
     module?: Record<string, string>;
-  }
+  },
 ) {
   const { name, value, features: featuresChildren, module } = feature;
   if (!features[name]) {
