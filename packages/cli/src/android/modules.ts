@@ -5,12 +5,11 @@
 import type { ManifestConfig } from "@uniapp-cli/common";
 import { appendFeature, Properties } from "./templates/dcloud_properties.xml";
 import { generateWXEntryActivity, getWXEntryActivityFilePath } from "./templates/WXEntryActivity.java";
+import { AndroidManifest } from "./templates/AndroidManifest.xml";
+import { BuildGradle } from "./templates/build.gradle";
 
 export interface ModulesResult {
-  /** 模块所需要的权限 */
-  permissions: Set<string>;
-  /** Androidmainfest.xml中的application节点下配置meta-data等 */
-  application: Set<string>;
+  androidManifest: AndroidManifest;
   /** 所需要的依赖文件 */
   libs: Set<string>;
   /** 要写入的的文件 */
@@ -20,11 +19,7 @@ export interface ModulesResult {
   /** build.gradle文件中的defaultConfig下的manifestPlaceholders节点 */
   gradleManifestPlaceholders: Record<string, string>;
   gradleApplyPlugin: Set<string>;
-  /** build.gradle下添加的仓库地址 */
-  rootGradleMaven: Set<string>;
-  rootGradleAllMaven: Set<string>;
-  rootGradleDependencies: Set<string>;
-  activityPandoraEntry: Set<string>;
+  buildGradle: BuildGradle;
   properties: Properties;
   /** res/values/strings.xml */
   strings: Set<string>;
@@ -83,6 +78,12 @@ export function getModulesResults(manifest: ManifestConfig) {
     if (oauth?.facebook) {
       results.libs.add("oauth-facebook-release.aar");
 
+      if (oauth.facebook.permission_ad_remove) {
+        results.permissions.add(
+          '<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />',
+        );
+      }
+
       results.strings.add(`<string name="facebook_app_id">${oauth.facebook.appid}</string>`);
       results.strings.add(`<string name="fb_login_protocol_scheme">fb${oauth.facebook.appid}</string>`);
       results.strings.add(`<string name="facebook_client_token">${oauth.facebook.client_token}</string>`);
@@ -118,7 +119,7 @@ export function getModulesResults(manifest: ManifestConfig) {
       // qq_mta-sdk-1.6.2.jar（3.6.7以下版本需要）
       results.libs.add("open_sdk_3.5.12.2_r97423a8_lite.jar");
 
-      results.permissions.add('<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>');
+      results.permissions.add('<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />');
 
       results.application.add(`<meta-data android:value="${oauth.qq.appid}" android:name="QQ_APPID"/>
         <activity android:name="com.tencent.tauth.AuthActivity" android:launchMode="singleTask" android:noHistory="true">
@@ -191,7 +192,7 @@ export function getModulesResults(manifest: ManifestConfig) {
 
       results.files[getWXEntryActivityFilePath(manifest)] = generateWXEntryActivity(manifest);
 
-      results.permissions.add('<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>');
+      results.permissions.add('<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />');
 
       results.application.add(`<meta-data android:value="${oauth.weixin.appid}" android:name="WX_APPID"/>
         <activity android:name="${manifest["app-plus"]?.distribute?.android?.packagename}.wxapi.WXEntryActivity" 
@@ -213,5 +214,11 @@ export function getModulesResults(manifest: ManifestConfig) {
       });
     }
     // 小米登录
+  }
+
+  if (Bluetooth) {
+    results.libs.add("Bluetooth-release.aar");
+
+    results.permissions.add('<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />');
   }
 }
