@@ -29,7 +29,7 @@ export class Log {
             default:
               return item.msg;
           }
-        })
+        }),
       );
     }
   }

@@ -14,7 +14,7 @@ export async function build(platform: PLATFORM, options: BuildOptions) {
 
   if (module.modules.some((module) => !isInstalled(packages, module))) {
     Log.error(
-      `Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`
+      `Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`,
     );
     return;
   }

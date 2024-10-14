@@ -24,7 +24,7 @@ export async function add(platforms: PLATFORM[]) {
 
     try {
       await module.platformAdd({ packages, version: uniVersoin });
-    } catch (error) {
+    } catch (_error) {
       module.platformRemove({ packages });
     }
   }

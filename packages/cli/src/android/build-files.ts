@@ -90,7 +90,7 @@ function buildSchemes(schemes: string = "") {
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
                 <data android:scheme="${item}" />
-            </intent-filter>`
+            </intent-filter>`,
     )
     .join("\n            ");
 }

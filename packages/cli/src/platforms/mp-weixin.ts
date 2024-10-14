@@ -24,7 +24,7 @@ const mpWeixin: ModuleClass = {
         : "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
     if (!existsSync(defaultPath)) {
       Log.warn(
-        `${Log.emoji.fail} Dev tools is not installed.\n   If it's already installed, please set the environment variable \`WEIXIN_DEV_TOOL\` to the location of the \`cli\` executable file.`
+        `${Log.emoji.fail} Dev tools is not installed.\n   If it's already installed, please set the environment variable \`WEIXIN_DEV_TOOL\` to the location of the \`cli\` executable file.`,
       );
       return;
     }
@@ -43,7 +43,7 @@ const mpWeixin: ModuleClass = {
   run(options) {
     let success = false;
     let over = false;
-    let output: string[] = [];
+    const output: string[] = [];
     spawnExec("npx", ["uni", "-p", "mp-weixin"], (msg) => {
       if (options.open === false) return;
       if (over) return;
@@ -69,7 +69,7 @@ const mpWeixin: ModuleClass = {
   build(options) {
     let success = false;
     let over = false;
-    let output: string[] = [];
+    const output: string[] = [];
     spawnExec("npx", ["uni", "build", "-p", "mp-weixin"], (msg) => {
       if (options.open === false) return;
       if (over) return;
