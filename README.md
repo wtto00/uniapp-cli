@@ -18,3 +18,6 @@ CLI for Uniapp
 - 添加provider信息到Androidmanifest.xml的application节点中, 3.3.7及以上版本，可以不添加
 - uts插件: 需要HBuilder X 4.18版本及以上。
 - compileSdkVersion: 4.06更新为34，3.8.12更新为33
+- hasTaskAffinity: HX3.3.10+版本
+- geolocation.amap: 3.7.6开始不再提供"amap-libs-release.aar"文件 改为gradle集成！geolocation-amap-release.aar还需要继续添加到项目中
+- HBuilderX 3.99及以上版本，个推sdk由aar导入改为仓储方式，所以请注意3.99版本的配置与低版本并不相同。

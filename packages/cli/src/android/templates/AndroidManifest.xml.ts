@@ -32,6 +32,8 @@ export interface AndroidManifest {
   application: NodeProperties
   /** key为android:name属性值 */
   activity: Record<string, Activity>
+  /** 所有的activity添加android:taskAffinity="" */
+  hasTaskAffinity?: boolean
   /** meta-data节点, key为android:name属性值 */
   metaData?: Record<string, MetaData>
   /** service节点, key为android:name属性值 */
@@ -152,11 +154,20 @@ export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manife
     activity: mergeActivity(manifest1.activity, manifest2.activity),
     metaData: mergeRecord(manifest1.metaData, manifest2.metaData),
     service: mergeRecord<NodeProperties>(manifest1.service, manifest2.service),
+    hasTaskAffinity: manifest2.hasTaskAffinity ?? manifest1.hasTaskAffinity,
   }
   return manifest
 }
 
 export function generateAndroidManifest(manifest: AndroidManifest) {
+  if (manifest.hasTaskAffinity) {
+    Object.keys(manifest.activity).forEach((name) => {
+      manifest.activity[name].properties = {
+        ...manifest.activity[name].properties,
+        'android:taskAffinity': '',
+      }
+    })
+  }
   return `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -265,4 +276,8 @@ function generateService(service: Record<string, NodeProperties> = {}, space = 8
     services.push(`<service android:name="${name}" ${generateProperties(service[name])} />`)
   })
   return services.join(`\n${generateSpace(space)}`)
+}
+
+export function appendService(manifest: AndroidManifest, service: AndroidManifest['service']) {
+  manifest.service = mergeRecord(manifest.service, service)
 }

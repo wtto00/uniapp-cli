@@ -513,6 +513,20 @@ export interface AppPlusDistributeSdkConfigs {
     }
     google?: {}
   }
+  speech?: {
+    baidu?: {
+      __platform__?: AppPlusOS[]
+      appid_android?: string
+      apikey_android?: string
+      secretkey_android?: string
+      appid_ios?: string
+      apikey_ios?: string
+      secretkey_ios?: string
+    }
+    xunfei?: {
+      appid?: string
+    }
+  }
 }
 export interface AppPlusDistributeIOS {
   /**

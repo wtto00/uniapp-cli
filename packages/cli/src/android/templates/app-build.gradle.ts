@@ -20,6 +20,7 @@ export interface AppBuildGradle {
   versionName?: string
   abiFilters?: Set<string>
   packagingOptions?: Set<string>
+  buildFeatures?: Record<string, boolean>
 }
 
 export const defaultAppBuildGradle: AppBuildGradle = {
@@ -72,6 +73,13 @@ export function mergeDependencies(
   return dependencies
 }
 
+export function appendDependencies(
+  buildGradle: AppBuildGradle,
+  dependencies?: Record<string, AppBuildGradleDependency>,
+) {
+  buildGradle.dependencies = mergeDependencies(buildGradle.dependencies, dependencies)
+}
+
 export function mergeAppBuildGradle(buildGradle1?: AppBuildGradle, buildGradle2?: AppBuildGradle) {
   const buildGradle: AppBuildGradle = {
     compileSdkVersion: mergeField('compileSdkVersion', buildGradle1, buildGradle2),
@@ -87,11 +95,18 @@ export function mergeAppBuildGradle(buildGradle1?: AppBuildGradle, buildGradle2?
       ...buildGradle2?.manifestPlaceholders,
     },
     dependencies: mergeDependencies(buildGradle1?.dependencies, buildGradle2?.dependencies),
+    packagingOptions: new Set(),
+    buildFeatures: {
+      ...buildGradle1?.buildFeatures,
+      ...buildGradle2?.buildFeatures,
+    },
   }
   appendSet(buildGradle.abiFilters!, buildGradle1?.abiFilters)
   appendSet(buildGradle.abiFilters!, buildGradle2?.abiFilters)
   appendSet(buildGradle.plugins!, buildGradle1?.plugins)
   appendSet(buildGradle.plugins!, buildGradle2?.plugins)
+  appendSet(buildGradle.packagingOptions!, buildGradle1?.packagingOptions)
+  appendSet(buildGradle.packagingOptions!, buildGradle2?.packagingOptions)
   for (const dependencie in buildGradle1?.dependencies) {
     if (buildGradle2?.dependencies?.[dependencie]) {
     }
@@ -133,6 +148,24 @@ function genderateAppBuildGradleDependencies(dependencies?: Record<string, AppBu
 export function appendPackagingOptions(buildGradle: AppBuildGradle, value?: Set<string>) {
   if (!buildGradle.packagingOptions) buildGradle.packagingOptions = new Set()
   appendSet(buildGradle.packagingOptions, value)
+}
+
+function genderatePackagingOptions(packagingOptions?: AppBuildGradle['packagingOptions']) {
+  if (!packagingOptions) return ''
+  const xml: string[] = []
+  for (const item of packagingOptions) {
+    xml.push(item)
+  }
+  return xml.join(`\n${generateSpace(4)}`)
+}
+
+function generateBuildFeatures(buildFeatures?: AppBuildGradle['buildFeatures']) {
+  if (!buildFeatures) return ''
+  const xml: string[] = []
+  for (const key in buildFeatures) {
+    if (buildFeatures[key]) xml.push(`${key} = ${buildFeatures[key]}`)
+  }
+  return xml.join(`\n${generateSpace(4)}`)
 }
 
 export function genderateAppBuildGradle(buildGradle: AppBuildGradle) {
@@ -191,7 +224,8 @@ android {
         //noCompress 'foo', 'bar'
         ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
     }
-    ${buildGradle.packagingOptions && [...buildGradle.packagingOptions].join(`\n${generateSpace(4)}`)}
+    ${genderatePackagingOptions(buildGradle.packagingOptions)}
+    ${generateBuildFeatures(buildGradle.buildFeatures)}
 }
 repositories {
     flatDir {

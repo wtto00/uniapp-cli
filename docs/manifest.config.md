@@ -44,13 +44,13 @@ assignees: []
 - [x] `app-plus.distribute.android.targetSdkVersion`:可选，数字类型，Android 平台目标版本，参考：https://uniapp.dcloud.io/tutorial/app-android-targetsdkversion
 - [x] `app-plus.distribute.android.compileSdkVersion`:可选，数字类型，Android 平台编译期间使用的版本
 - [x] `app-plus.distribute.android.packagingOptions`: 可选，字符串数组类型，Android 平台云端打包时 build.gradle 的 packagingOptions 配置项
-- [ ] `app-plus.distribute.android.jsEngine`: 可选，字符串类型，uni-app 使用的 JS 引擎，可取值 v8、jsc
-- [ ] `app-plus.distribute.android.debuggable`: 可选，Boolean 类型，是否开启 Android 调试开关
-- [ ] `app-plus.distribute.android.locale`: 可选，应用的语言
-- [ ] `app-plus.distribute.android.forceDarkAllowed`: 可选，Boolean 类型，是否强制允许暗黑模式
-- [ ] `app-plus.distribute.android.resizeableActivity`: 可选，Boolean 类型，是否支持分屏调整窗口大小
-- [ ] `app-plus.distribute.android.hasTaskAffinity`: 可选，Boolean 类型，是否设置 android：taskAffinity
-- [ ] `app-plus.distribute.android.buildFeatures`: HBuilderX3.5.0+版本支持）可选，JSON 对象，Android 平台云端打包时 build.gradle 的 buildFeatures 配置项
+- [ ] ~~`app-plus.distribute.android.jsEngine`: 可选，字符串类型，uni-app 使用的 JS 引擎，可取值 v8、jsc~~
+- [ ] ~~`app-plus.distribute.android.debuggable`: 可选，Boolean 类型，是否开启 Android 调试开关~~
+- [ ] ~~`app-plus.distribute.android.locale`: 可选，应用的语言~~
+- [x] `app-plus.distribute.android.forceDarkAllowed`: 可选，Boolean 类型，是否强制允许暗黑模式
+- [ ] ~~`app-plus.distribute.android.resizeableActivity`: 可选，Boolean 类型，是否支持分屏调整窗口大小~~
+- [x] `app-plus.distribute.android.hasTaskAffinity`: 可选，Boolean 类型，是否设置 android：taskAffinity
+- [x] `app-plus.distribute.android.buildFeatures`: HBuilderX3.5.0+版本支持）可选，JSON 对象，Android 平台云端打包时 build.gradle 的 buildFeatures 配置项
 - [ ] `app-plus.distribute.ios.appid`: 必填，字符串类型，iOS 平台 Bundle ID
 - [ ] `app-plus.distribute.ios.mobileprovision`: 必填，字符串类型，iOS 打包使用的 profile 文件路径
 - [ ] `app-plus.distribute.ios.p12`: 必填，字符串类型，iOS 打包使用的证书文件路径
@@ -68,13 +68,13 @@ assignees: []
 - [ ] `app-plus.distribute.ios.validArchitectures`: 可选，字符串数组类型，编译时支持的 CPU 指令，可取值 arm64、arm64e、armv7、armv7s、x86_64
 - [ ] `app-plus.distribute.ios.pushRegisterMode`: 可选，使用“Push(消息推送)”模块时申请系统推送权限模式，manual 表示调用 push 相关 API 时申请，其它值表示应用启动时自动申请
 - [ ] `app-plus.distribute.ios.privacyRegisterMode`: 可选，仅 iOS 有效，设置为 manual 表示用户同意隐私政策后才获取 idfv，设置为其它值表示应用启动时自动获取
-- [ ] `app-plus.distribute.sdkConfigs.geolocation`: 可选，JSON 对象，Geolocation(定位)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.geolocation`: 可选，JSON 对象，Geolocation(定位)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.maps`: 可选，JSON 对象，Maps(地图)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.oauth`: 可选，JSON 对象，OAuth(登录鉴权)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.oauth`: 可选，JSON 对象，OAuth(登录鉴权)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.payment`: 可选，JSON 对象，Payment(支付)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.push`: 可选，JSON 对象，Push(消息推送)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.share`: 可选，JSON 对象，Share(分享)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.speech`: 可选，JSON 对象，Speech(语音识别)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.share`: 可选，JSON 对象，Share(分享)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.speech`: 可选，JSON 对象，Speech(语音识别)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.statics`: 可选，JSON 对象，Statistic(统计)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.ad`: 可选，JSON 对象，uni-AD 配置
 - [ ] `app-plus.distribute.icons.ios`: 可选，JSON 对象，iOS 平台图标配置

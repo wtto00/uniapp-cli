@@ -20,6 +20,9 @@ import { mergeControl, type Control } from './templates/dcloud_control.xml'
 import { resolve } from 'path'
 import { readdirSync } from 'fs'
 import { appendSet, enumInclude } from '../utils/util'
+import { appendOauth } from './modules/oauth'
+import { appendBluetooth } from './modules/bluetooth'
+import { findLibSDK } from './utils'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -36,7 +39,7 @@ export interface Results {
   strings: Strings
 }
 
-function createEmptyRsults(): Results {
+function createEmptyResults(): Results {
   return {
     androidManifest: {
       application: {},
@@ -84,7 +87,7 @@ export function getDefaultLibs() {
   const libsPath = resolve(global.projectRoot, 'node_modules/uniapp-android/SDK/libs')
   const files = readdirSync(libsPath, { encoding: 'utf8' })
 
-  const androidGifDrawableRelease = files.find((file) => file.startsWith('android-gif-drawable-release@'))
+  const androidGifDrawableRelease = findLibSDK('android-gif-drawable-release@')
   if (androidGifDrawableRelease) libs.add(androidGifDrawableRelease)
 
   const oaidSdk = files.find((file) => file.startsWith('oaid_sdk_'))
@@ -94,7 +97,7 @@ export function getDefaultLibs() {
 }
 
 export function prepare(manifest: ManifestConfig): Results {
-  const results = createEmptyRsults()
+  const results = createEmptyResults()
 
   // name
   results.strings['app_name'] = manifest.name ?? 'My UniApp'
@@ -122,6 +125,8 @@ export function prepare(manifest: ManifestConfig): Results {
     permissionExternalStorage,
     permissionPhoneState,
     packagingOptions,
+    hasTaskAffinity,
+    buildFeatures,
   } = manifest['app-plus']?.distribute?.android || {}
   if (dcloud_appkey) {
     appendMetaData(results.androidManifest, { dcloud_appkey: { value: dcloud_appkey } })
@@ -181,12 +186,22 @@ export function prepare(manifest: ManifestConfig): Results {
   if (packagingOptions) {
     appendPackagingOptions(results.appBuildGradle, new Set(packagingOptions))
   }
+  if (hasTaskAffinity) {
+    results.androidManifest.hasTaskAffinity = true
+  }
+  if (buildFeatures) results.appBuildGradle.buildFeatures = buildFeatures
+
+  // Oauth
+  appendOauth(results, manifest)
+  // Bluetooth
+  appendBluetooth(results, manifest)
+  // Speech
 
   return results
 }
 
 export function prepareUTS(uniModulesPath: string): Results {
-  const results = createEmptyRsults()
+  const results = createEmptyResults()
 
   const modules = readdirSync(uniModulesPath, { encoding: 'utf8' })
   if (modules.length > 0) {
