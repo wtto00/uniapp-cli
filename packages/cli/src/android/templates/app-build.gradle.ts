@@ -19,6 +19,7 @@ export interface AppBuildGradle {
   versionCode?: number
   versionName?: string
   abiFilters?: Set<string>
+  packagingOptions?: Set<string>
 }
 
 export const defaultAppBuildGradle: AppBuildGradle = {
@@ -34,7 +35,8 @@ export const defaultAppBuildGradle: AppBuildGradle = {
     'com.alibaba:fastjson:1.2.83': {},
     'androidx.webkit:webkit:1.3.0': {},
   },
-  compileSdkVersion: 30,
+  // 4.06更新为34，3.8.12更新为33
+  compileSdkVersion: 34,
   minSdkVersion: 21,
   targetSdkVersion: 30,
   versionName: '1.0.0',
@@ -128,6 +130,11 @@ function genderateAppBuildGradleDependencies(dependencies?: Record<string, AppBu
   return xml.join(`\n${generateSpace(4)}`)
 }
 
+export function appendPackagingOptions(buildGradle: AppBuildGradle, value?: Set<string>) {
+  if (!buildGradle.packagingOptions) buildGradle.packagingOptions = new Set()
+  appendSet(buildGradle.packagingOptions, value)
+}
+
 export function genderateAppBuildGradle(buildGradle: AppBuildGradle) {
   return `${genderateAppBuildGradlePlugins(buildGradle.plugins)}
 
@@ -184,7 +191,7 @@ android {
         //noCompress 'foo', 'bar'
         ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
     }
-
+    ${buildGradle.packagingOptions && [...buildGradle.packagingOptions].join(`\n${generateSpace(4)}`)}
 }
 repositories {
     flatDir {

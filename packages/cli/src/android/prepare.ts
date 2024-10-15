@@ -1,20 +1,34 @@
-import type { ManifestConfig } from '@uniapp-cli/common'
-import { mergeActivity, mergeAndroidManifest, mergeRecord, type AndroidManifest } from './templates/AndroidManifest.xml'
-import { mergeAppBuildGradle, mergeDependencies, type AppBuildGradle } from './templates/app-build.gradle'
+import { PermissionRequest, type ManifestConfig } from '@uniapp-cli/common'
+import {
+  appendActivity,
+  appendMetaData,
+  appendPermissions,
+  mergeAndroidManifest,
+  parsePermissionConfig,
+  type AndroidManifest,
+} from './templates/AndroidManifest.xml'
+import {
+  appendPackagingOptions,
+  mergeAppBuildGradle,
+  mergeDependencies,
+  type AppBuildGradle,
+} from './templates/app-build.gradle'
 import { mergeBuildGradle, type BuildGradle } from './templates/build.gradle'
 import { mergeProperties, type Properties } from './templates/dcloud_properties.xml'
 import type { Strings } from './templates/strings.xml'
 import { mergeControl, type Control } from './templates/dcloud_control.xml'
 import { resolve } from 'path'
 import { readdirSync } from 'fs'
-import { appendSet } from '../utils/util'
+import { appendSet, enumInclude } from '../utils/util'
 
 export interface Results {
   androidManifest: AndroidManifest
   /** 所需要的依赖文件 */
   libs: Set<string>
   /** 要写入的的文件 */
-  files: Record<string, string>
+  filesWrite: Record<string, string>
+  /** 要copy的文件 */
+  filesCopy: Record<string, string>
   appBuildGradle: AppBuildGradle
   buildGradle: BuildGradle
   properties: Properties
@@ -22,14 +36,15 @@ export interface Results {
   strings: Strings
 }
 
-function createEmptyRsults() {
+function createEmptyRsults(): Results {
   return {
     androidManifest: {
       application: {},
       activity: {},
     },
     libs: new Set(),
-    files: {},
+    filesWrite: {},
+    filesCopy: {},
     appBuildGradle: {},
     buildGradle: {
       repositories: new Set(),
@@ -44,7 +59,7 @@ function createEmptyRsults() {
       appid: '',
     },
     strings: {},
-  } as Results
+  }
 }
 
 export function mergeResults(results1: Results, results2: Results) {
@@ -54,7 +69,7 @@ export function mergeResults(results1: Results, results2: Results) {
   return {
     androidManifest: mergeAndroidManifest(results1.androidManifest, results2.androidManifest),
     libs,
-    files: { ...results1.files, ...results2.files },
+    filesWrite: { ...results1.filesWrite, ...results2.filesWrite },
     appBuildGradle: mergeAppBuildGradle(results1.appBuildGradle, results2.appBuildGradle),
     buildGradle: mergeBuildGradle(results1.buildGradle, results2.buildGradle),
     properties: mergeProperties(results1.properties, results2.properties),
@@ -103,26 +118,27 @@ export function prepare(manifest: ManifestConfig): Results {
     targetSdkVersion,
     abiFilters,
     forceDarkAllowed,
+    permissions,
+    permissionExternalStorage,
+    permissionPhoneState,
+    packagingOptions,
   } = manifest['app-plus']?.distribute?.android || {}
   if (dcloud_appkey) {
-    results.androidManifest.metaData = mergeRecord(results.androidManifest.metaData, {
-      dcloud_appkey: { value: dcloud_appkey },
-    })
+    appendMetaData(results.androidManifest, { dcloud_appkey: { value: dcloud_appkey } })
   }
   if (packagename) {
     results.appBuildGradle.applicationId = packagename
     results.androidManifest.package = packagename
   }
-  results.appBuildGradle.compileSdkVersion = compileSdkVersion || 30
-  results.appBuildGradle.minSdkVersion = minSdkVersion || 21
-  results.appBuildGradle.targetSdkVersion = targetSdkVersion || 30
+  if (compileSdkVersion) results.appBuildGradle.compileSdkVersion = compileSdkVersion
+  if (minSdkVersion) results.appBuildGradle.minSdkVersion = minSdkVersion
+  if (targetSdkVersion) results.appBuildGradle.targetSdkVersion = targetSdkVersion
   results.appBuildGradle.abiFilters = new Set(abiFilters)
-
   if (schemes) {
     const schemesArray = schemes.split(',').map((scheme) => scheme.trim())
     schemesArray.forEach((scheme) => {
       results.androidManifest.activity['io.dcloud.PandoraEntry'].intentFilter = []
-      results.androidManifest.activity = mergeActivity(results.androidManifest.activity, {
+      appendActivity(results.androidManifest, {
         'io.dcloud.PandoraEntry': {
           properties: {},
           intentFilter: [
@@ -136,11 +152,34 @@ export function prepare(manifest: ManifestConfig): Results {
       })
     })
   }
-
   if (forceDarkAllowed) {
-    results.androidManifest.metaData = mergeRecord(results.androidManifest.metaData, {
-      DCLOUD_DARK_MODE: { value: 'auto' },
-    })
+    appendMetaData(results.androidManifest, { DCLOUD_DARK_MODE: { value: 'auto' } })
+  }
+  if (permissions) {
+    appendPermissions(results.androidManifest, parsePermissionConfig(permissions))
+  }
+  if (permissionExternalStorage) {
+    if (enumInclude(PermissionRequest, permissionExternalStorage.request)) {
+      appendMetaData(results.androidManifest, {
+        DCLOUD_WRITE_EXTERNAL_STORAGE: { value: permissionExternalStorage.request },
+      })
+    }
+    if (permissionExternalStorage.prompt) {
+      results.strings.dcloud_permission_write_external_storage_message = permissionExternalStorage.prompt
+    }
+  }
+  if (permissionPhoneState) {
+    if (enumInclude(PermissionRequest, permissionPhoneState.request)) {
+      appendMetaData(results.androidManifest, {
+        DCLOUD_READ_PHONE_STATE: { value: permissionPhoneState.request },
+      })
+    }
+    if (permissionPhoneState.prompt) {
+      results.strings.dcloud_permission_read_phone_state_message = permissionPhoneState.prompt
+    }
+  }
+  if (packagingOptions) {
+    appendPackagingOptions(results.appBuildGradle, new Set(packagingOptions))
   }
 
   return results

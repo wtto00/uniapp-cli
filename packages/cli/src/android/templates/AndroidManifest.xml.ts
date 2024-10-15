@@ -1,6 +1,5 @@
 import { generateSpace } from '../../utils/space'
-
-export type NodeProperties = Record<string, string>
+import { mergeRecord, NodeProperties, parseXMLProperties } from '../../utils/xml'
 
 export interface MetaData {
   resource?: string
@@ -27,12 +26,8 @@ export interface Activity {
 
 export interface AndroidManifest {
   package?: string
-  /**
-   * 权限列表
-   * - true: 包含此权限
-   * - false: 移除此权限,tools:node="remove"
-   */
-  permissions?: Record<string, boolean>
+  /** 权限列表 */
+  permissions?: Record<string, NodeProperties>
   /** application节点属性 */
   application: NodeProperties
   /** key为android:name属性值 */
@@ -46,8 +41,8 @@ export interface AndroidManifest {
 export const defaultAndroidManifest: AndroidManifest = {
   permissions: {
     // 为了兼容android 13 新的权限要求，需要在AndroidManifest.xml 中新增下面的权限声明，以适配图片选择功能。
-    'android.permission.READ_MEDIA_IMAGES': true,
-    'android.permission.READ_MEDIA_VIDEO': true,
+    'android.permission.READ_MEDIA_IMAGES': {},
+    'android.permission.READ_MEDIA_VIDEO': {},
   },
   application: {
     'android:name': 'io.dcloud.application.DCloudApplication',
@@ -88,40 +83,34 @@ export const defaultAndroidManifest: AndroidManifest = {
       },
     },
   },
+  metaData: {
+    // HBuilderX3.5.5+版本默认值调整为none
+    DCLOUD_WRITE_EXTERNAL_STORAGE: { value: 'none' },
+    // HX3.5.5+版本开始默认策略为none
+    DCLOUD_READ_PHONE_STATE: { value: 'none' },
+  },
 }
 
-/** false优先 */
-function mergePermissions(permissions1?: Record<string, boolean>, permissions2?: Record<string, boolean>) {
-  const permissions: Record<string, boolean> = {}
-  for (const key in permissions1) {
-    if (permissions1[key] === false || permissions2?.[key] === false) {
-      permissions[key] = false
-    } else {
-      permissions[key] = permissions2?.[key] ?? permissions1[key]
+export function parsePermissionConfig(permissionsXML?: string[]) {
+  const permissions: AndroidManifest['permissions'] = {}
+  permissionsXML?.forEach((permissionXML) => {
+    const res = permissionXML.matchAll(/^\s*<(uses-feature|uses-permission)\s+([a-zA-Z:="'\._]*)\s*\/>/g)
+    for (const line of res) {
+      console.log(line)
+      const [, , properties] = line
+      if (properties) {
+        const { 'android:name': name, ...rest } = parseXMLProperties(properties)
+        if (name) {
+          permissions[name] = rest
+        }
+      }
     }
-  }
-  for (const key in permissions2) {
-    if (permissions[key] === false) continue
-    if (permissions[key] === undefined) {
-      permissions[key] = permissions2[key]
-    } else if (permissions2[key] === false) {
-      permissions[key] = false
-    }
-  }
+  })
   return permissions
 }
 
-export function mergeRecord<T extends object = MetaData>(record1?: Record<string, T>, record2?: Record<string, T>) {
-  const metaData: Record<string, T> = {}
-  for (const name in record1) {
-    metaData[name] = { ...record1[name], ...record2?.[name] }
-  }
-  for (const name in record2) {
-    if (!metaData[name]) {
-      metaData[name] = record2[name]
-    }
-  }
-  return metaData
+export function appendPermissions(manifest: AndroidManifest, permissions: AndroidManifest['permissions']) {
+  manifest.permissions = mergeRecord(manifest.permissions, permissions)
 }
 
 export function mergeActivity(activity1?: Record<string, Activity>, activity2?: Record<string, Activity>) {
@@ -148,9 +137,17 @@ export function mergeActivity(activity1?: Record<string, Activity>, activity2?: 
   return activity
 }
 
+export function appendActivity(manifest: AndroidManifest, activity?: Record<string, Activity>) {
+  manifest.activity = mergeActivity(manifest.activity, activity)
+}
+
+export function appendMetaData(manifest: AndroidManifest, metaData?: Record<string, MetaData>) {
+  manifest.metaData = mergeRecord(manifest.metaData, metaData)
+}
+
 export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manifest2: Partial<AndroidManifest>) {
   const manifest: AndroidManifest = {
-    permissions: mergePermissions(manifest1.permissions, manifest2.permissions),
+    permissions: mergeRecord(manifest1.permissions, manifest2.permissions),
     application: { ...manifest1.application, ...manifest2.application },
     activity: mergeActivity(manifest1.activity, manifest2.activity),
     metaData: mergeRecord(manifest1.metaData, manifest2.metaData),
