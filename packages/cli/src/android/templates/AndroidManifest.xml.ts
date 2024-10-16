@@ -37,7 +37,7 @@ export interface AndroidManifest {
   /** meta-data节点, key为android:name属性值 */
   metaData?: Record<string, MetaData>
   /** service节点, key为android:name属性值 */
-  service?: Record<string, NodeProperties>
+  service?: Record<string, Partial<Activity>>
 }
 
 export const defaultAndroidManifest: AndroidManifest = {
@@ -115,8 +115,11 @@ export function appendPermissions(manifest: AndroidManifest, permissions: Androi
   manifest.permissions = mergeRecord(manifest.permissions, permissions)
 }
 
-export function mergeActivity(activity1?: Record<string, Activity>, activity2?: Record<string, Activity>) {
-  const activity: Record<string, Activity> = {}
+export function mergeActivity<T extends Activity | Partial<Activity> = Activity>(
+  activity1?: Record<string, T>,
+  activity2?: Record<string, T>,
+) {
+  const activity: Record<string, T> = {}
   for (const name in activity1) {
     if (activity2?.[name]) {
       activity[name] = {
@@ -126,7 +129,7 @@ export function mergeActivity(activity1?: Record<string, Activity>, activity2?: 
         },
         intentFilter: [...(activity1[name].intentFilter ?? []), ...(activity2[name].intentFilter ?? [])],
         metaData: mergeRecord(activity1[name].metaData, activity2[name].metaData),
-      }
+      } as T
     } else {
       activity[name] = activity1[name]
     }
@@ -153,7 +156,7 @@ export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manife
     application: { ...manifest1.application, ...manifest2.application },
     activity: mergeActivity(manifest1.activity, manifest2.activity),
     metaData: mergeRecord(manifest1.metaData, manifest2.metaData),
-    service: mergeRecord<NodeProperties>(manifest1.service, manifest2.service),
+    service: mergeActivity(manifest1.service, manifest2.service),
     hasTaskAffinity: manifest2.hasTaskAffinity ?? manifest1.hasTaskAffinity,
   }
   return manifest
@@ -202,7 +205,8 @@ function generatePermissions(permissions: AndroidManifest['permissions'] = {}) {
   return permissionXML.join('\n    ')
 }
 
-function generateProperties(properties: NodeProperties, space = 8) {
+function generateProperties(properties?: NodeProperties, space = 8) {
+  if (!properties) return ''
   const propertiesXML: string[] = []
   Object.keys(properties).forEach((name) => {
     propertiesXML.push(`${name}="${properties[name]}"`)
@@ -262,6 +266,7 @@ function generateActivity(activity: AndroidManifest['activity']) {
   const activityXml: string[] = []
   Object.keys(activity).forEach((name) => {
     activityXml.push(`<activity
+            android:name="${name}"
             ${generateProperties(activity[name].properties, 12)}>
             ${generateIntentFilter(activity[name].intentFilter, 12)}
             ${genderateMetaData(activity[name].metaData, 12)}
@@ -270,10 +275,13 @@ function generateActivity(activity: AndroidManifest['activity']) {
   return activityXml.join('\n\n        ')
 }
 
-function generateService(service: Record<string, NodeProperties> = {}, space = 8) {
+function generateService(service: Record<string, Partial<Activity>> = {}, space = 8) {
   const services: string[] = []
   Object.keys(service).forEach((name) => {
-    services.push(`<service android:name="${name}" ${generateProperties(service[name])} />`)
+    services.push(`<service android:name="${name}" ${generateProperties(service[name].properties)}>
+${generateSpace(space + 4)}${generateIntentFilter(service[name].intentFilter, space + 4)}
+${generateSpace(space + 4)}${genderateMetaData(service[name].metaData, space + 4)}
+${generateSpace(space)}</service>`)
   })
   return services.join(`\n${generateSpace(space)}`)
 }

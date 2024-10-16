@@ -72,7 +72,7 @@ assignees: []
 - [ ] `app-plus.distribute.sdkConfigs.maps`: 可选，JSON 对象，Maps(地图)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.oauth`: 可选，JSON 对象，OAuth(登录鉴权)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.payment`: 可选，JSON 对象，Payment(支付)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.push`: 可选，JSON 对象，Push(消息推送)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.push`: 可选，JSON 对象，Push(消息推送)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.share`: 可选，JSON 对象，Share(分享)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.speech`: 可选，JSON 对象，Speech(语音识别)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.statics`: 可选，JSON 对象，Statistic(统计)模块三方 SDK 配置

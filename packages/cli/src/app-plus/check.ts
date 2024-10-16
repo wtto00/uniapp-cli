@@ -6,6 +6,7 @@ import { checkPayment } from './modules/payment'
 import { checkGeolocation } from './modules/geolocation'
 import { checkStatistic } from './modules/statics'
 import { checkMaps } from './modules/maps'
+import { checkPush } from './modules/push'
 
 export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   if (!manifest) {
@@ -57,8 +58,10 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   const oauthSinaRedirectUri = OAuth ? oauth?.sina?.redirect_uri : ''
   const oauthSinaLink = OAuth ? oauth?.sina?.UniversalLinks : ''
 
+  // Speech
   checkSpeech(manifest, os)
 
+  // Share
   checkShare(manifest, os)
   const Share = manifest['app-plus']?.modules?.Share
   const share = manifest['app-plus']?.distribute?.sdkConfigs?.share
@@ -70,12 +73,14 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   const shareSinaRedirectUri = Share ? share?.sina?.redirect_uri : ''
   const shareSinaLink = Share ? share?.qq?.UniversalLinks : ''
 
+  // Payment
   checkPayment(manifest, os)
   const Payment = manifest['app-plus']?.modules?.Payment
   const payment = manifest['app-plus']?.distribute?.sdkConfigs?.payment
   const paymentWeixinAppid = Payment ? payment?.weixin?.appid : ''
   const paymentWeixinLink = Payment ? payment?.weixin?.UniversalLinks : ''
 
+  // Geolocation
   checkGeolocation(manifest, os)
   const Geolocation = manifest['app-plus']?.modules?.Geolocation
   const geolocation = manifest['app-plus']?.distribute?.sdkConfigs?.geolocation
@@ -85,12 +90,17 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
       : geolocation?.baidu?.appkey_ios
     : ''
 
+  // Statistic
   checkStatistic(manifest, os)
 
+  // Maps
   checkMaps(manifest, os)
   const Maps = manifest['app-plus']?.modules?.Maps
   const maps = manifest['app-plus']?.distribute?.sdkConfigs?.maps
   const mapsBaiduAppKey = Maps ? (os == AppPlusOS.Android ? maps?.baidu?.appkey_android : maps?.baidu?.appkey_ios) : ''
+
+  // Push
+  checkPush(manifest, os)
 
   // 微信SDK的appid应保持一致
   if (oauthWeixinAppid && shareWeixinAppid && oauthWeixinAppid !== shareWeixinAppid) {

@@ -19,8 +19,10 @@ export function appendGeolocation(results: Results, manifest: ManifestConfig) {
 
     appendService(results.androidManifest, {
       'com.baidu.location.f': {
-        'android:enabled': 'true',
-        'android:process': ':remote',
+        properties: {
+          'android:enabled': 'true',
+          'android:process': ':remote',
+        },
       },
     })
   }

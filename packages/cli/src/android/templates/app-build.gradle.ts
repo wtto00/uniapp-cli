@@ -52,6 +52,11 @@ function mergeField<T extends keyof AppBuildGradle>(
   return buildGradle2?.[fieldName] ?? buildGradle1?.[fieldName]
 }
 
+export function appendPlugin(buildGradle: AppBuildGradle, plugins?: Set<string>) {
+  if (!buildGradle.plugins) buildGradle.plugins = plugins
+  else appendSet(buildGradle.plugins, plugins)
+}
+
 export function mergeDependencies(
   dependencies1?: Record<string, AppBuildGradleDependency>,
   dependencies2?: Record<string, AppBuildGradleDependency>,
