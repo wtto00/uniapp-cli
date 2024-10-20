@@ -38,4 +38,11 @@ export function checkMaps(manifest: ManifestConfig, os: AppPlusOS) {
       )
     }
   }
+
+  // 高德地图和百度地图的配置只能保留一个
+  if (maps?.amap && maps.baidu) {
+    throw Error(
+      '您不能同时配置高德地图和百度地图，请在文件manifest.json中修改配置: app-plus.distribute.sdkConfigs.maps.amap, app-plus.distribute.sdkConfigs.maps.baidu',
+    )
+  }
 }

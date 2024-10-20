@@ -4,6 +4,7 @@ import { appendActivity, appendMetaData, appendPermissions } from '../templates/
 import { appendFeature } from '../templates/dcloud_properties.xml'
 import { appendDependencies } from '../templates/app-build.gradle'
 import { generateWXEntryActivity, getWXEntryActivityFilePath } from '../templates/WXEntryActivity.java'
+import { appendMerge } from '../../utils/util'
 
 export function appendOauth(results: Results, manifest: ManifestConfig) {
   const OAuth = manifest['app-plus']?.modules?.OAuth
@@ -26,7 +27,7 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
     results.strings.fb_login_protocol_scheme = `fb${oauth.facebook.appid}`
     results.strings.facebook_client_token = oauth.facebook.client_token ?? ''
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {
@@ -40,7 +41,7 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
   if (oauth?.google) {
     results.libs.add('oauth-google-release.aar')
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {
@@ -83,7 +84,7 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {
@@ -110,7 +111,7 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {
@@ -123,21 +124,20 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
     // HBuilderX 3.99及以上版本，个推sdk由aar导入改为仓储方式，所以请注意3.99版本的配置与低版本并不相同。
     results.libs.add('oauth-univerify-release.aar')
 
-    results.appBuildGradle.manifestPlaceholders = {
-      ...results.appBuildGradle.manifestPlaceholders,
+    appendMerge(results.appBuildGradle, 'manifestPlaceholders', {
       GETUI_APPID: oauth.univerify.appid ?? '',
       GY_APP_ID: oauth.univerify.appid ?? '',
       GT_INSTALL_CHANNEL: 'HBuilder',
-    }
+    })
 
-    results.buildGradle.allRepositories.add('https://mvn.getui.com/nexus/content/repositories/releases')
+    results.buildGradle.allRepositories['https://mvn.getui.com/nexus/content/repositories/releases'] = {}
 
     appendDependencies(results.appBuildGradle, {
       'com.getui:gtc-dcloud:3.2.16.7': {},
       'com.getui:gysdk:3.1.7.0': { exclude: { group: 'com.getui' } },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {
@@ -174,7 +174,7 @@ export function appendOauth(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'OAuth',
       value: 'io.dcloud.feature.oauth.OAuthFeatureImpl',
       module: {

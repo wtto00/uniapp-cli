@@ -34,12 +34,14 @@ export function checkPush(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了Google FCM消息推送，请在文件manifest.json中配置Google FCM消息推送的Legancy server key: app-plus.distribute.sdkConfigs.push.unipush.fcm.serverkey',
       )
     }
-    if (!fcm.googleServices) {
+    if ((os === AppPlusOS.Android && !fcm.config_android) || (os === AppPlusOS.iOS && !fcm.config_ios)) {
       throw Error(
-        '您配置了Google FCM消息推送，请在文件manifest.json中配置Google FCM消息推送的google-services.json配置文件位置: app-plus.distribute.sdkConfigs.push.unipush.fcm.googleServices',
+        `您配置了Google FCM消息推送，请在文件manifest.json中配置Google FCM消息推送的google-services.json配置文件位置: app-plus.distribute.sdkConfigs.push.unipush.fcm.${
+          os === AppPlusOS.Android ? 'config_android' : 'config_ios'
+        }`,
       )
     }
-    if (!fcm.channelId) {
+    if (!fcm.channelid) {
       throw Error(
         '您配置了Google FCM消息推送，请在文件manifest.json中配置Google FCM消息推送的渠道ID: app-plus.distribute.sdkConfigs.push.unipush.fcm.channelId',
       )
@@ -52,7 +54,7 @@ export function checkPush(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了华为离线消息推送，请在文件manifest.json中配置华为离线消息推送的AppID: app-plus.distribute.sdkConfigs.push.unipush.hms.appid',
       )
     }
-    if (!hms.agconnectServices) {
+    if (!hms.config) {
       throw Error(
         '您配置了华为离线消息推送，请在文件manifest.json中配置华为离线消息推送的agconnect-services.json配置文件位置: app-plus.distribute.sdkConfigs.push.unipush.hms.agconnectServices',
       )

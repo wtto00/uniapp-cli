@@ -1,46 +1,61 @@
 import { generateSpace } from '../../utils/space'
-import { appendSet } from '../../utils/util'
+import { deepMerge, mergeSet } from '../../utils/util'
+
+export interface Repositories {
+  credentials?: {
+    username: string
+    password: string
+  }
+}
 
 export interface BuildGradle {
-  repositories: Set<string>
+  repositories: Record<string, Repositories>
   dependencies: Set<string>
-  allRepositories: Set<string>
+  allRepositories: Record<string, Repositories>
+  ext: Record<string, string>
 }
 
 export const defaultBuildGradle: BuildGradle = {
-  repositories: new Set([
-    'https://maven.aliyun.com/repository/google',
-    'http://maven.aliyun.com/nexus/content/groups/public/',
-    'http://maven.aliyun.com/nexus/content/repositories/jcenter',
-  ]),
-  dependencies: new Set(['com.android.tools.build:gradle:4.1.']),
-  allRepositories: new Set([
-    'https://maven.aliyun.com/repository/google',
-    'http://maven.aliyun.com/nexus/content/groups/public/',
-    'http://maven.aliyun.com/nexus/content/repositories/jcenter',
-    'https://mvn.getui.com/nexus/content/repositories/releases',
-  ]),
+  repositories: {
+    'https://maven.aliyun.com/repository/google': {},
+    'http://maven.aliyun.com/nexus/content/groups/public/': {},
+    'http://maven.aliyun.com/nexus/content/repositories/jcenter': {},
+  },
+  dependencies: new Set(['com.android.tools.build:gradle:4.1.1']),
+  allRepositories: {
+    'https://maven.aliyun.com/repository/google': {},
+    'http://maven.aliyun.com/nexus/content/groups/public/': {},
+    'http://maven.aliyun.com/nexus/content/repositories/jcenter': {},
+    'https://mvn.getui.com/nexus/content/repositories/releases': {},
+  },
+  ext: {
+    androidXVersion: '1.1.0',
+  },
 }
 
-export function mergeBuildGradle(gradle1: Partial<BuildGradle>, gradle2: Partial<BuildGradle>) {
-  const buildGradle: BuildGradle = {
-    repositories: new Set(),
-    dependencies: new Set(),
-    allRepositories: new Set(),
+export function mergeBuildGradle(gradle1: Partial<BuildGradle>, gradle2: Partial<BuildGradle>): BuildGradle {
+  return {
+    repositories: deepMerge(gradle1.repositories, gradle2.repositories),
+    dependencies: mergeSet(gradle1.dependencies, gradle2.dependencies),
+    allRepositories: deepMerge(gradle1.allRepositories, gradle2.allRepositories),
+    ext: deepMerge(gradle1.ext, gradle2.ext),
   }
-  appendSet(buildGradle.repositories, gradle1.repositories)
-  appendSet(buildGradle.dependencies, gradle1.dependencies)
-  appendSet(buildGradle.allRepositories, gradle1.allRepositories)
-  appendSet(buildGradle.repositories, gradle2.repositories)
-  appendSet(buildGradle.dependencies, gradle2.dependencies)
-  appendSet(buildGradle.allRepositories, gradle2.allRepositories)
-  return buildGradle
 }
 
-function genderateRepositories(repositories: Set<string>, space = 8) {
+function genderateRepositories(repositories: BuildGradle['repositories'], space = 8) {
   const repositoriesXML: string[] = []
-  for (const url of repositories) {
-    repositoriesXML.push(`url '${url}'`)
+  for (const url in repositories) {
+    const { credentials } = repositories[url]
+    repositoriesXML.push(
+      `url '${url}'${
+        credentials
+          ? `\n${generateSpace(space + 4)}credentials {
+${generateSpace(space + 8)}username '${credentials.username}'
+${generateSpace(space + 8)}password '${credentials.password}'
+${generateSpace(space + 4)}}`
+          : ''
+      }`,
+    )
   }
   return `maven {\n${generateSpace(space)}${repositoriesXML.join(`\n${generateSpace(space + 4)}`)}\n${generateSpace(space)}}`
 }
@@ -51,6 +66,17 @@ function genderateDependencies(dependencies: Set<string>, space = 8) {
     dependenciesXML.push(`classpath '${dependencie}'`)
   }
   return dependenciesXML.join(`\n${generateSpace(space)}`)
+}
+
+function genderateExt(ext?: BuildGradle['ext']) {
+  if (!ext) return ''
+  const xml: string[] = []
+  for (const key in ext) {
+    xml.push(`git = ${ext[key]}`)
+  }
+  return `ext {
+  ${xml.join(`\n${generateSpace(4)}`)}
+}`
 }
 
 export function generateBuildGradle(gradle: BuildGradle) {
@@ -71,5 +97,6 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}`
+}
+${genderateExt}`
 }

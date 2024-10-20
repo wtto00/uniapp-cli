@@ -1,4 +1,4 @@
-import { AppPlusOS, type ManifestConfig } from '@uniapp-cli/common'
+import { AppPlusOS, Log, type ManifestConfig } from '@uniapp-cli/common'
 import { checkOauth } from './modules/oauth'
 import { checkSpeech } from './modules/speech'
 import { checkShare } from './modules/share'
@@ -7,6 +7,7 @@ import { checkGeolocation } from './modules/geolocation'
 import { checkStatistic } from './modules/statics'
 import { checkMaps } from './modules/maps'
 import { checkPush } from './modules/push'
+import { checkAd } from './modules/ad'
 
 export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   if (!manifest) {
@@ -92,6 +93,13 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
 
   // Statistic
   checkStatistic(manifest, os)
+  const Statistic = manifest['app-plus']?.modules?.Statistic
+  const statics = manifest['app-plus']?.distribute?.sdkConfigs?.statics
+  const staticsGoogleServices = Statistic
+    ? os == AppPlusOS.Android
+      ? statics?.google?.config_android
+      : statics?.google?.config_ios
+    : ''
 
   // Maps
   checkMaps(manifest, os)
@@ -101,6 +109,16 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
 
   // Push
   checkPush(manifest, os)
+  const Push = manifest['app-plus']?.modules?.Push
+  const push = manifest['app-plus']?.distribute?.sdkConfigs?.push
+  const pushGoogleServices = Push
+    ? os == AppPlusOS.Android
+      ? push?.unipush?.fcm?.config_android
+      : push?.unipush?.fcm?.config_ios
+    : ''
+
+  // ad
+  checkAd(manifest, os)
 
   // 微信SDK的appid应保持一致
   if (oauthWeixinAppid && shareWeixinAppid && oauthWeixinAppid !== shareWeixinAppid) {
@@ -178,5 +196,21 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
     throw Error(
       '您已经配置了高德地图，无需再配置高德定位，此两项冲突，请在文件manifest.json中删除配置项: app-plus.distribute.sdkConfigs.geolocation.amap',
     )
+  }
+
+  // google-services文件路径需要保持一致
+  if (staticsGoogleServices && pushGoogleServices && staticsGoogleServices !== pushGoogleServices) {
+    const fieldName = os === AppPlusOS.Android ? 'config_android' : 'config_ios'
+    throw Error(
+      `谷歌统计和谷歌推送的google-services.json文件位置需要配置一致，请在文件manifest.json中检查配置: app-plus.distribute.sdkConfigs.push.unipush.fcm.${fieldName}, app-plus.distribute.sdkConfigs.statics.google.${fieldName}`,
+    )
+  }
+
+  // 腾讯TBS x5内核不支持“x86”
+  if (os === AppPlusOS.Android) {
+    const x86 = manifest['app-plus']?.distribute?.android?.abiFilters?.find((item) => item.startsWith('x86'))
+    if (manifest['app-plus']?.modules?.['Webview-x5'] && x86) {
+      Log.warn('您配置了腾讯TBS x5内核，请注意: 腾讯TBS x5内核不支持“x86”；您无法提交到Google Play商店。')
+    }
   }
 }

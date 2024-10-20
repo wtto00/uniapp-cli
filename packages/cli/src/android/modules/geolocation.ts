@@ -11,7 +11,7 @@ export function appendGeolocation(results: Results, manifest: ManifestConfig) {
   const geolocation = manifest['app-plus']?.distribute?.sdkConfigs?.geolocation
 
   if (geolocation?.baidu?.__platform__?.includes(AppPlusOS.Android)) {
-    appendSet(results.libs, new Set(['baidu-libs-release.aar', 'geolocation-baidu-release.aar']))
+    appendSet(results.libs, ['baidu-libs-release.aar', 'geolocation-baidu-release.aar'])
 
     appendMetaData(results.androidManifest, {
       'com.baidu.lbsapi.API_KEY': { value: geolocation.baidu.appkey_android },
@@ -27,9 +27,9 @@ export function appendGeolocation(results: Results, manifest: ManifestConfig) {
     })
   }
 
-  if (geolocation?.amap) {
+  if (geolocation?.amap?.__platform__?.includes(AppPlusOS.Android)) {
     // 3.7.6开始不再提供"amap-libs-release.aar"文件 改为gradle集成！geolocation-amap-release.aar还需要继续添加到项目中
-    appendSet(results.libs, new Set(['geolocation-amap-release.aar']))
+    appendSet(results.libs, ['geolocation-amap-release.aar'])
 
     appendDependencies(results.appBuildGradle, {
       'com.amap.api:location:6.4.7': {},
@@ -60,7 +60,7 @@ export function appendGeolocation(results: Results, manifest: ManifestConfig) {
     })
   }
 
-  if (geolocation?.system) {
+  if (geolocation?.system?.__platform__?.includes(AppPlusOS.Android)) {
     appendPermissions(results.androidManifest, {
       'android.permission.ACCESS_COARSE_LOCATION': {},
       'android.permission.ACCESS_FINE_LOCATION': {},

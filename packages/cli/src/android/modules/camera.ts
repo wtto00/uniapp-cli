@@ -11,7 +11,7 @@ export function appendCamera(results: Results, manifest: ManifestConfig) {
     'android.permission.CAMERA': {},
   })
 
-  appendFeature(results.properties.features, {
+  appendFeature(results.properties, {
     name: 'Camera',
     value: 'io.dcloud.js.camera.CameraFeatureImpl',
   })

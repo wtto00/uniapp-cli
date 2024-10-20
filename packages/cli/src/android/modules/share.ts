@@ -13,7 +13,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
 
   if (share?.weixin) {
     // 3.7.6及以上版本，微信SDK改为gradle依赖，需要将libs目录下的wechat-sdk-android-without-mta-X.X.X.aar移除
-    appendSet(results.libs, new Set(['share-weixin-release.aar']))
+    appendSet(results.libs, ['share-weixin-release.aar'])
 
     appendDependencies(results.appBuildGradle, {
       'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0': {},
@@ -44,7 +44,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'Share',
       value: 'io.dcloud.share.ShareFeatureImpl',
       module: {
@@ -88,7 +88,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'Share',
       value: 'io.dcloud.share.ShareFeatureImpl',
       module: {
@@ -135,7 +135,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
       },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'Share',
       value: 'io.dcloud.share.ShareFeatureImpl',
       module: {

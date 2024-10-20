@@ -69,13 +69,13 @@ assignees: []
 - [ ] `app-plus.distribute.ios.pushRegisterMode`: 可选，使用“Push(消息推送)”模块时申请系统推送权限模式，manual 表示调用 push 相关 API 时申请，其它值表示应用启动时自动申请
 - [ ] `app-plus.distribute.ios.privacyRegisterMode`: 可选，仅 iOS 有效，设置为 manual 表示用户同意隐私政策后才获取 idfv，设置为其它值表示应用启动时自动获取
 - [x] `app-plus.distribute.sdkConfigs.geolocation`: 可选，JSON 对象，Geolocation(定位)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.maps`: 可选，JSON 对象，Maps(地图)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.maps`: 可选，JSON 对象，Maps(地图)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.oauth`: 可选，JSON 对象，OAuth(登录鉴权)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.payment`: 可选，JSON 对象，Payment(支付)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.payment`: 可选，JSON 对象，Payment(支付)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.push`: 可选，JSON 对象，Push(消息推送)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.share`: 可选，JSON 对象，Share(分享)模块三方 SDK 配置
 - [x] `app-plus.distribute.sdkConfigs.speech`: 可选，JSON 对象，Speech(语音识别)模块三方 SDK 配置
-- [ ] `app-plus.distribute.sdkConfigs.statics`: 可选，JSON 对象，Statistic(统计)模块三方 SDK 配置
+- [x] `app-plus.distribute.sdkConfigs.statics`: 可选，JSON 对象，Statistic(统计)模块三方 SDK 配置
 - [ ] `app-plus.distribute.sdkConfigs.ad`: 可选，JSON 对象，uni-AD 配置
 - [ ] `app-plus.distribute.icons.ios`: 可选，JSON 对象，iOS 平台图标配置
 - [ ] `app-plus.distribute.icons.android`: 可选，JSON 对象，Android 平台图标配置

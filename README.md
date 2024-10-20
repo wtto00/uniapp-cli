@@ -20,4 +20,13 @@ CLI for Uniapp
 - compileSdkVersion: 4.06更新为34，3.8.12更新为33
 - hasTaskAffinity: HX3.3.10+版本
 - geolocation.amap: 3.7.6开始不再提供"amap-libs-release.aar"文件 改为gradle集成！geolocation-amap-release.aar还需要继续添加到项目中
+- 3.7.6开始不再提供"amap-libs-release.aar"文件。改为gradle集成。"weex_amap-release.aar"或"map-amap-release.aar"需要继续集成到项目中
 - HBuilderX 3.99及以上版本，个推sdk由aar导入改为仓储方式，所以请注意3.99版本的配置与低版本并不相同。
+- 3.8.3及以上版本，友盟SDK改为gradle依赖，需要将libs目录下的umeng-abtest-v1.0.1.aar、utdid4all-XXX-proguard.jar移除
+- UTS 基础模块: 离线SDK 3.7.6+ 版本支持
+- HBuilder X 3.99 新增了facialRecognitionVerify-support-release.aar库，作用是应用可以在X86设备上正常运行，但调用uni.startFacialRecognitionVerify()会触发错误回调。如果不支持X86设备，可以不用引入。
+- 3.7.6及以上版本，支付宝SDK改为gradle依赖，需要将libs目录下的alipaysdk-android-15.8.11.aar移除
+- 3.7.6及以上版本，微信SDK改为gradle依赖，需要将libs目录下的wechat-sdk-android-without-mta-X.X.X.aar移除
+- 腾讯TBS x5内核: HBuilderX3.0.7+版本CPU类型配置开始支持“arm64-v8a”
+- uni-ad.Sigmob: wind-common.aar(3.5.2及以上版本)
+- 百度广告,华为广告,uniMP激励视频广告: 最低支持版本：离线sdk 3.4.1

@@ -25,7 +25,7 @@ export function appendBluetooth(results: Results, manifest: ManifestConfig) {
     })
   }
 
-  appendFeature(results.properties.features, {
+  appendFeature(results.properties, {
     name: 'Bluetooth',
     value: 'io.dcloud.feature.bluetooth.BluetoothFeature',
   })

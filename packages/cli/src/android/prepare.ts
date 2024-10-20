@@ -30,7 +30,7 @@ export interface Results {
   libs: Set<string>
   /** 要写入的的文件 */
   filesWrite: Record<string, string>
-  /** 要copy的文件 */
+  /** 要copy的文件Record<targetPath,srcPath> */
   filesCopy: Record<string, string>
   appBuildGradle: AppBuildGradle
   buildGradle: BuildGradle
@@ -50,9 +50,10 @@ function createEmptyResults(): Results {
     filesCopy: {},
     appBuildGradle: {},
     buildGradle: {
-      repositories: new Set(),
+      repositories: {},
       dependencies: new Set(),
-      allRepositories: new Set(),
+      allRepositories: {},
+      ext: {},
     },
     properties: {
       features: {},
@@ -196,6 +197,8 @@ export function prepare(manifest: ManifestConfig): Results {
   // Bluetooth
   appendBluetooth(results, manifest)
   // Speech
+
+  // channel_list
 
   return results
 }

@@ -10,7 +10,7 @@ export function appendSpeech(results: Results, manifest: ManifestConfig) {
   const speech = manifest['app-plus']?.distribute?.sdkConfigs?.speech
 
   if (speech?.baidu?.__platform__?.includes(AppPlusOS.Android)) {
-    appendSet(results.libs, new Set(['speech-release.aar', 'speech_baidu-release.aar']))
+    appendSet(results.libs, ['speech-release.aar', 'speech_baidu-release.aar'])
 
     appendPermissions(results.androidManifest, {
       'android.permission.RECORD_AUDIO': {},
@@ -29,10 +29,12 @@ export function appendSpeech(results: Results, manifest: ManifestConfig) {
     })
     appendService(results.androidManifest, {
       'com.baidu.speech.VoiceRecognitionService': {
-        'android:exported': 'false',
+        properties: {
+          'android:exported': 'false',
+        },
       },
     })
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'Speech',
       value: 'io.dcloud.feature.speech.SpeechFeatureImpl',
       module: {
@@ -41,7 +43,7 @@ export function appendSpeech(results: Results, manifest: ManifestConfig) {
     })
   }
   if (speech?.xunfei) {
-    appendSet(results.libs, new Set(['speech-release.aar', 'speech_ifly-release.aar']))
+    appendSet(results.libs, ['speech-release.aar', 'speech_ifly-release.aar'])
 
     appendPermissions(results.androidManifest, {
       'android.permission.RECORD_AUDIO': {},
@@ -57,7 +59,7 @@ export function appendSpeech(results: Results, manifest: ManifestConfig) {
       IFLY_APPKEY: { value: speech.xunfei.appid },
     })
 
-    appendFeature(results.properties.features, {
+    appendFeature(results.properties, {
       name: 'Speech',
       value: 'io.dcloud.feature.speech.SpeechFeatureImpl',
       module: {

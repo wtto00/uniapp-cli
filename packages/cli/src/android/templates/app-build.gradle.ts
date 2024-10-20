@@ -21,17 +21,18 @@ export interface AppBuildGradle {
   abiFilters?: Set<string>
   packagingOptions?: Set<string>
   buildFeatures?: Record<string, boolean>
+  channelList?: { id: string; name?: string }[]
 }
 
 export const defaultAppBuildGradle: AppBuildGradle = {
   plugins: new Set(['com.android.application']),
   dependencies: {
-    'androidx.recyclerview:recyclerview:1.0.0': {},
+    'androidx.recyclerview:recyclerview:${rootProject.ext.androidxVersion}': {},
     'com.facebook.fresco:fresco:2.5.0': {},
     'com.facebook.fresco:animated-gif:2.5.0': {},
 
-    'androidx.appcompat:appcompat:1.0.0': {},
-    'androidx.legacy:legacy-support-v4:1.0.0': {},
+    'androidx.appcompat:appcompat:${rootProject.ext.androidxVersion}': {},
+    'androidx.legacy:legacy-support-v4:${rootProject.ext.androidxVersion}': {},
     'com.github.bumptech.glide:glide:4.9.0': {},
     'com.alibaba:fastjson:1.2.83': {},
     'androidx.webkit:webkit:1.3.0': {},
@@ -44,17 +45,27 @@ export const defaultAppBuildGradle: AppBuildGradle = {
   versionCode: 1000000,
 }
 
-function mergeField<T extends keyof AppBuildGradle>(
-  fieldName: T,
-  buildGradle1?: AppBuildGradle,
-  buildGradle2?: AppBuildGradle,
+export function mergeField<T extends keyof AppBuildGradle>(
+  name: T,
+  gradle1?: AppBuildGradle,
+  gradle2?: AppBuildGradle,
 ): AppBuildGradle[T] {
-  return buildGradle2?.[fieldName] ?? buildGradle1?.[fieldName]
+  return gradle2?.[name] ?? gradle1?.[name]
 }
 
-export function appendPlugin(buildGradle: AppBuildGradle, plugins?: Set<string>) {
-  if (!buildGradle.plugins) buildGradle.plugins = plugins
-  else appendSet(buildGradle.plugins, plugins)
+export function mergeNumberField<T extends 'compileSdkVersion' | 'minSdkVersion' | 'targetSdkVersion' | 'versionCode'>(
+  name: T,
+  gradle1?: AppBuildGradle,
+  gradle2?: AppBuildGradle,
+): number {
+  if (!gradle1?.[name]) return gradle2?.[name] as number
+  if (!gradle2?.[name]) return gradle1?.[name] as number
+  return Math.max(gradle1[name], gradle2[name])
+}
+
+export function appendPlugin(buildGradle: AppBuildGradle, plugins?: Set<string> | Array<string>) {
+  if (!buildGradle.plugins) buildGradle.plugins = new Set()
+  appendSet(buildGradle.plugins, plugins)
 }
 
 export function mergeDependencies(
@@ -68,7 +79,9 @@ export function mergeDependencies(
     } else if (!dependencies1[name].exclude?.group || !dependencies2[name].exclude?.group) {
       dependencies[name] = {}
     } else {
-      dependencies[name] = { exclude: { group: dependencies2[name].exclude?.group } }
+      dependencies[name] = {
+        exclude: { group: dependencies2[name].exclude?.group ?? dependencies1[name].exclude?.group },
+      }
     }
   }
   for (const name in dependencies2) {
@@ -87,11 +100,11 @@ export function appendDependencies(
 
 export function mergeAppBuildGradle(buildGradle1?: AppBuildGradle, buildGradle2?: AppBuildGradle) {
   const buildGradle: AppBuildGradle = {
-    compileSdkVersion: mergeField('compileSdkVersion', buildGradle1, buildGradle2),
+    compileSdkVersion: mergeNumberField('compileSdkVersion', buildGradle1, buildGradle2),
     applicationId: mergeField('applicationId', buildGradle1, buildGradle2),
-    minSdkVersion: mergeField('minSdkVersion', buildGradle1, buildGradle2),
-    targetSdkVersion: mergeField('targetSdkVersion', buildGradle1, buildGradle2),
-    versionCode: mergeField('versionCode', buildGradle1, buildGradle2),
+    minSdkVersion: mergeNumberField('minSdkVersion', buildGradle1, buildGradle2),
+    targetSdkVersion: mergeNumberField('targetSdkVersion', buildGradle1, buildGradle2),
+    versionCode: mergeNumberField('versionCode', buildGradle1, buildGradle2),
     versionName: mergeField('versionName', buildGradle1, buildGradle2),
     abiFilters: new Set(),
     plugins: new Set(),
@@ -150,7 +163,7 @@ function genderateAppBuildGradleDependencies(dependencies?: Record<string, AppBu
   return xml.join(`\n${generateSpace(4)}`)
 }
 
-export function appendPackagingOptions(buildGradle: AppBuildGradle, value?: Set<string>) {
+export function appendPackagingOptions(buildGradle: AppBuildGradle, value?: Set<string> | Array<string>) {
   if (!buildGradle.packagingOptions) buildGradle.packagingOptions = new Set()
   appendSet(buildGradle.packagingOptions, value)
 }

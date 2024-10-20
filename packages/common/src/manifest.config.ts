@@ -385,6 +385,12 @@ export interface AppPlusDistributeSdkConfigs {
     huawei?: {}
   }
   ad?: {
+    config: {
+      /** 开屏广告 */
+      splash?: boolean
+      adid?: string
+      nvue?: boolean
+    }
     /** 腾讯优量 */
     gdt?: {}
     /** 快手广告联盟 */
@@ -449,6 +455,7 @@ export interface AppPlusDistributeSdkConfigs {
       channelid_ios?: string
       appkey_android?: string
       channelid_android?: string
+      google_play?: boolean
     }
     google?: {
       config_ios?: string
@@ -473,7 +480,7 @@ export interface AppPlusDistributeSdkConfigs {
       appsecret?: string
       hms?: {
         appid?: string
-        agconnectServices?: string
+        config?: string
       }
       oppo?: {
         appkey?: string
@@ -497,8 +504,9 @@ export interface AppPlusDistributeSdkConfigs {
       }
       fcm?: {
         serverkey?: string
-        googleServices?: string
-        channelId?: string
+        channelid?: string
+        config_ios?: string
+        config_android?: string
       }
     }
   }
@@ -511,6 +519,7 @@ export interface AppPlusDistributeSdkConfigs {
       name?: string
       appkey_ios?: string
       appkey_android?: string
+      nvue?: boolean
     }
     baidu?: {
       appkey_ios?: string
@@ -1276,6 +1285,7 @@ export interface ManifestConfig {
   uniStatistics?: UniStatistics
   /** APP 特有配置 */
   'app-plus'?: AppPlus
+  channel_list?: { id: string; name?: string }[]
   /** H5 特有配置 */
   h5?: H5
   /** 快应用特有配置 */

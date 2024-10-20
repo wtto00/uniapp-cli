@@ -1,10 +1,14 @@
 import { generateSpace } from '../../utils/space'
-import { mergeRecord, NodeProperties, parseXMLProperties } from '../../utils/xml'
+import { deepMerge } from '../../utils/util'
+import { parseXMLProperties } from '../../utils/xml'
 
 export interface MetaData {
   resource?: string
   value?: string
+  replace?: string
 }
+
+export type NodeProperties = Record<string, string>
 
 export interface ActivityIntentFilter {
   /** intent-filter节点属性 */
@@ -32,6 +36,7 @@ export interface AndroidManifest {
   application: NodeProperties
   /** key为android:name属性值 */
   activity: Record<string, Activity>
+  provider?: Record<string, Omit<Activity, 'intentFilter'>>
   /** 所有的activity添加android:taskAffinity="" */
   hasTaskAffinity?: boolean
   /** meta-data节点, key为android:name属性值 */
@@ -112,7 +117,7 @@ export function parsePermissionConfig(permissionsXML?: string[]) {
 }
 
 export function appendPermissions(manifest: AndroidManifest, permissions: AndroidManifest['permissions']) {
-  manifest.permissions = mergeRecord(manifest.permissions, permissions)
+  manifest.permissions = deepMerge(manifest.permissions, permissions)
 }
 
 export function mergeActivity<T extends Activity | Partial<Activity> = Activity>(
@@ -128,7 +133,7 @@ export function mergeActivity<T extends Activity | Partial<Activity> = Activity>
           ...activity2[name].properties,
         },
         intentFilter: [...(activity1[name].intentFilter ?? []), ...(activity2[name].intentFilter ?? [])],
-        metaData: mergeRecord(activity1[name].metaData, activity2[name].metaData),
+        metaData: deepMerge(activity1[name].metaData, activity2[name].metaData),
       } as T
     } else {
       activity[name] = activity1[name]
@@ -147,15 +152,15 @@ export function appendActivity(manifest: AndroidManifest, activity?: Record<stri
 }
 
 export function appendMetaData(manifest: AndroidManifest, metaData?: Record<string, MetaData>) {
-  manifest.metaData = mergeRecord(manifest.metaData, metaData)
+  manifest.metaData = deepMerge(manifest.metaData, metaData)
 }
 
 export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manifest2: Partial<AndroidManifest>) {
   const manifest: AndroidManifest = {
-    permissions: mergeRecord(manifest1.permissions, manifest2.permissions),
+    permissions: deepMerge(manifest1.permissions, manifest2.permissions),
     application: { ...manifest1.application, ...manifest2.application },
     activity: mergeActivity(manifest1.activity, manifest2.activity),
-    metaData: mergeRecord(manifest1.metaData, manifest2.metaData),
+    metaData: deepMerge(manifest1.metaData, manifest2.metaData),
     service: mergeActivity(manifest1.service, manifest2.service),
     hasTaskAffinity: manifest2.hasTaskAffinity ?? manifest1.hasTaskAffinity,
   }
@@ -178,13 +183,13 @@ export function generateAndroidManifest(manifest: AndroidManifest) {
     
     ${generatePermissions(manifest.permissions)}
     
-    <application
-        ${generateProperties(manifest.application)}>
+    <application ${generateProperties(manifest.application)}>
         ${generateActivity(manifest.activity)}
+        ${generateActivity(manifest.provider, 'provider')}
 
         ${genderateMetaData(manifest.metaData, 8)}
 
-        ${generateService(manifest.service, 8)}
+        ${generateActivity(manifest.service, 'service')}
     </application>
 </manifest>`
 }
@@ -199,19 +204,22 @@ function generatePermissions(permissions: AndroidManifest['permissions'] = {}) {
   Object.keys(permissions).forEach((name) => {
     const tag = getPermissionTag(name)
     if (tag) {
-      permissionXML.push(`<${tag} android:name="${name}" ${permissions[name] ? '' : 'tools:node="remove" '}/>`)
+      permissionXML.push(`<${tag} android:name="${name}" ${generateProperties(permissions[name])}/>`)
+    } else {
+      const { __tag__, ...properties } = permissions[name]
+      if (__tag__) permissionXML.push(`<${__tag__} android:name="${name}" ${generateProperties(properties)}/>`)
     }
   })
   return permissionXML.join('\n    ')
 }
 
-function generateProperties(properties?: NodeProperties, space = 8) {
+function generateProperties(properties?: NodeProperties) {
   if (!properties) return ''
   const propertiesXML: string[] = []
   Object.keys(properties).forEach((name) => {
     propertiesXML.push(`${name}="${properties[name]}"`)
   })
-  return propertiesXML.join(`\n${generateSpace(space)}`)
+  return propertiesXML.join(' ')
 }
 
 function generateSet(tag: string, set?: Set<string>, space = 16) {
@@ -228,8 +236,6 @@ function generateIntentFilter(filters: ActivityIntentFilter[] = [], space = 12) 
   const spaces = generateSpace(space)
   const spacesSecond = spaces + '    '
   filters.forEach((filter) => {
-    const filterProperties = filter.properties ? `\n${spacesSecond}${generateProperties(filter.properties)}` : ''
-
     const children: string[] = [generateSet('action', filter.action)]
     const category = generateSet('category', filter.category)
     if (category) children.push(category)
@@ -239,7 +245,7 @@ function generateIntentFilter(filters: ActivityIntentFilter[] = [], space = 12) 
       })
     }
 
-    filtersXML.push(`<intent-filter${filterProperties}>
+    filtersXML.push(`<intent-filter ${generateProperties(filter.properties)}>
 ${spacesSecond}${children.join(`\n${spacesSecond}`)}
 ${spaces}</intent-filter>`)
   })
@@ -250,42 +256,36 @@ function genderateMetaData(metaData: Record<string, MetaData> = {}, space = 12) 
   const metaDataXML: string[] = []
   Object.keys(metaData).forEach((name) => {
     const properties: string[] = []
-    const { resource, value } = metaData[name]
+    const { resource, value, replace } = metaData[name]
     if (resource) {
       properties.push(`android:resource="${resource}"`)
     }
     if (value) {
       properties.push(`android:value="${value}"`)
     }
+    if (replace) {
+      properties.push(`tools:replace="${replace}"`)
+    }
     metaDataXML.push(`<meta-data android:name="${name}" ${properties.join(' ')} />`)
   })
   return metaDataXML.join(`\n${generateSpace(space)}`)
 }
 
-function generateActivity(activity: AndroidManifest['activity']) {
+function generateActivity(activity: Record<string, Partial<Activity>> = {}, tag = 'activity') {
   const activityXml: string[] = []
   Object.keys(activity).forEach((name) => {
-    activityXml.push(`<activity
-            android:name="${name}"
-            ${generateProperties(activity[name].properties, 12)}>
-            ${generateIntentFilter(activity[name].intentFilter, 12)}
-            ${genderateMetaData(activity[name].metaData, 12)}
-        </activity>`)
+    activityXml.push(`<activity android:name="${name}" ${generateProperties(activity[name].properties)}>
+${generateSpace(12)}${generateIntentFilter(activity[name].intentFilter, 12)}
+${generateSpace(12)}${genderateMetaData(activity[name].metaData, 12)}
+${generateSpace(8)}</activity>`)
   })
-  return activityXml.join('\n\n        ')
-}
-
-function generateService(service: Record<string, Partial<Activity>> = {}, space = 8) {
-  const services: string[] = []
-  Object.keys(service).forEach((name) => {
-    services.push(`<service android:name="${name}" ${generateProperties(service[name].properties)}>
-${generateSpace(space + 4)}${generateIntentFilter(service[name].intentFilter, space + 4)}
-${generateSpace(space + 4)}${genderateMetaData(service[name].metaData, space + 4)}
-${generateSpace(space)}</service>`)
-  })
-  return services.join(`\n${generateSpace(space)}`)
+  return activityXml.join(`\n\n${generateSpace(8)}`)
 }
 
 export function appendService(manifest: AndroidManifest, service: AndroidManifest['service']) {
-  manifest.service = mergeRecord(manifest.service, service)
+  manifest.service = mergeActivity(manifest.service, service)
+}
+
+export function appendProvider(manifest: AndroidManifest, provider: AndroidManifest['provider']) {
+  manifest.provider = mergeActivity(manifest.provider, provider)
 }
