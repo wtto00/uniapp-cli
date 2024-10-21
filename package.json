@@ -1,20 +1,28 @@
 {
-  "name": "uniapp-cli",
-  "version": "0.0.1",
+  "name": "unicli",
+  "version": "0.0.1-alpha.1",
   "description": "CLI for uniapp.",
-  "main": "index.js",
   "type": "module",
-  "packageManager": "pnpm@9.12.1",
+  "bin": {
+    "uniapp": "./bin/uniapp.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
-    "dev": "concurrently \"pnpm -C packages/common dev\" \"pnpm -C packages/android dev\" \"pnpm -C packages/cli dev\"",
-    "uniapp": "node packages/cli/bin/uniapp.js",
-    "build": "pnpm -r build",
-    "build:cli": "pnpm -C packages/cli build",
-    "build:common": "pnpm -C packages/common build",
-    "build:android": "pnpm -C packages/android build",
+    "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
+    "build": "pnpm build:js && pnpm build:type",
+    "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
+    "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly",
     "preinstall": "npx -y only-allow pnpm",
     "format": "prettier . --write --ignore-unknown",
     "lint": "oxlint --fix --deny-warnings -c=.oxlintrc.json --disable-react-plugin --import-plugin --jsdoc-plugin  --promise-plugin --node-plugin --security-plugin ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wtto00/uniapp-cli.git",
+    "directory": "packages/cli"
   },
   "keywords": [
     "uniapp",
@@ -22,21 +30,31 @@
   ],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wtto00/uniapp-cli.git"
-  },
   "bugs": {
     "url": "https://github.com/wtto00/uniapp-cli/issues"
   },
   "homepage": "https://github.com/wtto00/uniapp-cli#readme",
+  "dependencies": {
+    "@wtto00/android-tools": "^1.0.5",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "degit": "^2.8.4",
+    "inquirer": "^12.0.0",
+    "json5": "^2.2.3",
+    "miniprogram-automator": "^0.12.1",
+    "open": "^10.1.0",
+    "ora": "^8.1.0",
+    "pkg-types": "^1.2.1"
+  },
   "devDependencies": {
-    "@types/node": "^22.7.5",
-    "concurrently": "^9.0.1",
-    "oxlint": "^0.9.10",
+    "@types/degit": "^2.8.6",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^22.7.7",
+    "oxlint": "^0.10.1",
     "prettier": "^3.3.3",
-    "tslib": "^2.7.0",
+    "tslib": "^2.8.0",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
-  }
+  },
+  "packageManager": "pnpm@9.12.2"
 }
