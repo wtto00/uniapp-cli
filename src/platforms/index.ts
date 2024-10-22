@@ -1,7 +1,7 @@
-import { PackageJson } from 'pkg-types'
-import { BuildOptions } from 'typescript'
+import type { PackageJson } from 'pkg-types'
+import type { BuildOptions } from '../build.js'
 import { Log } from '../utils/log.js'
-import { ManifestConfig } from '../utils/manifest.config.js'
+import type { ManifestConfig } from '../utils/manifest.config.js'
 
 type MaybePromise<T> = T | Promise<T>
 

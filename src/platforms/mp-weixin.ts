@@ -1,10 +1,10 @@
-import { resolve } from 'node:path'
 import { existsSync } from 'node:fs'
-import type { ModuleClass } from './index.js'
+import { resolve } from 'node:path'
 import { spawnExec } from '@wtto00/android-tools'
-import { installPackages, uninstallPackages, outputRemoveColor } from '../utils/exec.js'
+import { installPackages, outputRemoveColor, uninstallPackages } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import { isInstalled } from '../utils/package.js'
+import type { ModuleClass } from './index.js'
 
 const mpWeixin: ModuleClass = {
   modules: ['@dcloudio/uni-mp-weixin'],

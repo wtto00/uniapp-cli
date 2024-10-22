@@ -1,4 +1,4 @@
-import { BuildOptions } from './build.js'
+import type { BuildOptions } from './build.js'
 import { importPlatform } from './platforms/index.js'
 import { type PLATFORM, allPlatforms } from './platforms/index.js'
 import { Log } from './utils/log.js'

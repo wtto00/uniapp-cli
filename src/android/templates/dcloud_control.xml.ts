@@ -1,3 +1,5 @@
+export const ControlFilePath = 'app/src/main/assets/data/dcloud_control.xml'
+
 export interface Control {
   appid: string
 }

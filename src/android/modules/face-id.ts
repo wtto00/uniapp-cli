@@ -1,7 +1,7 @@
-import { ManifestConfig } from '../../utils/manifest.config'
-import { Results } from '../prepare'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import type { Results } from '../prepare.js'
 
-export function appendFaceID(results: Results, manifest: ManifestConfig) {
+export function appendFaceID(_results: Results, manifest: ManifestConfig) {
   const FaceID = manifest['app-plus']?.modules?.FaceID
   if (!FaceID) return
 }

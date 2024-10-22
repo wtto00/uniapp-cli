@@ -1,4 +1,4 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
 
 export function checkGeolocation(manifest: ManifestConfig, os: AppPlusOS) {
   const Geolocation = manifest['app-plus']?.modules?.Geolocation
@@ -14,8 +14,8 @@ export function checkGeolocation(manifest: ManifestConfig, os: AppPlusOS) {
         )
       }
       if (
-        (os == AppPlusOS.Android && !geolocation.amap.appkey_android) ||
-        (os == AppPlusOS.iOS && !geolocation.amap.appkey_ios)
+        (os === AppPlusOS.Android && !geolocation.amap.appkey_android) ||
+        (os === AppPlusOS.iOS && !geolocation.amap.appkey_ios)
       ) {
         throw Error(
           `您配置了高德定位，请在文件manifest.json中配置高德定位的AppKey: app-plus.distribute.sdkConfigs.geolocation.amap.${
@@ -28,8 +28,8 @@ export function checkGeolocation(manifest: ManifestConfig, os: AppPlusOS) {
   if (geolocation?.baidu) {
     if (geolocation.baidu.__platform__?.includes(os)) {
       if (
-        (os == AppPlusOS.Android && !geolocation.baidu.appkey_android) ||
-        (os == AppPlusOS.iOS && !geolocation.baidu.appkey_ios)
+        (os === AppPlusOS.Android && !geolocation.baidu.appkey_android) ||
+        (os === AppPlusOS.iOS && !geolocation.baidu.appkey_ios)
       ) {
         throw Error(
           `您配置了百度定位，请在文件manifest.json中配置百度定位的AppKey: app-plus.distribute.sdkConfigs.geolocation.baidu.${

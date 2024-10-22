@@ -1,4 +1,4 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
 
 export function checkShare(manifest: ManifestConfig, os: AppPlusOS) {
   const Share = manifest['app-plus']?.modules?.Share
@@ -12,7 +12,7 @@ export function checkShare(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了微信分享，请在文件manifest.json中配置微信分享的Appid: app-plus.distribute.sdkConfigs.share.weixin.appid',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!share.weixin.UniversalLinks) {
         throw Error(
           '您配置了微信分享，请在文件manifest.json中配置微信分享的iOS平台通用链接: app-plus.distribute.sdkConfigs.share.weixin.UniversalLinks',
@@ -26,7 +26,7 @@ export function checkShare(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了QQ分享，请在文件manifest.json中配置QQ分享的Appid: app-plus.distribute.sdkConfigs.share.qq.appid',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!share.qq.UniversalLinks) {
         throw Error(
           '您配置了QQ分享，请在文件manifest.json中配置QQ分享的iOS平台通用链接: app-plus.distribute.sdkConfigs.share.qq.UniversalLinks',
@@ -45,7 +45,7 @@ export function checkShare(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了新浪微博分享，请在文件manifest.json中配置新浪微博分享的回调页地址: app-plus.distribute.sdkConfigs.share.sina.redirect_uri',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!share.sina.UniversalLinks) {
         throw Error(
           '您配置了新浪微博分享，请在文件manifest.json中配置新浪微博分享的iOS平台通用链接: app-plus.distribute.sdkConfigs.share.sina.UniversalLinks',

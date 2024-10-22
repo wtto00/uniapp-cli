@@ -1,6 +1,5 @@
-import { existsSync, rmSync } from "node:fs";
-import { androidDir } from "./common.js";
+import { existsSync, rmSync } from 'node:fs'
 
 export default function remove() {
-  if (existsSync(androidDir)) rmSync(androidDir, { recursive: true, force: true });
+  if (existsSync(androidDir)) rmSync(androidDir, { recursive: true, force: true })
 }

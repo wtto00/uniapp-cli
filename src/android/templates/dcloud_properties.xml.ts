@@ -1,4 +1,6 @@
-import { generateSpace } from '../../utils/space'
+import { generateSpace } from '../../utils/space.js'
+
+export const PropertiesFilePath = 'app/src/main/assets/data/dcloud_properties.xml'
 
 export interface Properties {
   features: PropertiesFeatures
@@ -93,24 +95,25 @@ export function mergeProperties(properties1: Properties, properties2: Properties
 
 function genderateSingleTag(tag: string, records: Record<string, string> = {}, space = 12) {
   const xml: string[] = []
-  Object.keys(records).forEach((name) => {
+  for (const name in records) {
     xml.push(`<${tag} name="${name}" value="${records[name]}" />`)
-  })
+  }
   return xml.join(`\n${generateSpace(space)}`)
 }
 
 function generateFeatures(features: PropertiesFeatures) {
   const featuresXML: string[] = []
-  Object.keys(features).forEach((name) => {
+  for (const name in features) {
     const { value, module } = features[name]
     const moduleXML = genderateSingleTag('module', module)
     const end = moduleXML ? `\n${generateSpace(12)}${moduleXML}\n${generateSpace(8)}</feature>` : '/>'
     featuresXML.push(`<feature name="${name}" value="${value}" ${end}`)
-  })
+  }
   return featuresXML.join(`\n${generateSpace(8)}`)
 }
 
-export function generateDcloudProperties(properties: Properties) {
+export function generateDcloudProperties(_properties: Properties) {
+  const properties = mergeProperties(defaultProperties, _properties)
   return `<properties>
     <features>
         ${generateFeatures(properties.features)}

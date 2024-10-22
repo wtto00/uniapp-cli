@@ -1,5 +1,5 @@
 import { spawnExec } from '@wtto00/android-tools'
-import { installPackages, uninstallPackages, outputRemoveColor } from '../utils/exec.js'
+import { installPackages, outputRemoveColor, uninstallPackages } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import { isInstalled } from '../utils/package.js'
 import type { ModuleClass } from './index.js'

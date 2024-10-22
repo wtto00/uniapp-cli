@@ -1,5 +1,7 @@
-import { generateSpace } from '../../utils/space'
-import { appendSet } from '../../utils/util'
+import { generateSpace } from '../../utils/space.js'
+import { appendSet } from '../../utils/util.js'
+
+export const AppBuildGradleFilePath = 'app/build.gradle'
 
 export interface AppBuildGradleDependency {
   exclude?: {
@@ -186,7 +188,8 @@ function generateBuildFeatures(buildFeatures?: AppBuildGradle['buildFeatures']) 
   return xml.join(`\n${generateSpace(4)}`)
 }
 
-export function genderateAppBuildGradle(buildGradle: AppBuildGradle) {
+export function genderateAppBuildGradle(_buildGradle: AppBuildGradle) {
+  const buildGradle = mergeAppBuildGradle(defaultAppBuildGradle, _buildGradle)
   return `${genderateAppBuildGradlePlugins(buildGradle.plugins)}
 
 android {

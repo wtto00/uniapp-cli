@@ -1,11 +1,11 @@
 import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
+import degit from 'degit'
 import inquirer from 'inquirer'
 import ora from 'ora'
-import degit from 'degit'
-import { Log } from './utils/log'
-import { createVueProject, installVueCli, isVueCliInstalled } from './utils/exec'
 import { readPackageJSON, writePackageJSON } from 'pkg-types'
+import { createVueProject, installVueCli, isVueCliInstalled } from './utils/exec.js'
+import { Log } from './utils/log.js'
 
 const TEMPLATES = [
   {
@@ -32,11 +32,11 @@ export async function create(appName: string, options: CreateOptoins) {
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {
       if (statSync(projectPath).isDirectory() && readdirSync(projectPath).length > 0) {
-        Log.warn(`directory ${appName} already exists, use \`--force\` to overwrite.`)
+        Log.warn(`文件夹 ${appName} 已存在, 使用 \`--force\` 强制覆盖。`)
         return
       }
     } else {
-      Log.info(`delete directory: ${projectPath}`)
+      Log.info(`删除文件夹: ${projectPath}`)
       rmSync(projectPath, { force: true, recursive: true })
     }
   }
@@ -54,7 +54,7 @@ export async function create(appName: string, options: CreateOptoins) {
     ])
     template = TEMPLATES.find((item) => item.name === templateKey)?.repo ?? TEMPLATES[0].repo
     if (templateKey === 'vue2' || templateKey === 'vue2-alpha') {
-      Log.info('create project by @vue/cli')
+      Log.info('使用@vue/cli创建应用')
       if (!isVueCliInstalled()) {
         installVueCli()
       }
@@ -63,41 +63,41 @@ export async function create(appName: string, options: CreateOptoins) {
     }
   }
 
-  Log.debug(`download template ${template}`)
+  Log.debug(`下载应用模板 ${template}`)
 
-  const spinner = ora(`downloading template: ${template}`).start()
+  const spinner = ora(`正在下载应用模板: ${template}`).start()
   const emitter = degit(template, {
     cache: cache !== false,
     force: true,
     verbose: true,
   })
   emitter.on('info', (info) => {
-    spinner.info(info.message)
+    spinner.text = info.message
   })
 
   try {
     await emitter.clone(appName)
-    spinner.succeed(`Project \`${appName}\` has been successfully created.`)
+    spinner.succeed(`应用 \`${appName}\` 创建成功。`)
   } catch (err) {
-    spinner.fail(`failed to download \`${template}\``)
+    spinner.fail(`应用模板 \`${template}\` 下载失败。`)
     Log.error((err as Error).message)
     process.exit()
   }
 
   try {
-    Log.debug(`rename project to \`${appName}\``)
+    Log.debug(`重命名应用为 \`${appName}\``)
     const packages = await readPackageJSON(projectPath)
     packages.name = appName
     await writePackageJSON(resolve(projectPath, 'package.json'), packages)
   } catch (err) {
-    Log.error((err as Error).message || 'Failed to rename project in package.json')
+    Log.error((err as Error).message || '在文件 package.json 中重命名 name 失败。')
   }
 
   Log.info(`
-Project \`${appName}\` has been created.
-Run these commands to start:
-    cd ${appName}
-    npm i
-    uniapp run h5
+应用 \`${appName}\` 创建成功
+运行下面的命令开始:
+\tcd ${appName}
+\tnpm i
+\tuniapp run h5
 `)
 }

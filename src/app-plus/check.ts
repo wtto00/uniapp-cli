@@ -1,14 +1,14 @@
-import { checkOauth } from './modules/oauth'
-import { checkSpeech } from './modules/speech'
-import { checkShare } from './modules/share'
-import { checkPayment } from './modules/payment'
-import { checkGeolocation } from './modules/geolocation'
-import { checkStatistic } from './modules/statics'
-import { checkMaps } from './modules/maps'
-import { checkPush } from './modules/push'
-import { checkAd } from './modules/ad'
-import { Log } from '../utils/log'
-import { ManifestConfig, AppPlusOS } from '../utils/manifest.config'
+import { Log } from '../utils/log.js'
+import { AppPlusOS, type ManifestConfig } from '../utils/manifest.config.js'
+import { checkAd } from './modules/ad.js'
+import { checkGeolocation } from './modules/geolocation.js'
+import { checkMaps } from './modules/maps.js'
+import { checkOauth } from './modules/oauth.js'
+import { checkPayment } from './modules/payment.js'
+import { checkPush } from './modules/push.js'
+import { checkShare } from './modules/share.js'
+import { checkSpeech } from './modules/speech.js'
+import { checkStatistic } from './modules/statics.js'
 
 export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   if (!manifest) {
@@ -39,13 +39,13 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   }
   // packagename
   if (os === AppPlusOS.Android && !manifest['app-plus']?.distribute?.android?.packagename) {
-    throw Error(`请在文件manifest.json中配置应用包名: app-plus.distribute.android.packagename`)
+    throw Error('请在文件manifest.json中配置应用包名: app-plus.distribute.android.packagename')
   }
   if (os === AppPlusOS.iOS && !manifest['app-plus']?.distribute?.ios?.appid) {
-    throw Error(`请在文件manifest.json中配置应用包名: app-plus.distribute.ios.appid`)
+    throw Error('请在文件manifest.json中配置应用包名: app-plus.distribute.ios.appid')
   }
   if (os === AppPlusOS.Android && !manifest['app-plus']?.distribute?.android?.abiFilters?.length) {
-    throw Error(`请在文件manifest.json中配置应用所支持的CPU类型: app-plus.distribute.android.abiFilters`)
+    throw Error('请在文件manifest.json中配置应用所支持的CPU类型: app-plus.distribute.android.abiFilters')
   }
 
   // OAuth
@@ -86,8 +86,8 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   checkGeolocation(manifest, os)
   const Geolocation = manifest['app-plus']?.modules?.Geolocation
   const geolocation = manifest['app-plus']?.distribute?.sdkConfigs?.geolocation
-  let geolocationBaiduAppKey = Geolocation
-    ? os == AppPlusOS.Android
+  const geolocationBaiduAppKey = Geolocation
+    ? os === AppPlusOS.Android
       ? geolocation?.baidu?.appkey_android
       : geolocation?.baidu?.appkey_ios
     : ''
@@ -97,7 +97,7 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   const Statistic = manifest['app-plus']?.modules?.Statistic
   const statics = manifest['app-plus']?.distribute?.sdkConfigs?.statics
   const staticsGoogleServices = Statistic
-    ? os == AppPlusOS.Android
+    ? os === AppPlusOS.Android
       ? statics?.google?.config_android
       : statics?.google?.config_ios
     : ''
@@ -106,14 +106,14 @@ export function checkConfig(manifest: ManifestConfig, os = AppPlusOS.Android) {
   checkMaps(manifest, os)
   const Maps = manifest['app-plus']?.modules?.Maps
   const maps = manifest['app-plus']?.distribute?.sdkConfigs?.maps
-  const mapsBaiduAppKey = Maps ? (os == AppPlusOS.Android ? maps?.baidu?.appkey_android : maps?.baidu?.appkey_ios) : ''
+  const mapsBaiduAppKey = Maps ? (os === AppPlusOS.Android ? maps?.baidu?.appkey_android : maps?.baidu?.appkey_ios) : ''
 
   // Push
   checkPush(manifest, os)
   const Push = manifest['app-plus']?.modules?.Push
   const push = manifest['app-plus']?.distribute?.sdkConfigs?.push
   const pushGoogleServices = Push
-    ? os == AppPlusOS.Android
+    ? os === AppPlusOS.Android
       ? push?.unipush?.fcm?.config_android
       : push?.unipush?.fcm?.config_ios
     : ''

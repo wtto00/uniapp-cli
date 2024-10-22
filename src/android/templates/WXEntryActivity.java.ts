@@ -1,4 +1,4 @@
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
 
 export function generateWXEntryActivity(manifest: ManifestConfig) {
   return `package ${manifest['app-plus']?.distribute?.android?.packagename}.wxapi;

@@ -1,6 +1,6 @@
-import { ManifestConfig } from '../../utils/manifest.config'
-import { Results } from '../prepare'
-import { appendFeature } from '../templates/dcloud_properties.xml'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import type { Results } from '../prepare.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendSQLite(results: Results, manifest: ManifestConfig) {
   const SQLite = manifest['app-plus']?.modules?.SQLite

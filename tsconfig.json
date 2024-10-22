@@ -12,7 +12,10 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noUnusedLocals": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
   },
-  "files": ["./global.d.ts"]
+  "files": ["./global.d.ts"],
+  "include": ["src/**/*.ts"]
 }

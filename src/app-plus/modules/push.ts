@@ -1,4 +1,4 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
 
 export function checkPush(manifest: ManifestConfig, os: AppPlusOS) {
   const Push = manifest['app-plus']?.modules?.Push

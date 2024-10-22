@@ -1,9 +1,9 @@
-import { Results } from '../prepare'
-import { appendMetaData, appendPermissions, appendProvider } from '../templates/AndroidManifest.xml'
-import { appendMerge, appendSet } from '../../utils/util'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { appendDependencies } from '../templates/app-build.gradle'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { appendMerge, appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendMetaData, appendPermissions, appendProvider } from '../templates/AndroidManifest.xml.js'
+import { appendDependencies } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendBarcode(results: Results, manifest: ManifestConfig) {
   const ad = manifest['app-plus']?.distribute?.sdkConfigs?.ad

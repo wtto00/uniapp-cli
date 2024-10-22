@@ -1,28 +1,62 @@
+import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { type ManifestConfig, PermissionRequest } from '../utils/manifest.config.js'
+import { appendSet, enumInclude, mergeSet } from '../utils/util.js'
+import { appendBluetooth } from './modules/bluetooth.js'
+import { appendOauth } from './modules/oauth.js'
 import {
+  type AndroidManifest,
+  AndroidManifestFilePath,
   appendActivity,
   appendMetaData,
   appendPermissions,
+  generateAndroidManifest,
   mergeAndroidManifest,
   parsePermissionConfig,
-  type AndroidManifest,
-} from './templates/AndroidManifest.xml'
+} from './templates/AndroidManifest.xml.js'
 import {
+  type AppBuildGradle,
+  AppBuildGradleFilePath,
   appendPackagingOptions,
+  genderateAppBuildGradle,
   mergeAppBuildGradle,
   mergeDependencies,
-  type AppBuildGradle,
-} from './templates/app-build.gradle'
-import { mergeBuildGradle, type BuildGradle } from './templates/build.gradle'
-import { mergeProperties, type Properties } from './templates/dcloud_properties.xml'
-import type { Strings } from './templates/strings.xml'
-import { mergeControl, type Control } from './templates/dcloud_control.xml'
-import { resolve } from 'path'
-import { readdirSync } from 'fs'
-import { appendSet, enumInclude } from '../utils/util'
-import { appendOauth } from './modules/oauth'
-import { appendBluetooth } from './modules/bluetooth'
-import { findLibSDK } from './utils'
-import { ManifestConfig, PermissionRequest } from '../utils/manifest.config'
+} from './templates/app-build.gradle.js'
+import {
+  type BuildGradle,
+  BuildGradleFilePath,
+  generateBuildGradle,
+  mergeBuildGradle,
+} from './templates/build.gradle.js'
+import { type Control, ControlFilePath, genderateDcloudControl, mergeControl } from './templates/dcloud_control.xml.js'
+import {
+  type Properties,
+  PropertiesFilePath,
+  generateDcloudProperties,
+  mergeProperties,
+} from './templates/dcloud_properties.xml.js'
+import { genderateStrings, StringsFilePath, type Strings } from './templates/strings.xml.js'
+import { findLibSDK } from './utils.js'
+import { appendSpeech } from './modules/speech.js'
+import { appendCamera } from './modules/camera.js'
+import { appendShare } from './modules/share.js'
+import { appendGeolocation } from './modules/geolocation.js'
+import { appendPush } from './modules/push.js'
+import { appendStatistic } from './modules/statics.js'
+import { appendBarcode } from './modules/barcode.js'
+import { appendFaceID } from './modules/face-id.js'
+import { appendFingerprint } from './modules/fingerprint.js'
+import { appendFacialRecognitionVerify } from './modules/facial-recognition-verify.js'
+import { appendIBeacon } from './modules/iBeacon.js'
+import { appendLivePusher } from './modules/live-pusher.js'
+import { appendMaps } from './modules/maps.js'
+import { appendMessaging } from './modules/messaging.js'
+import { appendPayment } from './modules/payment.js'
+import { appendRecord } from './modules/record.js'
+import { appendSQLite } from './modules/sqlite.js'
+import { appendVideoPlayer } from './modules/video-player.js'
+import { appendWebviewX5 } from './modules/webview-x5.js'
+import { androidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -82,26 +116,23 @@ export function mergeResults(results1: Results, results2: Results) {
   } as Results
 }
 
-export function getDefaultLibs() {
+export function getDefaultLibs(sdkVersion: string) {
   const libs = new Set(['lib.5plus.base-release.aar', 'uniapp-v8-release.aar', 'breakpad-build-release.aar'])
 
-  const libsPath = resolve(global.projectRoot, 'node_modules/uniapp-android/SDK/libs')
-  const files = readdirSync(libsPath, { encoding: 'utf8' })
-
-  const androidGifDrawableRelease = findLibSDK('android-gif-drawable-release@')
+  const androidGifDrawableRelease = findLibSDK('android-gif-drawable-release@', sdkVersion)
   if (androidGifDrawableRelease) libs.add(androidGifDrawableRelease)
 
-  const oaidSdk = files.find((file) => file.startsWith('oaid_sdk_'))
+  const oaidSdk = findLibSDK('oaid_sdk_', sdkVersion)
   if (oaidSdk) libs.add(oaidSdk)
 
   return libs
 }
 
-export function prepare(manifest: ManifestConfig): Results {
+export function prepareResults(manifest: ManifestConfig, sdkVersion: string): Results {
   const results = createEmptyResults()
 
   // name
-  results.strings['app_name'] = manifest.name ?? 'My UniApp'
+  results.strings.app_name = manifest.name ?? 'My UniApp'
   // appid
   results.control.appid = manifest.appid ?? ''
   // versionName
@@ -142,7 +173,7 @@ export function prepare(manifest: ManifestConfig): Results {
   results.appBuildGradle.abiFilters = new Set(abiFilters)
   if (schemes) {
     const schemesArray = schemes.split(',').map((scheme) => scheme.trim())
-    schemesArray.forEach((scheme) => {
+    for (const scheme of schemesArray) {
       results.androidManifest.activity['io.dcloud.PandoraEntry'].intentFilter = []
       appendActivity(results.androidManifest, {
         'io.dcloud.PandoraEntry': {
@@ -156,7 +187,7 @@ export function prepare(manifest: ManifestConfig): Results {
           ],
         },
       })
-    })
+    }
   }
   if (forceDarkAllowed) {
     appendMetaData(results.androidManifest, { DCLOUD_DARK_MODE: { value: 'auto' } })
@@ -197,13 +228,50 @@ export function prepare(manifest: ManifestConfig): Results {
   // Bluetooth
   appendBluetooth(results, manifest)
   // Speech
+  appendSpeech(results, manifest)
+  // Camera
+  appendCamera(results, manifest)
+  // Share
+  appendShare(results, manifest, sdkVersion)
+  // Geolocation
+  appendGeolocation(results, manifest)
+  // Push
+  appendPush(results, manifest)
+  // Statistic
+  appendStatistic(results, manifest)
+  // Barcode
+  appendBarcode(results, manifest)
+  // FaceID
+  appendFaceID(results, manifest)
+  // Fingerprint
+  appendFingerprint(results, manifest)
+  // FacialRecognitionVerify
+  appendFacialRecognitionVerify(results, manifest, sdkVersion)
+  // iBeacon
+  appendIBeacon(results, manifest)
+  // LivePusher
+  appendLivePusher(results, manifest)
+  // Maps
+  appendMaps(results, manifest)
+  // Messaging
+  appendMessaging(results, manifest)
+  // Payment
+  appendPayment(results, manifest)
+  // Record
+  appendRecord(results, manifest)
+  // SQLite
+  appendSQLite(results, manifest)
+  // VideoPlayer
+  appendVideoPlayer(results, manifest)
+  // Webview-x5
+  appendWebviewX5(results, manifest)
 
   // channel_list
 
   return results
 }
 
-export function prepareUTS(uniModulesPath: string): Results {
+export function prepareUTSResults(uniModulesPath: string): Results {
   const results = createEmptyResults()
 
   const modules = readdirSync(uniModulesPath, { encoding: 'utf8' })
@@ -220,11 +288,39 @@ export function prepareUTS(uniModulesPath: string): Results {
       'com.github.getActivity:XXPermissions:18.0': {},
     })
 
-    modules.forEach((uts) => {
+    for (const uts of modules) {
       results.appBuildGradle.dependencies = mergeDependencies(results.appBuildGradle.dependencies, {
         [`:${uts}`]: { project: true },
       })
-    })
+    }
   }
   return results
+}
+
+export function prepare(manifest: ManifestConfig, sdkVersion: string) {
+  const results = prepareResults(manifest, sdkVersion)
+
+  const { androidManifest, libs, filesWrite, filesCopy, appBuildGradle, buildGradle, properties, control, strings } =
+    results
+
+  filesWrite[AndroidManifestFilePath] = generateAndroidManifest(androidManifest)
+  const libFiles = mergeSet(libs, getDefaultLibs(sdkVersion))
+  for (const lib of libFiles) {
+    filesCopy[resolve(androidDir, 'app/libs', lib)] = resolve(UNIAPP_SDK_HOME, 'android', sdkVersion, lib)
+  }
+  filesWrite[AppBuildGradleFilePath] = genderateAppBuildGradle(appBuildGradle)
+  filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
+  filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
+  filesWrite[ControlFilePath] = genderateDcloudControl(control)
+  filesWrite[StringsFilePath] = genderateStrings(strings)
+
+  for (const target in filesCopy) {
+    cpSync(filesCopy[target], target, { recursive: true })
+  }
+  for (const filePath in filesWrite) {
+    const fileFullPath = resolve(androidDir, filePath)
+    const fileDir = dirname(fileFullPath)
+    if (!existsSync(fileDir)) mkdirSync(fileDir, { recursive: true })
+    writeFileSync(fileFullPath, filesWrite[filePath], 'utf8')
+  }
 }

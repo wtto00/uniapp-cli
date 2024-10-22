@@ -1,10 +1,10 @@
-import type { Results } from '../prepare'
-import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { appendDependencies } from '../templates/app-build.gradle'
-import { generateWXEntryActivity, getWXEntryActivityFilePath } from '../templates/WXEntryActivity.java'
-import { appendMerge } from '../../utils/util'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { appendMerge } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
+import { generateWXEntryActivity, getWXEntryActivityFilePath } from '../templates/WXEntryActivity.java.js'
+import { appendDependencies } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendOauth(results: Results, manifest: ManifestConfig) {
   const OAuth = manifest['app-plus']?.modules?.OAuth

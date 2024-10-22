@@ -1,7 +1,7 @@
-import { type ModuleClass } from "./index.js";
+import type { ModuleClass } from './index.js'
 
 const harmony: ModuleClass = {
-  modules: ["@dcloudio/uni-app-harmony", "uniapp-harmony"],
+  modules: ['@dcloudio/uni-app-harmony', 'uniapp-harmony'],
 
   requirement() {},
 
@@ -12,6 +12,6 @@ const harmony: ModuleClass = {
   run(options) {},
 
   build() {},
-};
+}
 
-export default harmony;
+export default harmony

@@ -1,12 +1,12 @@
-import { Results } from '../prepare'
-import { appendSet } from '../../utils/util'
-import { appendDependencies } from '../templates/app-build.gradle'
-import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { findLibSDK } from '../utils'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
+import { appendDependencies } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
+import { findLibSDK } from '../utils.js'
 
-export function appendShare(results: Results, manifest: ManifestConfig) {
+export function appendShare(results: Results, manifest: ManifestConfig, sdkVersion: string) {
   const Share = manifest['app-plus']?.modules?.Share
   if (!Share) return
   const share = manifest['app-plus']?.distribute?.sdkConfigs?.share
@@ -55,7 +55,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
 
   if (share?.qq) {
     results.libs.add('share-qq-release.aar')
-    const qqOpenSdk = findLibSDK('open_sdk_')
+    const qqOpenSdk = findLibSDK('open_sdk_', sdkVersion)
     if (qqOpenSdk) results.libs.add(qqOpenSdk)
 
     appendPermissions(results.androidManifest, {
@@ -99,7 +99,7 @@ export function appendShare(results: Results, manifest: ManifestConfig) {
 
   if (share?.sina) {
     results.libs.add('share-sina-release.aar')
-    const sinaOpenSdk = findLibSDK('openDefault-')
+    const sinaOpenSdk = findLibSDK('openDefault-', sdkVersion)
     if (sinaOpenSdk) results.libs.add(sinaOpenSdk)
 
     appendPermissions(results.androidManifest, {

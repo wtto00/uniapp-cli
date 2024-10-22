@@ -1,4 +1,4 @@
-import { importPlatform, PLATFORM, allPlatforms } from './platforms/index.js'
+import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
 import { checkIsUniapp, getModuleVersion, getPackageJson, isInstalled } from './utils/package.js'
 
@@ -25,8 +25,9 @@ export async function add(platforms: PLATFORM[]) {
 
     try {
       await module.platformAdd({ packages, version: uniVersoin })
-    } catch (_error) {
+    } catch (error) {
       module.platformRemove({ packages })
+      Log.error((error as Error).message)
     }
   }
 }
@@ -39,9 +40,9 @@ export async function remove(platforms: PLATFORM[]) {
   checkIsUniapp(packages)
 
   for (const pfm of platforms) {
-    Log.debug(`remove platform: ${pfm}`)
+    Log.debug(`移除平台: ${pfm}`)
     if (!allPlatforms.includes(pfm)) {
-      Log.error(`${pfm} is not an valid platform value.\n`)
+      Log.error(`${pfm} 不是一个有效的平台。\n`)
       continue
     }
     const module = await importPlatform(pfm)

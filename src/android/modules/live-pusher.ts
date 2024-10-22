@@ -1,7 +1,7 @@
-import { ManifestConfig } from '../../utils/manifest.config'
-import { Results } from '../prepare'
-import { appendPermissions } from '../templates/AndroidManifest.xml'
-import { appendFeature } from '../templates/dcloud_properties.xml'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import type { Results } from '../prepare.js'
+import { appendPermissions } from '../templates/AndroidManifest.xml.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendLivePusher(results: Results, manifest: ManifestConfig) {
   const LivePusher = manifest['app-plus']?.modules?.LivePusher

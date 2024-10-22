@@ -1,11 +1,11 @@
-import { Results } from '../prepare'
-import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml'
-import { appendSet } from '../../utils/util'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { appendDependencies, appendPlugin } from '../templates/app-build.gradle'
 import { resolve } from 'node:path'
-import { androidDir } from '../../utils/path'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { androidDir } from '../../utils/path.js'
+import { appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
+import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendStatistic(results: Results, manifest: ManifestConfig) {
   const Statistic = manifest['app-plus']?.modules?.Statistic

@@ -1,4 +1,4 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
 
 export function checkStatistic(manifest: ManifestConfig, os: AppPlusOS) {
   const Statistic = manifest['app-plus']?.modules?.Statistic

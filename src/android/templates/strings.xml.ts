@@ -1,4 +1,6 @@
-import { generateSpace } from '../../utils/space'
+import { generateSpace } from '../../utils/space.js'
+
+export const StringsFilePath = 'app/src/main/res/values/strings.xml'
 
 export type Strings = Record<string, string>
 

@@ -1,5 +1,5 @@
-import { program } from 'commander'
 import { resolve } from 'node:path'
+import { program } from 'commander'
 import { readPackageJSONSync } from './utils/package.js'
 
 global.projectRoot = process.cwd()

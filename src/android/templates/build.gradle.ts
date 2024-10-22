@@ -1,5 +1,7 @@
-import { generateSpace } from '../../utils/space'
-import { deepMerge, mergeSet } from '../../utils/util'
+import { generateSpace } from '../../utils/space.js'
+import { deepMerge, mergeSet } from '../../utils/util.js'
+
+export const BuildGradleFilePath = 'build.gradle'
 
 export interface Repositories {
   credentials?: {
@@ -79,7 +81,8 @@ function genderateExt(ext?: BuildGradle['ext']) {
 }`
 }
 
-export function generateBuildGradle(gradle: BuildGradle) {
+export function generateBuildGradle(_gradle: BuildGradle) {
+  const gradle = mergeBuildGradle(defaultBuildGradle, _gradle)
   return `buildscript {
     repositories {
         ${genderateRepositories(gradle.repositories, 8)}

@@ -1,4 +1,4 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
 
 export function checkOauth(manifest: ManifestConfig, os: AppPlusOS) {
   const OAuth = manifest['app-plus']?.modules?.OAuth
@@ -12,7 +12,7 @@ export function checkOauth(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了微信登陆，请在文件manifest.json中配置微信登陆的Appid: app-plus.distribute.sdkConfigs.oauth.weixin.appid',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!oauth.weixin.UniversalLinks) {
         throw Error(
           '您配置了微信登陆，请在文件manifest.json中配置微信登陆的iOS平台通用链接: app-plus.distribute.sdkConfigs.oauth.weixin.UniversalLinks',
@@ -26,7 +26,7 @@ export function checkOauth(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了QQ登陆，请在文件manifest.json中配置QQ登陆的Appid: app-plus.distribute.sdkConfigs.oauth.qq.appid',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!oauth.qq.UniversalLinks) {
         throw Error(
           '您配置了QQ登陆，请在文件manifest.json中配置QQ登陆的iOS平台通用链接: app-plus.distribute.sdkConfigs.oauth.qq.UniversalLinks',
@@ -45,7 +45,7 @@ export function checkOauth(manifest: ManifestConfig, os: AppPlusOS) {
         '您配置了新浪微博登陆，请在文件manifest.json中配置新浪微博登陆的回调页地址: app-plus.distribute.sdkConfigs.oauth.sina.redirect_uri',
       )
     }
-    if (os == AppPlusOS.iOS) {
+    if (os === AppPlusOS.iOS) {
       if (!oauth.sina.UniversalLinks) {
         throw Error(
           '您配置了新浪微博登陆，请在文件manifest.json中配置新浪微博登陆的iOS平台通用链接: app-plus.distribute.sdkConfigs.oauth.sina.UniversalLinks',

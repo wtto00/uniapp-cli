@@ -1,6 +1,6 @@
-import { allPlatforms, importPlatform, type PLATFORM } from './platforms/index.js'
+import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
-import { getPackageJson, checkIsUniapp, isInstalled } from './utils/package.js'
+import { checkIsUniapp, getPackageJson, isInstalled } from './utils/package.js'
 
 export interface BuildOptions {
   open: boolean

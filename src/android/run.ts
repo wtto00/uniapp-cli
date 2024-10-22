@@ -1,9 +1,7 @@
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
-import { androidDir, getSignConfigEnv } from './common.js'
 import { dirname, resolve } from 'node:path'
-import { buildAndroidManifest, buildBuildGradle, buildDcloudControlXml, buildStringXml } from './build-files.js'
 import Android from '@wtto00/android-tools'
-import { BuildOptions } from 'typescript'
+import type { BuildOptions } from '../build.js'
 import { spawnExecSync } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import { getManifestJson } from '../utils/manifest.js'
@@ -27,18 +25,18 @@ export default async function run(options: BuildOptions): Promise<string | undef
   ]
 
   let isFailed = false
-  reuiqreFields.forEach((field) => {
+  for (const field of reuiqreFields) {
     const arr = field.split('.')
     let val = manifest
-    arr.forEach((item) => {
+    for (const item of arr) {
       if (!val[item]) {
         Log.warn(`Please set \`${field}\` in \`src/manifest.json\`.`)
         isFailed = true
       } else {
         val = val[item]
       }
-    })
-  })
+    }
+  }
   if (isFailed) {
     throw Error('Some fields are missing in `src/manifest.json`.')
   }
@@ -113,7 +111,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
 
   const allDevices = await android.devices()
   const devices = allDevices.filter((item) => item.status === 'device')
-  if (devices.length == 0) {
+  if (devices.length === 0) {
     throw Error('No device connected')
   }
   if (device && !devices.find((item) => item.name === device)) {

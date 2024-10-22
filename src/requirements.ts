@@ -1,4 +1,4 @@
-import { importPlatform, type PLATFORM, allPlatforms } from './platforms/index.js'
+import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
 import { checkIsUniapp, getPackageJson, isInstalled } from './utils/package.js'
 

@@ -1,6 +1,6 @@
-import { ManifestConfig } from '../../utils/manifest.config'
-import { Results } from '../prepare'
-import { appendPermissions } from '../templates/AndroidManifest.xml'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import type { Results } from '../prepare.js'
+import { appendPermissions } from '../templates/AndroidManifest.xml.js'
 
 export function appendRecord(results: Results, manifest: ManifestConfig) {
   const Record = manifest['app-plus']?.modules?.Record

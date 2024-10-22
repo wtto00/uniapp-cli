@@ -1,11 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { ManifestConfig } from '../utils/manifest.config'
-import { androidPath } from '../utils/path'
-
-export const currentDir = fileURLToPath(new URL('./', import.meta.url))
-export const androidDir = resolve(global.projectRoot, androidPath)
+import type { ManifestConfig } from '../utils/manifest.config.js'
 
 export function getSignConfigEnv(manifest: ManifestConfig, isRelease?: boolean) {
   const envVars = process.env

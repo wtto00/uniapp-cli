@@ -1,9 +1,9 @@
-import { Results } from '../prepare'
-import { appendSet } from '../../utils/util'
-import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { appendDependencies } from '../templates/app-build.gradle'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
+import { appendDependencies } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendMaps(results: Results, manifest: ManifestConfig) {
   const Maps = manifest['app-plus']?.modules?.Maps

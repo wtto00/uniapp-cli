@@ -1,6 +1,6 @@
-import { ManifestConfig, AppPlusOS } from '../../utils/manifest.config'
+import type { AppPlusOS, ManifestConfig } from '../../utils/manifest.config.js'
 
-export function checkAd(manifest: ManifestConfig, os: AppPlusOS) {
+export function checkAd(manifest: ManifestConfig, _os: AppPlusOS) {
   const ad = manifest['app-plus']?.distribute?.sdkConfigs?.ad
   if (!ad) return
 

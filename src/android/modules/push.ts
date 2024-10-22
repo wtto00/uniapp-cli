@@ -1,12 +1,12 @@
-import { Results } from '../prepare'
-import { appendMerge, appendSet } from '../../utils/util'
-import { appendActivity, appendMetaData, appendService } from '../templates/AndroidManifest.xml'
-import { appendFeature } from '../templates/dcloud_properties.xml'
-import { appendDependencies, appendPlugin } from '../templates/app-build.gradle'
 import { extname, resolve } from 'node:path'
-import { androidDir } from '../../utils/path'
-import { Log } from '../../utils/log'
-import { ManifestConfig } from '../../utils/manifest.config'
+import { Log } from '../../utils/log.js'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { androidDir } from '../../utils/path.js'
+import { appendMerge, appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
+import { appendActivity, appendMetaData, appendService } from '../templates/AndroidManifest.xml.js'
+import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
+import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
 export function appendPush(results: Results, manifest: ManifestConfig) {
   const Push = manifest['app-plus']?.modules?.Push
@@ -71,7 +71,7 @@ export function appendPush(results: Results, manifest: ManifestConfig) {
 
   if (icons?.small) {
     const allSize = ['ldpi', 'mdpi', 'hdpi', 'xhdpi', 'xxhdpi'] as const
-    allSize.forEach((size) => {
+    for (const size of allSize) {
       if (icons.small?.[size]) {
         const iconPath = resolve(
           androidDir,
@@ -81,7 +81,7 @@ export function appendPush(results: Results, manifest: ManifestConfig) {
         )
         results.filesCopy[iconPath] = resolve(global.projectRoot, 'src', icons.small?.[size])
       }
-    })
+    }
   }
 
   if (!offline) return

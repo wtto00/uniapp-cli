@@ -1,6 +1,8 @@
-import { generateSpace } from '../../utils/space'
-import { deepMerge } from '../../utils/util'
-import { parseXMLProperties } from '../../utils/xml'
+import { generateSpace } from '../../utils/space.js'
+import { deepMerge } from '../../utils/util.js'
+import { parseXMLProperties } from '../../utils/xml.js'
+
+export const AndroidManifestFilePath = 'app/src/main/AndroidManifest.xml'
 
 export interface MetaData {
   resource?: string
@@ -100,10 +102,9 @@ export const defaultAndroidManifest: AndroidManifest = {
 
 export function parsePermissionConfig(permissionsXML?: string[]) {
   const permissions: AndroidManifest['permissions'] = {}
-  permissionsXML?.forEach((permissionXML) => {
+  for (const permissionXML of permissionsXML ?? []) {
     const res = permissionXML.matchAll(/^\s*<(uses-feature|uses-permission)\s+([a-zA-Z:="'._]*)\s*\/>/g)
     for (const line of res) {
-      console.log(line)
       const [, , properties] = line
       if (properties) {
         const { 'android:name': name, ...rest } = parseXMLProperties(properties)
@@ -112,7 +113,7 @@ export function parsePermissionConfig(permissionsXML?: string[]) {
         }
       }
     }
-  })
+  }
   return permissions
 }
 
@@ -167,14 +168,15 @@ export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manife
   return manifest
 }
 
-export function generateAndroidManifest(manifest: AndroidManifest) {
+export function generateAndroidManifest(_manifest: AndroidManifest) {
+  const manifest = mergeAndroidManifest(defaultAndroidManifest, _manifest)
   if (manifest.hasTaskAffinity) {
-    Object.keys(manifest.activity).forEach((name) => {
+    for (const name in manifest.activity) {
       manifest.activity[name].properties = {
         ...manifest.activity[name].properties,
         'android:taskAffinity': '',
       }
-    })
+    }
   }
   return `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -201,7 +203,7 @@ function getPermissionTag(permission: string) {
 }
 function generatePermissions(permissions: AndroidManifest['permissions'] = {}) {
   const permissionXML: string[] = []
-  Object.keys(permissions).forEach((name) => {
+  for (const name in permissions) {
     const tag = getPermissionTag(name)
     if (tag) {
       permissionXML.push(`<${tag} android:name="${name}" ${generateProperties(permissions[name])}/>`)
@@ -209,52 +211,52 @@ function generatePermissions(permissions: AndroidManifest['permissions'] = {}) {
       const { __tag__, ...properties } = permissions[name]
       if (__tag__) permissionXML.push(`<${__tag__} android:name="${name}" ${generateProperties(properties)}/>`)
     }
-  })
+  }
   return permissionXML.join('\n    ')
 }
 
 function generateProperties(properties?: NodeProperties) {
   if (!properties) return ''
   const propertiesXML: string[] = []
-  Object.keys(properties).forEach((name) => {
+  for (const name in properties) {
     propertiesXML.push(`${name}="${properties[name]}"`)
-  })
+  }
   return propertiesXML.join(' ')
 }
 
 function generateSet(tag: string, set?: Set<string>, space = 16) {
   if (!set) return ''
   const xml: string[] = []
-  ;[...set].forEach((name) => {
+  for (const name of set) {
     xml.push(`<${tag} android:name="${name}" />`)
-  })
+  }
   return xml.join(`\n${generateSpace(space)}`)
 }
 
 function generateIntentFilter(filters: ActivityIntentFilter[] = [], space = 12) {
   const filtersXML: string[] = []
   const spaces = generateSpace(space)
-  const spacesSecond = spaces + '    '
-  filters.forEach((filter) => {
+  const spacesSecond = `${spaces}    `
+  for (const filter of filters) {
     const children: string[] = [generateSet('action', filter.action)]
     const category = generateSet('category', filter.category)
     if (category) children.push(category)
     if (filter.data) {
-      filter.data.forEach((data) => {
+      for (const data of filter.data) {
         children.push(`<data ${generateProperties(data)} />`)
-      })
+      }
     }
 
     filtersXML.push(`<intent-filter ${generateProperties(filter.properties)}>
 ${spacesSecond}${children.join(`\n${spacesSecond}`)}
 ${spaces}</intent-filter>`)
-  })
+  }
   return filtersXML.join(`\n${spaces}`)
 }
 
 function genderateMetaData(metaData: Record<string, MetaData> = {}, space = 12) {
   const metaDataXML: string[] = []
-  Object.keys(metaData).forEach((name) => {
+  for (const name in metaData) {
     const properties: string[] = []
     const { resource, value, replace } = metaData[name]
     if (resource) {
@@ -267,18 +269,18 @@ function genderateMetaData(metaData: Record<string, MetaData> = {}, space = 12) 
       properties.push(`tools:replace="${replace}"`)
     }
     metaDataXML.push(`<meta-data android:name="${name}" ${properties.join(' ')} />`)
-  })
+  }
   return metaDataXML.join(`\n${generateSpace(space)}`)
 }
 
 function generateActivity(activity: Record<string, Partial<Activity>> = {}, tag = 'activity') {
   const activityXml: string[] = []
-  Object.keys(activity).forEach((name) => {
-    activityXml.push(`<activity android:name="${name}" ${generateProperties(activity[name].properties)}>
+  for (const name in activity) {
+    activityXml.push(`<${tag} android:name="${name}" ${generateProperties(activity[name].properties)}>
 ${generateSpace(12)}${generateIntentFilter(activity[name].intentFilter, 12)}
 ${generateSpace(12)}${genderateMetaData(activity[name].metaData, 12)}
-${generateSpace(8)}</activity>`)
-  })
+${generateSpace(8)}</${tag}>`)
+  }
   return activityXml.join(`\n\n${generateSpace(8)}`)
 }
 

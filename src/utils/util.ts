@@ -52,3 +52,12 @@ export function appendMerge<T extends object, D extends keyof T>(data: T, field:
   if (!data[field]) data[field] = source
   data[field] = deepMerge(data[field] as object | null | undefined, source as object | null | undefined) as T[D]
 }
+
+export function trimEnd(source: string | undefined, trimStr: string) {
+  if (!source) return source
+  let target = source
+  while (target.endsWith(trimStr)) {
+    target = target.substring(0, target.length - trimStr.length)
+  }
+  return target
+}

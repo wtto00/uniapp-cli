@@ -1,6 +1,6 @@
-import { Results } from '../prepare'
-import { appendSet } from '../../utils/util'
-import { ManifestConfig } from '../../utils/manifest.config'
+import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { appendSet } from '../../utils/util.js'
+import type { Results } from '../prepare.js'
 
 export function appendWebviewX5(results: Results, manifest: ManifestConfig) {
   const WebviewX5 = manifest['app-plus']?.modules?.['Webview-x5']
