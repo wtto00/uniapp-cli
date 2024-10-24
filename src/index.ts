@@ -21,9 +21,9 @@ program
   .description('Create a new project powered by uniapp-cli.')
   .argument('<app-name>', 'Human readable name')
   .option('-t, --template <template>', 'use a custom template from GitHub/GitLab/Bitbucket')
-  .option('-f, --force', 'Overwrite target directory if it exists')
-  .option('--no-cache', 'Overwrite target directory if it exists')
-  .addHelpText('after', '\nExample:\n  uniapp create MyUniApp')
+  .option('-f, --force', '如果目录已存在，强制覆盖')
+  .option('--no-cache', '不使用缓存')
+  .addHelpText('after', '\n示例:\n  uniapp create MyUniApp')
   .action((appName, options) => {
     void import('./create.js').then(({ create }) => create(appName, options))
   })
@@ -35,7 +35,7 @@ program
   .summary('Checks and print out all the requirements for platforms specified')
   .description('Checks and print out all the requirements for platforms specified.')
   .argument('<platform...>', 'Platforms requirements you want to check')
-  .addHelpText('after', '\nExample:\n  uniapp requirements android')
+  .addHelpText('after', '\n示例:\n  uniapp requirements android')
   .action((platforms) => {
     void import('./requirements.js').then(({ requirements }) => requirements(platforms))
   })
@@ -86,7 +86,7 @@ program
   .option('--device <device>', 'Deploy a build to specified device.\nOnly available on Android and iOS')
   .addHelpText(
     'after',
-    '\nExample:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin',
+    '\n示例:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin',
   )
   .action((platform, options) => {
     void import('./run.js').then(({ run }) => run(platform, options))
@@ -104,7 +104,7 @@ program
   .option('--device <device>', 'Deploy a build to specified device.\nOnly available on Android and iOS')
   .addHelpText(
     'after',
-    '\nExample:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin',
+    '\n示例:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin',
   )
   .action((platform, options) => {
     void import('./build.js').then(({ build }) => build(platform, options))

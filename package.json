@@ -1,15 +1,12 @@
 {
-  "name": "unicli",
+  "name": "uniapp_cli",
   "version": "0.0.1-alpha.1",
   "description": "CLI for uniapp.",
   "type": "module",
   "bin": {
     "uniapp": "./bin/uniapp.js"
   },
-  "files": [
-    "bin",
-    "dist"
-  ],
+  "files": ["bin", "dist"],
   "scripts": {
     "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
     "build": "pnpm build:js && pnpm build:type",
@@ -25,10 +22,7 @@
     "url": "git+https://github.com/wtto00/uniapp-cli.git",
     "directory": "packages/cli"
   },
-  "keywords": [
-    "uniapp",
-    "cli"
-  ],
+  "keywords": ["uniapp", "cli"],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
   "bugs": {

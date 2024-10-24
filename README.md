@@ -2,6 +2,100 @@
 
 CLI for Uniapp
 
+## 🛠️ 正在开发中...
+
+## 安装
+
+```shell
+npm i -g uniapp_cli
+```
+
+## 用法
+
+```shell
+uniapp --help
+```
+
+### 创建应用
+
+```shell
+uniapp create app-name
+uniapp create -t <template> app-name
+uniapp create --force app-name
+uniapp create --no-cache app-name
+```
+
+TODO:
+
+- 帮助信息中文
+- 使用 Git 浅克隆，替换 degit
+- 模板添加 vitess
+
+### 检查环境
+
+```shell
+uniapp requirement android
+uniapp requirement mp-weixin
+uniapp requirements ios
+```
+
+TODO:
+
+- 帮助信息中文
+- 平台完善
+
+### 平台
+
+```shell
+uniapp platform add android
+uniapp platform rm android
+uniapp platform ls
+```
+
+TODO:
+
+- 帮助信息中文
+- 平台完善
+
+### 运行
+
+```shell
+uniapp platform run android --debug
+uniapp platform run h5 --no-open
+uniapp platform run android --device xxx
+```
+
+TODO:
+
+- 帮助信息中文
+- 平台完善
+
+### 打包
+
+```shell
+uniapp platform build android --release
+uniapp platform build h5
+uniapp platform build android --device xxx
+```
+
+TODO:
+
+- 帮助信息中文
+- 平台完善
+
+### 上传部署
+
+```shell
+uniapp platform up mp-weixin --release
+uniapp platform upload h5
+uniapp platform upload android --device xxx
+```
+
+TODO:
+
+- 帮助信息中文
+- 平台完善
+
 ## 版本注意事项
 
 - **oauth.qq**: qq_mta-sdk-1.6.2.jar（3.6.7 以下版本需要）
