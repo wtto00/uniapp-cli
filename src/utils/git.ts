@@ -6,6 +6,6 @@ export function gitIgnorePath(ignorePath: string) {
   const content = readFileSync(ignoreFilePath, 'utf8')
   const lines = content.split('\n')
   if (lines.includes(ignorePath)) return
-  lines.push('', ignoreFilePath)
+  lines.push(ignorePath, '')
   writeFileSync(ignoreFilePath, lines.join('\n'), 'utf8')
 }

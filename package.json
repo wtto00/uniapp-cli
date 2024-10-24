@@ -6,7 +6,10 @@
   "bin": {
     "uniapp": "./bin/uniapp.js"
   },
-  "files": ["bin", "dist"],
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
     "build": "pnpm build:js && pnpm build:type",
@@ -22,7 +25,10 @@
     "url": "git+https://github.com/wtto00/uniapp-cli.git",
     "directory": "packages/cli"
   },
-  "keywords": ["uniapp", "cli"],
+  "keywords": [
+    "uniapp",
+    "cli"
+  ],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
   "bugs": {
@@ -34,11 +40,13 @@
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "degit": "^2.8.4",
+    "execa": "^9.4.1",
     "inquirer": "^12.0.0",
     "json5": "^2.2.3",
     "miniprogram-automator": "^0.12.1",
     "open": "^10.1.0",
     "ora": "^8.1.0",
+    "package-manager-detector": "^0.2.2",
     "pkg-types": "^1.2.1"
   },
   "devDependencies": {
@@ -46,6 +54,7 @@
     "@types/degit": "^2.8.6",
     "@types/inquirer": "^9.0.7",
     "@types/node": "^22.7.7",
+    "@wtto00/biome-config": "^0.0.1",
     "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@9.12.2"

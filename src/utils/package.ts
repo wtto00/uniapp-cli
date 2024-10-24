@@ -43,17 +43,6 @@ export function checkIsUniapp(packages: PackageJson) {
   }
 }
 
-export function detectPackageManager() {
-  if (process.env.npm_execpath) return process.env.npm_execpath
-  if (existsSync(resolve(global.projectRoot, './pnpm-lock.yaml'))) return 'pnpm'
-  if (existsSync(resolve(global.projectRoot, './yarn.lock'))) return 'yarn'
-  return 'npm'
-}
-
-export function isNPM(packageManager: string) {
-  return packageManager.endsWith('npm.cjs')
-}
-
 export function readPackageJSONSync(filePath: string): PackageJson {
   try {
     const packagePath = filePath.endsWith('/package.json') ? filePath : resolve(filePath, 'package.json')

@@ -158,9 +158,11 @@ export function appendMetaData(manifest: AndroidManifest, metaData?: Record<stri
 
 export function mergeAndroidManifest(manifest1: Partial<AndroidManifest>, manifest2: Partial<AndroidManifest>) {
   const manifest: AndroidManifest = {
+    package: manifest2.package ?? manifest1.package,
     permissions: deepMerge(manifest1.permissions, manifest2.permissions),
     application: { ...manifest1.application, ...manifest2.application },
     activity: mergeActivity(manifest1.activity, manifest2.activity),
+    provider: mergeActivity(manifest1.provider, manifest2.provider),
     metaData: deepMerge(manifest1.metaData, manifest2.metaData),
     service: mergeActivity(manifest1.service, manifest2.service),
     hasTaskAffinity: manifest2.hasTaskAffinity ?? manifest1.hasTaskAffinity,
@@ -181,7 +183,7 @@ export function generateAndroidManifest(_manifest: AndroidManifest) {
   return `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="${manifest.package}">
+    package="${manifest.package ?? ''}">
     
     ${generatePermissions(manifest.permissions)}
     

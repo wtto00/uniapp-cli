@@ -6,9 +6,10 @@
  */
 export function parseXMLProperties(properties: string) {
   const propertiesJson: Record<string, string> = {}
-  properties.split(/\s+/).forEach((propertie) => {
+  const arr = properties.split(/\s+/)
+  for (const propertie of arr) {
     const [key, value] = propertie.split('=')
     propertiesJson[key] = value
-  })
+  }
   return propertiesJson
 }

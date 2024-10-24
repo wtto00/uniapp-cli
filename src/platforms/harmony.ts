@@ -1,17 +1,18 @@
-import type { ModuleClass } from './index.js'
+import type { BuildOptions } from '../build.js'
+import type { CommonOptions, ModuleClass, PlatformAddOptions } from './index.js'
 
 const harmony: ModuleClass = {
-  modules: ['@dcloudio/uni-app-harmony', 'uniapp-harmony'],
+  modules: ['@dcloudio/uni-app-harmony'],
 
   requirement() {},
 
-  async platformAdd({ version, packages }) {},
+  async platformAdd(_options: PlatformAddOptions) {},
 
-  async platformRemove({ packages }) {},
+  async platformRemove(_options: CommonOptions) {},
 
-  run(options) {},
+  run(_options: BuildOptions) {},
 
-  build() {},
+  build(_options: BuildOptions) {},
 }
 
 export default harmony

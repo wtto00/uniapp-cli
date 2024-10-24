@@ -1,57 +1,7 @@
-import {
-  type ChildProcess,
-  type SpawnOptionsWithStdioTuple,
-  type SpawnSyncOptionsWithStringEncoding,
-  type SpawnSyncReturns,
-  type StdioNull,
-  type StdioPipe,
-  spawn,
-  spawnSync,
-} from 'node:child_process'
-import { Log } from './log.js'
-import { detectPackageManager, isNPM } from './package.js'
+import { execa } from 'execa'
 import ora from 'ora'
-
-export function spawnExecSync(
-  cmd: string,
-  args: string[] = [],
-  option?: Omit<SpawnSyncOptionsWithStringEncoding, 'encoding'>,
-) {
-  return spawnSync(`"${cmd}"`, args, { encoding: 'utf8', shell: true, ...option })
-}
-
-export function spawnExec(
-  cmd: string,
-  args: string[],
-  callback: (log: string) => void,
-  option?: Omit<SpawnOptionsWithStdioTuple<StdioNull, StdioPipe, StdioPipe>, 'stdio'>,
-) {
-  const proc = spawn(`"${cmd}"`, args, { stdio: ['inherit', 'pipe', 'pipe'], shell: true, ...option })
-
-  proc.stdout.pipe(process.stdout)
-  proc.stdout.setEncoding('utf8')
-  proc.stdout.on('data', callback)
-  proc.stderr.pipe(process.stdout)
-  proc.stderr.setEncoding('utf8')
-  proc.stderr.on('data', Log.error)
-
-  return proc
-}
-
-export function killChildProcess(proc: ChildProcess) {
-  proc.stdout?.destroy()
-  proc.stderr?.destroy()
-  proc.kill('SIGKILL')
-}
-
-/**
- * Get output string from spawnSync
- * @param proc child_process
- * @returns
- */
-export function getOutput(proc: SpawnSyncReturns<string>) {
-  return proc.output.reverse().reduce((prev, curr) => prev + (curr ?? ''), '') ?? ''
-}
+import { detect, resolveCommand } from 'package-manager-detector'
+import { Log } from './log.js'
 
 /**
  * Remove the color of the output text
@@ -65,45 +15,55 @@ export function outputRemoveColor(text: string) {
 /**
  * `@vue/cli` has been installed or not
  */
-export function isVueCliInstalled() {
-  return getOutput(spawnExecSync('vue')).includes('Usage: vue')
+export async function isVueCliInstalled() {
+  const { stdout } = await execa`vue`
+  return stdout.includes('Usage: vue')
 }
 
-export function installVueCli() {
-  Log.info('@vue/cli not installed, starting global installation of @vue/cli.')
-  spawnExecSync('npm', ['i', '-g', '@vue/cli'], { stdio: 'inherit' })
-  if (isVueCliInstalled()) {
-    Log.info('@vue/cli has been successfully installed.')
-  } else {
-    Log.warn('@vue/cli installation failed. Please manually execute npm i -g @vue/cli.')
-    process.exit()
+export async function installVueCli() {
+  const spinner = ora('@vue/cli 没有安装，开始全局安装 @vue/cli').start()
+  const { stderr } = await execa`npm i -g @vue/cli`
+  if (stderr) {
+    spinner.fail(`全局安装 @vue/cli 失败了: ${stderr}`)
+    throw Error
+  }
+
+  if (await isVueCliInstalled()) {
+    spinner.succeed('@vue/cli 已成功全局安装。')
   }
 }
 
-export function createVueProject(appName: string, template: string, force = false) {
-  spawnExecSync('vue', ['create', '-p', template, appName, force ? '--force' : ''], { stdio: 'inherit' })
+export async function createVueProject(appName: string, template: string, force = false) {
+  Log.debug('开始使用@vue/cli创建应用')
+  await execa({ stdio: 'inherit' })`vue create -p ${template} ${appName} ${force ? '--force' : ''}`
 }
 
-export function installPackages(packages: string[]) {
-  const pm = detectPackageManager()
+export async function installPackages(packages: string[]) {
+  const pm = await detect()
+  if (!pm) throw new Error('没有检测到包管理器。')
+  const { command, args = [] } = resolveCommand(pm.agent, 'add', packages) ?? {}
+  if (!command || args.length === 0) throw Error(`无法转换执行命令: ${pm.agent} add ${packages.join(' ')}`)
+
   const spinner = ora(`正在安装依赖 ${packages.join(', ')}`).start()
-  try {
-    spawnExecSync('node', [pm, isNPM(pm) ? 'install' : 'add', ...packages])
-    spinner.succeed(`依赖 ${packages.join(', ')} 安装成功。`)
-  } catch (error) {
-    spinner.fail(`依赖 ${packages.join(', ')} 安装失败。`)
-    throw error
+  const { stderr } = await execa`${command} ${args}`
+  if (stderr) {
+    spinner.fail(`安装依赖 ${packages.join(', ')} 失败了。`)
+    throw Error
   }
+  spinner.succeed(`依赖 ${packages.join(', ')} 安装成功。`)
 }
 
-export function uninstallPackages(packages: string[]) {
-  const pm = detectPackageManager()
+export async function uninstallPackages(packages: string[]) {
+  const pm = await detect()
+  if (!pm) throw new Error('没有检测到包管理器。')
+  const { command, args = [] } = resolveCommand(pm.agent, 'uninstall', packages) ?? {}
+  if (!command || args.length === 0) throw Error(`无法转换执行命令: ${pm.agent} uninstall ${packages.join(' ')}`)
+
   const spinner = ora(`正在卸载依赖 ${packages.join(', ')}`).start()
-  try {
-    spawnExecSync('node', [pm, isNPM(pm) ? 'uninstall' : 'remove', ...packages])
-    spinner.succeed(`依赖 ${packages.join(', ')} 卸载成功。`)
-  } catch (error) {
-    spinner.fail(`依赖 ${packages.join(', ')} 卸载失败。`)
-    throw error
+  const { stderr } = await execa`${command} ${args}`
+  if (stderr) {
+    spinner.fail(`卸载依赖 ${packages.join(', ')} 失败了。`)
+    throw Error
   }
+  spinner.succeed(`依赖 ${packages.join(', ')} 卸载成功。`)
 }

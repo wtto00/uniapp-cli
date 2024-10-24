@@ -18,13 +18,13 @@ const mp360: ModuleClass = {
     if (vueVersion >= '3') {
       Log.error(`Vue3 currently does not support "mp-360"`)
     } else {
-      installPackages(this.modules.map((m) => `${m}@${version}`))
+      await installPackages(this.modules.map((m) => `${m}@${version}`))
     }
   },
 
   platformRemove({ packages }) {
     const filterModules = this.modules.filter((module) => isInstalled(packages, module))
-    uninstallPackages(filterModules)
+    await uninstallPackages(filterModules)
   },
 
   run() {},

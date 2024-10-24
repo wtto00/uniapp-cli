@@ -106,8 +106,8 @@ function generateFeatures(features: PropertiesFeatures) {
   for (const name in features) {
     const { value, module } = features[name]
     const moduleXML = genderateSingleTag('module', module)
-    const end = moduleXML ? `\n${generateSpace(12)}${moduleXML}\n${generateSpace(8)}</feature>` : '/>'
-    featuresXML.push(`<feature name="${name}" value="${value}" ${end}`)
+    const end = moduleXML ? `>\n${generateSpace(12)}${moduleXML}\n${generateSpace(8)}</feature>` : '/>'
+    featuresXML.push(`<feature name="${name}" value="${value}"${end}`)
   }
   return featuresXML.join(`\n${generateSpace(8)}`)
 }

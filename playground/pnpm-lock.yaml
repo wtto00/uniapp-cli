@@ -11,6 +11,9 @@ importers:
       '@dcloudio/uni-app':
         specifier: 3.0.0-4020920240930001
         version: 3.0.0-4020920240930001(@dcloudio/types@3.4.14)(postcss@8.4.47)(rollup@3.29.5)(vue@3.5.12(typescript@4.9.5))
+      '@dcloudio/uni-app-plus':
+        specifier: 2.0.2-4020420240722004
+        version: 2.0.2-4020420240722004
       '@dcloudio/uni-components':
         specifier: 3.0.0-4020920240930001
         version: 3.0.0-4020920240930001(postcss@8.4.47)(rollup@3.29.5)(vue@3.5.12(typescript@4.9.5))
@@ -678,6 +681,9 @@ packages:
 
   '@dcloudio/types@3.4.14':
     resolution: {integrity: sha512-VolQeZfTh8pQFsr2IlfIVX93blfvGTuBoJuZUc7iWOqtHV8gDrq6fXLhzsVlgZyuhhRZLOxlo33rkEqnY+ucAw==}
+
+  '@dcloudio/uni-app-plus@2.0.2-4020420240722004':
+    resolution: {integrity: sha512-X5LIapfzgXvFvpTpUSadS5I2VfYqNIczo65FGC90TCJTRIxJ1BHYCSLPlmA/f1LROrJQDIQQjP7GQbBb388HTw==}
 
   '@dcloudio/uni-app@3.0.0-4020920240930001':
     resolution: {integrity: sha512-Er2pOCUTss7h5sYL32gLAWbYysYyhYzj8ZYKAjF/1aX+YkigD7beU1oX4M/m5yOo1RoogsQNTs5dyUn7R1sFrA==}
@@ -4208,6 +4214,8 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@dcloudio/types@3.4.14': {}
+
+  '@dcloudio/uni-app-plus@2.0.2-4020420240722004': {}
 
   '@dcloudio/uni-app@3.0.0-4020920240930001(@dcloudio/types@3.4.14)(postcss@8.4.47)(rollup@3.29.5)(vue@3.5.12(typescript@4.9.5))':
     dependencies:

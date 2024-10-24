@@ -20,4 +20,4 @@ dist
 *.sln
 *.sw?platforms/android
 
-E:\projects\github\wtto00\uniapp-cli\playground\.gitignore
+platforms/android

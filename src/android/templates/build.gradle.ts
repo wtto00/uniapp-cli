@@ -49,17 +49,17 @@ function genderateRepositories(repositories: BuildGradle['repositories'], space 
   for (const url in repositories) {
     const { credentials } = repositories[url]
     repositoriesXML.push(
-      `url '${url}'${
+      `maven { url '${url}'${
         credentials
           ? `\n${generateSpace(space + 4)}credentials {
 ${generateSpace(space + 8)}username '${credentials.username}'
 ${generateSpace(space + 8)}password '${credentials.password}'
 ${generateSpace(space + 4)}}`
           : ''
-      }`,
+      } }`,
     )
   }
-  return `maven {\n${generateSpace(space)}${repositoriesXML.join(`\n${generateSpace(space + 4)}`)}\n${generateSpace(space)}}`
+  return repositoriesXML.join(`\n${generateSpace(space)}`)
 }
 
 function genderateDependencies(dependencies: Set<string>, space = 8) {
@@ -74,7 +74,7 @@ function genderateExt(ext?: BuildGradle['ext']) {
   if (!ext) return ''
   const xml: string[] = []
   for (const key in ext) {
-    xml.push(`git = ${ext[key]}`)
+    xml.push(`${key} = '${ext[key]}'`)
   }
   return `ext {
   ${xml.join(`\n${generateSpace(4)}`)}
@@ -101,5 +101,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-${genderateExt}`
+${genderateExt(gradle.ext)}`
 }

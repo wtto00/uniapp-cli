@@ -244,29 +244,29 @@ export interface AppPlusDistributeAndroid {
  */
 export interface AppPlusModules {
   /** 登录授权 */
-  OAuth?: {}
+  OAuth?: object
   /** BLE蓝牙 */
-  Bluetooth?: {}
+  Bluetooth?: object
   /** 语音识别 */
-  Speech?: {}
+  Speech?: object
   /** 调用相机拍照，访问或修改相册 */
-  Camera?: {}
+  Camera?: object
   /** 社交分享 */
-  Share?: {}
+  Share?: object
   /** 获取位置信息 */
-  Geolocation?: {}
+  Geolocation?: object
   /** 消息推送 */
-  Push?: {}
+  Push?: object
   /** 统计 */
-  Statistic?: {}
+  Statistic?: object
   /** 调用相机扫码功能 */
-  Barcode?: {}
+  Barcode?: object
   /** 系统通讯录 */
-  Contacts?: {}
+  Contacts?: object
   /** 访问系统人脸识别 */
-  FaceID?: {}
+  FaceID?: object
   /** 指纹识别 */
-  Fingerprint?: {}
+  Fingerprint?: object
   /**
    * 实人认证
    * - 为对抗攻击，实人认证SDK返回的错误原因比较模糊。
@@ -276,42 +276,42 @@ export interface AppPlusModules {
    * @see https://uniapp.dcloud.net.cn/tutorial/app-facialRecognitionVerify.html
    * @see https://doc.dcloud.net.cn/uniCloud/frv/intro.html
    */
-  FacialRecognitionVerify?: {}
+  FacialRecognitionVerify?: object
   /** iBeacon */
-  iBeacon?: {}
+  iBeacon?: object
   /** 直播推流 */
-  LivePusher?: {}
+  LivePusher?: object
   /** 地图 */
-  Maps?: {}
+  Maps?: object
   /** 短彩邮件消息 */
-  Messaging?: {}
+  Messaging?: object
   /** 支付 */
-  Payment?: {}
+  Payment?: object
   /** 录音 */
-  Record?: {}
+  Record?: object
   /**
    * 安全网络
    * - 安全网络暂未支持离线打包，后续会提供离线打包的方案
    * @see https://doc.dcloud.net.cn/uniCloud/secure-network.html
    */
-  SecureNetwork?: {}
+  SecureNetwork?: object
   /** SQLite数据库 */
-  SQLite?: {}
+  SQLite?: object
   /** 视频播放 */
-  VideoPlayer?: {}
+  VideoPlayer?: object
   /**
    * Android X5 Webview(腾讯TBS)
    * - CPU类型配置不支持“x86”
    * @see https://uniapp.dcloud.net.cn/tutorial/app-android-x5.html
    */
-  'Webview-x5'?: {}
+  'Webview-x5'?: object
   /**
    * iOS UIWebview,
    * - 使用UIWebview模块后应用无法通过App Store审核
    * @see https://uniapp.dcloud.net.cn/tutorial/app-ios-uiwebview.html#uiwebview
    * @see https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/uiwebview.html
    */
-  UIWebview?: {}
+  UIWebview?: object
 }
 export enum AppPlusOS {
   iOS = 'ios',
@@ -331,7 +331,7 @@ export interface AppPlusDistributeSdkConfigs {
      * 苹果登录
      * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-apple.html
      */
-    apple?: {}
+    apple?: object
     /**
      * uni一键登录
      */
@@ -382,7 +382,7 @@ export interface AppPlusDistributeSdkConfigs {
      * 华为登录
      * @see https://uniapp.dcloud.net.cn/tutorial/app-oauth-huawei.html
      */
-    huawei?: {}
+    huawei?: object
   }
   ad?: {
     config: {
@@ -392,27 +392,27 @@ export interface AppPlusDistributeSdkConfigs {
       nvue?: boolean
     }
     /** 腾讯优量 */
-    gdt?: {}
+    gdt?: object
     /** 快手广告联盟 */
-    ks?: {}
+    ks?: object
     /** 快手内容联盟 */
-    'ks-content'?: {}
+    'ks-content'?: object
     /** Sigmob广告联盟 */
-    sigmob?: {}
+    sigmob?: object
     /** 华为广告联盟 */
-    hw?: {}
+    hw?: object
     /** 百度百青藤广告联盟 */
-    bd?: {}
+    bd?: object
     /** Google AdMob谷歌广告 */
-    gg?: {}
+    gg?: object
     /** 海外穿山甲 */
-    pg?: {}
+    pg?: object
     /** Octopus章鱼移动广告 */
-    zy?: {}
+    zy?: object
     /** AdScope倍孜广告 */
-    bz?: {}
+    bz?: object
     /** 穿山甲GroMore */
-    gm?: {}
+    gm?: object
   }
   share?: {
     weixin?: {
@@ -527,7 +527,7 @@ export interface AppPlusDistributeSdkConfigs {
     }
   }
   payment?: {
-    appleiap?: {}
+    appleiap?: object
     alipay?: {
       __platform__?: AppPlusOS[]
     }
@@ -545,7 +545,7 @@ export interface AppPlusDistributeSdkConfigs {
       __platform__?: AppPlusOS[]
       returnURL_ios?: string
     }
-    google?: {}
+    google?: object
   }
   speech?: {
     baidu?: {
@@ -805,7 +805,7 @@ export interface AppPlus {
       allowDownloadWithoutWiFi?: boolean
     }
   }
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface H5 {
   /**
@@ -872,7 +872,7 @@ export interface H5 {
   /** 引用资源的地址前缀，仅发布时生效 */
   publicPath?: string
   /** SDK 配置  */
-  sdkConfigs?: Record<string, any>
+  sdkConfigs?: Record<string, never>
   /** 优化配置 */
   optimization?: {
     /**
@@ -896,7 +896,7 @@ export interface H5 {
   }
   /** uni 统计配置项 */
   uniStatistics?: SimpleUniStatistics
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface QuickappWebview {
   /** 应用图标，推荐尺寸 192x192 */
@@ -909,7 +909,7 @@ export interface QuickappWebview {
   versionName?: string
   /** 版本号 */
   versionCode?: number
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface QuickappWebviewUnion {
   /** 最小平台支持，最低 1063 */
@@ -1032,7 +1032,7 @@ export interface MpWeixin {
   /** 需要在后台使用的能力 */
   requiredBackgroundModes?: ('audio' | 'location')[]
   /** 使用到的插件 */
-  plugins?: Record<string, any>
+  plugins?: Record<string, never>
   /**
    * 是否支持 iPad 上屏幕旋转
    * 默认为 false
@@ -1041,7 +1041,7 @@ export interface MpWeixin {
   /** 需要跳转的微信小程序列表 */
   navigateToMiniProgramAppIdList?: string[]
   /** 接口权限设置 */
-  permission?: Record<string, any>
+  permission?: Record<string, never>
   /** Worker 代码目录 */
   workers?: string
   /** 优化配置 */
@@ -1069,11 +1069,11 @@ export interface MpWeixin {
   requiredPrivateInfos?: string[]
   /** 目前仅支持值 requiredComponents，代表开启小程序按需注入特性 */
   lazyCodeLoading?: 'requiredComponents'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpAlipay {
   /** 使用到的插件 */
-  plugins?: Record<string, any>
+  plugins?: Record<string, never>
   /**
    * 是否启用 component2 编译
    * 默认为 true
@@ -1113,7 +1113,7 @@ export interface MpAlipay {
   mergeVirtualHostAttributes?: boolean
   /** 目前仅支持值 requiredComponents，代表开启小程序按需注入特性 */
   lazyCodeLoading?: 'requiredComponents'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpBaidu {
   /** 百度小程序的 appid */
@@ -1134,7 +1134,7 @@ export interface MpBaidu {
    * 默认为 auto
    */
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpToutiao {
   /** 字节跳动小程序的 appid */
@@ -1172,7 +1172,7 @@ export interface MpToutiao {
    * 默认为 auto
    */
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpLark {
   /** 飞书小程序的 appid */
@@ -1200,7 +1200,7 @@ export interface MpLark {
    * 默认为 auto
    */
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpQq {
   /** QQ 小程序的 appid */
@@ -1210,7 +1210,7 @@ export interface MpQq {
   /** 需要跳转的 QQ 小程序列表 */
   navigateToMiniProgramAppIdList?: string[]
   /** 接口权限设置 */
-  permission?: Record<string, any>
+  permission?: Record<string, never>
   /** Worker 代码目录 */
   workers?: string
   /** 需要打开群资料卡的群号列表 */
@@ -1227,7 +1227,7 @@ export interface MpQq {
    * 默认为 auto
    */
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface MpKuaishou {
   /** 快手小程序的 appid */
@@ -1244,7 +1244,7 @@ export interface MpKuaishou {
    * 默认为 auto
    */
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
-  [x: string]: any
+  [x: string]: unknown
 }
 export interface ManifestConfig {
   /** 应用名称，安装 APP 后显示的名称 */
@@ -1308,5 +1308,5 @@ export interface ManifestConfig {
   'mp-qq'?: MpQq
   /** 快手小程序特有配置 */
   'mp-kuaishou'?: MpKuaishou
-  [x: string]: any
+  [x: string]: unknown
 }

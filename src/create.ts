@@ -55,10 +55,10 @@ export async function create(appName: string, options: CreateOptoins) {
     template = TEMPLATES.find((item) => item.name === templateKey)?.repo ?? TEMPLATES[0].repo
     if (templateKey === 'vue2' || templateKey === 'vue2-alpha') {
       Log.info('使用@vue/cli创建应用')
-      if (!isVueCliInstalled()) {
-        installVueCli()
+      if (!(await isVueCliInstalled())) {
+        await installVueCli()
       }
-      createVueProject(appName, template, force)
+      await createVueProject(appName, template, force)
       return
     }
   }

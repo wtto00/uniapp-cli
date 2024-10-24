@@ -138,17 +138,20 @@ function genderateAppBuildGradlePlugins(plugins?: Set<string>) {
   if (!plugins) return ''
   const xml: string[] = []
   for (const plugin of plugins) {
-    xml.push(`apply plugin: '${plugin}`)
+    xml.push(`apply plugin: '${plugin}'`)
   }
   return xml.join('\n')
 }
 
-function genderateAppBuildGradleManifestPlaceholders(manifestPlaceholders?: Record<string, string>) {
+function genderateAppBuildGradleManifestPlaceholders(manifestPlaceholders: Record<string, string> = {}) {
   const xml: string[] = []
   for (const key in manifestPlaceholders) {
     xml.push(`"${key}": "${manifestPlaceholders[key]}",`)
   }
-  return xml.join(`\n${generateSpace(16)}`)
+  if (xml.length === 0) return ''
+  return `manifestPlaceholders = [
+${generateSpace(12)}${xml.join(`\n${generateSpace(12)}`)}
+${generateSpace(8)}]`
 }
 
 function genderateAppBuildGradleDependencies(dependencies?: Record<string, AppBuildGradleDependency>) {
@@ -205,9 +208,7 @@ android {
         ndk {
             abiFilters ${[...(buildGradle.abiFilters || [])]?.map((item) => `'${item}'`).join(', ')}
         }
-        manifestPlaceholders = [
-                ${genderateAppBuildGradleManifestPlaceholders(buildGradle.manifestPlaceholders)}
-        ]
+        ${genderateAppBuildGradleManifestPlaceholders(buildGradle.manifestPlaceholders)}
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
