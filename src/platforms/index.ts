@@ -1,24 +1,21 @@
-import type { PackageJson } from 'pkg-types'
 import type { BuildOptions } from '../build.js'
+import { installPackages, uninstallPackages } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
+import { Package, getModuleVersion, isInstalled } from '../utils/package.js'
 
 type MaybePromise<T> = T | Promise<T>
 
-export interface CommonOptions {
-  /** Current project Package.json content */
-  packages: PackageJson
-}
-export interface PlatformAddOptions extends CommonOptions {
+export interface PlatformAddOptions {
   /** Current project UniApp version  */
   version: string
   manifest?: ManifestConfig
 }
 export interface ModuleClass {
   modules: string[]
-  requirement: (options: CommonOptions) => MaybePromise<void>
+  requirement: () => MaybePromise<void>
   platformAdd: (options: PlatformAddOptions) => MaybePromise<void>
-  platformRemove: (options: CommonOptions) => MaybePromise<void>
+  platformRemove: () => MaybePromise<void>
   run: (options: BuildOptions) => MaybePromise<void>
   build: (options: BuildOptions) => MaybePromise<void>
 }
@@ -96,5 +93,28 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
     default:
       Log.error(`Unknown platform: ${platform}.`)
       process.exit()
+  }
+}
+
+export async function requireVue2(platform: PLATFORM) {
+  const vueVersion = await getModuleVersion(Package.packages, 'vue')
+  if (!vueVersion.startsWith('2.')) {
+    throw Error(`平台 ${platform} 只支持 vue@2，发现已安装版本 vue@${vueVersion}`)
+  }
+}
+
+export async function installModules(modules: string[], version: string) {
+  for (const module of modules) {
+    if (!isInstalled(Package.packages, module)) {
+      await installPackages([`${module}@${version}`])
+    }
+  }
+}
+
+export async function uninstallModules(modules: string[]) {
+  for (const module of modules) {
+    if (isInstalled(Package.packages, module)) {
+      await uninstallPackages([module])
+    }
   }
 }

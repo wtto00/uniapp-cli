@@ -1,13 +1,13 @@
 import chalk from 'chalk'
 
 export const Log = {
-  emoji: {
-    success: '✅',
-    fail: '❌',
-  },
+  verbose: false,
+
+  successEmoji: '✅',
+  failEmoji: '❌',
 
   debug(...msgs: string[]) {
-    if (!global.verbose) return
+    if (!Log.verbose) return
     console.log(...msgs.map((msg) => chalk.gray(msg)))
   },
 

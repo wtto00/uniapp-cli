@@ -1,44 +1,45 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { detect } from 'package-manager-detector'
 import { type PackageJson, readPackageJSON } from 'pkg-types'
 import { Log } from './log.js'
+import { projectRoot } from './path.js'
 
-export async function getPackageJson() {
-  try {
-    return await readPackageJSON(global.projectRoot)
-  } catch (error) {
-    Log.warn((error as Error).message)
-    process.exit()
-  }
+export const Package = {
+  packages: {} as PackageJson,
+
+  init() {
+    Package.packages = readPackageJSONSync(projectRoot)
+  },
 }
-export function isInstalled(packages: PackageJson, module: string) {
-  const allDependencies = {
-    ...packages.dependencies,
-    ...packages.devDependencies,
-    ...packages.optionalDependencies,
-    ...packages.peerDependencies,
-  }
-  return !!allDependencies[module]
+
+export function isInstalled(packages: PackageJson, module: string): boolean {
+  return !!(
+    packages.dependencies?.[module] ||
+    packages.devDependencies?.[module] ||
+    packages.optionalDependencies?.[module] ||
+    packages.peerDependencies?.[module]
+  )
 }
 export async function getModuleVersion(packages: PackageJson, module: string) {
   if (!isInstalled(packages, module)) return ''
-  const modulePackage = resolve(global.projectRoot, `./node_modules/${module}/package.json`)
+  const modulePackage = resolve(projectRoot, `./node_modules/${module}/package.json`)
   if (!existsSync(modulePackage)) {
-    Log.warn('请先执行命令 npm install/pnpm install/yarn install 安装依赖！')
-    return ''
+    const pm = await detect()
+    if (!pm) throw Error('没有检测到包管理器。')
+    throw Error(`请先执行命令 \`${pm} install\` 安装依赖！`)
   }
   try {
     const modulePackageJson = await readPackageJSON(modulePackage)
     return modulePackageJson.version ?? ''
   } catch (_error) {
-    Log.error(`读取文件 ${modulePackage} 失败。`)
-    return ''
+    throw Error(`读取文件 ${modulePackage} 失败。`)
   }
 }
 
 export function checkIsUniapp(packages: PackageJson) {
   if (!isInstalled(packages, '@dcloudio/uni-app')) {
-    Log.warn('当前目录不是一个uniapp项目。')
+    Log.error('当前目录不是一个uniapp应用。')
     process.exit()
   }
 }

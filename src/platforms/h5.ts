@@ -1,22 +1,19 @@
-import { installPackages, uninstallPackages } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
-import { isInstalled } from '../utils/package.js'
-import type { ModuleClass } from './index.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const h5: ModuleClass = {
   modules: ['@dcloudio/uni-h5'],
 
   requirement() {
-    Log.success(`${Log.emoji.success} Platform \`h5\` doesn't need any dependency.`)
+    Log.success(`${Log.successEmoji} Platform \`h5\` doesn't need any dependency.`)
   },
 
   async platformAdd({ version }) {
-    await installPackages(h5.modules.map((m) => `${m}@${version}`))
+    await installModules(h5.modules, version)
   },
 
-  async platformRemove({ packages }) {
-    const filterModules = h5.modules.filter((module) => isInstalled(packages, module))
-    await uninstallPackages(filterModules)
+  async platformRemove() {
+    await uninstallModules(h5.modules)
   },
 
   run(_options) {

@@ -6,6 +6,7 @@ import ora from 'ora'
 import { readPackageJSON, writePackageJSON } from 'pkg-types'
 import { createVueProject, installVueCli, isVueCliInstalled } from './utils/exec.js'
 import { Log } from './utils/log.js'
+import { projectRoot } from './utils/path.js'
 
 const TEMPLATES = [
   {
@@ -27,7 +28,7 @@ export interface CreateOptoins {
 export async function create(appName: string, options: CreateOptoins) {
   const { force, cache } = options
 
-  const projectPath = resolve(global.projectRoot, `./${appName}`)
+  const projectPath = resolve(projectRoot, `./${appName}`)
 
   if (existsSync(projectPath)) {
     if (!(force ?? false)) {

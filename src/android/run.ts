@@ -5,7 +5,7 @@ import type { BuildOptions } from '../build.js'
 import { spawnExecSync } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import { getManifestJson } from '../utils/manifest.js'
-import { androidPath } from '../utils/path.js'
+import { androidDir, androidPath, projectRoot } from '../utils/path.js'
 
 const android = new Android()
 
@@ -61,7 +61,7 @@ export default async function run(options: BuildOptions): Promise<string | undef
     rmSync(appsDir, { recursive: true })
   }
   const wwwDir = resolve(appsDir, `${manifest.appid}/www`)
-  cpSync(resolve(global.projectRoot, 'dist/dev/app'), wwwDir, { recursive: true })
+  cpSync(resolve(projectRoot, 'dist/dev/app'), wwwDir, { recursive: true })
 
   // app/src/main/res/values/strings.xml
   const stringXmlPath = resolve(androidDir, 'app/src/main/res/values/strings.xml')
@@ -84,16 +84,16 @@ export default async function run(options: BuildOptions): Promise<string | undef
   const isRelease = release || debug === false
 
   const isWin = process.platform === 'win32'
-  const gradleExePath = resolve(global.projectRoot, `${androidPath}/gradlew${isWin ? '.bat' : ''}`)
+  const gradleExePath = resolve(projectRoot, `${androidPath}/gradlew${isWin ? '.bat' : ''}`)
   if (!existsSync(gradleExePath)) {
     throw Error(`File \`${gradleExePath}\` does't exist.`)
   }
   const apkPath = `${androidPath}/app/build/outputs/apk/${
     isRelease ? 'release/app-release.apk' : 'debug/app-debug.apk'
   }`
-  const apkFullPath = resolve(global.projectRoot, apkPath)
+  const apkFullPath = resolve(projectRoot, apkPath)
   rmSync(apkFullPath, { force: true })
-  process.chdir(resolve(global.projectRoot, androidPath))
+  process.chdir(resolve(projectRoot, androidPath))
   const proc = spawnExecSync(
     isWin ? gradleExePath : 'sh',
     [isWin ? '' : gradleExePath, isRelease ? 'assembleRelease' : 'assembleDebug'],

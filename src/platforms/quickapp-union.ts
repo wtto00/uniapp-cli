@@ -1,19 +1,20 @@
-import { installPackages, uninstallPackages } from '../utils/exec.js'
-import { isInstalled } from '../utils/package.js'
-import type { ModuleClass } from './index.js'
+import { Package, isInstalled } from '../utils/package.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import quickAppHuawei from './quickapp-huawei.js'
 
 const quickAppUnion: ModuleClass = {
   modules: ['@dcloudio/uni-quickapp-webview'],
 
   requirement() {},
 
-  platformAdd({ version }) {
-    await installPackages(this.modules.map((m) => `${m}@${version}`))
+  async platformAdd({ version }) {
+    await installModules(quickAppUnion.modules, version)
   },
 
-  platformRemove({ packages }) {
-    const filterModules = this.modules.filter((module) => isInstalled(packages, module))
-    await uninstallPackages(filterModules)
+  async platformRemove() {
+    if (!isInstalled(Package.packages, quickAppHuawei.modules[0])) {
+      await uninstallModules(quickAppUnion.modules)
+    }
   },
 
   run() {},

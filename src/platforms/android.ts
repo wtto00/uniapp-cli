@@ -1,17 +1,15 @@
 import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { execa } from 'execa'
 import ora from 'ora'
 import addAndroid from '../android/add.js'
 import { getLibSDKDir } from '../android/utils.js'
 import type { BuildOptions } from '../build.js'
-import { installPackages, uninstallPackages } from '../utils/exec.js'
 import { gitIgnorePath } from '../utils/git.js'
 import { Log } from '../utils/log.js'
-import { isInstalled } from '../utils/package.js'
-import { UNIAPP_SDK_HOME, androidDir, androidPath, iosPath } from '../utils/path.js'
+import { UNIAPP_SDK_HOME, androidDir, androidPath, iosDir } from '../utils/path.js'
 import { trimEnd } from '../utils/util.js'
-import type { CommonOptions, ModuleClass, PlatformAddOptions } from './index.js'
-import { execa } from 'execa'
+import { type ModuleClass, type PlatformAddOptions, installModules, uninstallModules } from './index.js'
 
 const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
@@ -27,30 +25,26 @@ const android: ModuleClass = {
         const { stderr, stdout } = await execa`${javaBinPath} -version`
         const version = (stdout || stderr).split('\n')[0]
         if (version.includes(' version ')) {
-          Log.success(`${Log.emoji.success} ${version}`)
+          Log.success(`${Log.successEmoji} ${version}`)
         } else {
-          Log.warn(`${Log.emoji.fail} 检测 Java 版本失败了。`)
+          Log.warn(`${Log.failEmoji} 检测 Java 版本失败了。`)
         }
       } else {
-        Log.warn(`${Log.emoji.fail} Java 可执行文件不存在: ${javaBinPath}。`)
+        Log.warn(`${Log.failEmoji} Java 可执行文件不存在: ${javaBinPath}。`)
       }
     } else {
-      Log.warn(`${Log.emoji.fail} 没有设置环境变量: \`JAVA_HOME\` 。`)
+      Log.warn(`${Log.failEmoji} 没有设置环境变量: \`JAVA_HOME\` 。`)
     }
     // ANDROID_HOME
     if (process.env.ANDROID_HOME) {
-      Log.success(`${Log.emoji.success} ANDROID_HOME=${process.env.ANDROID_HOME}`)
+      Log.success(`${Log.successEmoji} ANDROID_HOME=${process.env.ANDROID_HOME}`)
     } else {
-      Log.warn(`${Log.emoji.fail} 没有设置环境变量: \`ANDROID_HOME\` 。`)
+      Log.warn(`${Log.failEmoji} 没有设置环境变量: \`ANDROID_HOME\` 。`)
     }
   },
 
-  async platformAdd({ packages, version }: PlatformAddOptions) {
-    for (const module of android.modules) {
-      if (!isInstalled(packages, module)) {
-        await installPackages([module])
-      }
-    }
+  async platformAdd({ version }: PlatformAddOptions) {
+    await installModules(android.modules, version)
 
     const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', version)
     if (!existsSync(sdkDir)) {
@@ -94,16 +88,12 @@ const android: ModuleClass = {
 
     gitIgnorePath(androidPath)
 
-    Log.success('Android 平台已成功添加。')
+    Log.success(`Android 平台已成功添加。${Log.successEmoji}`)
   },
 
-  async platformRemove({ packages }: CommonOptions) {
-    if (!existsSync(resolve(global.projectRoot, iosPath))) {
-      for (const module of android.modules) {
-        if (isInstalled(packages, module)) {
-          await uninstallPackages([module])
-        }
-      }
+  async platformRemove() {
+    if (!existsSync(iosDir)) {
+      await uninstallModules(android.modules)
     }
     rmSync(androidDir, { recursive: true, force: true })
     Log.success('Android 平台已成功移除。')
@@ -114,7 +104,7 @@ const android: ModuleClass = {
     //   const doneChange = /DONE {2}Build complete\. Watching for changes\.{3}/.test(msg)
     //   if (!doneChange) return
     //   Log.info('\nstart build android:')
-    //   const scriptPath = resolve(global.projectRoot, 'node_modules/uniapp-android/dist/run.js')
+    //   const scriptPath = resolve(projectRoot, 'node_modules/uniapp-android/dist/run.js')
     //   if (!existsSync(scriptPath)) {
     //     Log.error(`File \`${scriptPath}\` does't exist.`)
     //     killChildProcess(uniappProcess)

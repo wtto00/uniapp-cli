@@ -1,19 +1,16 @@
-import { installPackages, uninstallPackages } from '../utils/exec.js'
-import { isInstalled } from '../utils/package.js'
-import type { ModuleClass } from './index.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpQQ: ModuleClass = {
   modules: ['@dcloudio/uni-mp-qq'],
 
   requirement() {},
 
-  platformAdd({ version }) {
-    await installPackages(this.modules.map((m) => `${m}@${version}`))
+  async platformAdd({ version }) {
+    await installModules(mpQQ.modules, version)
   },
 
-  platformRemove({ packages }) {
-    const filterModules = this.modules.filter((module) => isInstalled(packages, module))
-    await uninstallPackages(filterModules)
+  async platformRemove() {
+    await uninstallModules(mpQQ.modules)
   },
 
   run() {},

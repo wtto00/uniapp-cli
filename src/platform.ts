@@ -1,15 +1,12 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
-import { checkIsUniapp, getModuleVersion, getPackageJson, isInstalled } from './utils/package.js'
+import { Package, getModuleVersion, isInstalled } from './utils/package.js'
 
 /**
  * add platforms
  */
 export async function add(platforms: PLATFORM[]) {
-  const packages = await getPackageJson()
-  checkIsUniapp(packages)
-
-  const uniVersoin = await getModuleVersion(packages, '@dcloudio/uni-app')
+  const uniVersoin = await getModuleVersion(Package.packages, '@dcloudio/uni-app')
 
   if (!uniVersoin) {
     process.exit()
@@ -24,9 +21,9 @@ export async function add(platforms: PLATFORM[]) {
     const module = await importPlatform(pfm)
 
     try {
-      await module.platformAdd({ packages, version: uniVersoin })
+      await module.platformAdd({ version: uniVersoin })
     } catch (error) {
-      module.platformRemove({ packages })
+      module.platformRemove()
       Log.error((error as Error).message)
     }
   }
@@ -36,9 +33,6 @@ export async function add(platforms: PLATFORM[]) {
  * remove platforms
  */
 export async function remove(platforms: PLATFORM[]) {
-  const packages = await getPackageJson()
-  checkIsUniapp(packages)
-
   for (const pfm of platforms) {
     Log.debug(`移除平台: ${pfm}`)
     if (!allPlatforms.includes(pfm)) {
@@ -46,7 +40,7 @@ export async function remove(platforms: PLATFORM[]) {
       continue
     }
     const module = await importPlatform(pfm)
-    await module.platformRemove({ packages })
+    await module.platformRemove()
   }
 }
 
@@ -54,20 +48,17 @@ export async function remove(platforms: PLATFORM[]) {
  * list platforms
  */
 export async function list() {
-  const packages = await getPackageJson()
-  checkIsUniapp(packages)
-
   for (const pfm of allPlatforms) {
     const module = await importPlatform(pfm)
     const space = Array.from(Array(16 - pfm.length))
       .map(() => ' ')
       .join('')
-    const isPfmInstalled = module.modules.every((module) => isInstalled(packages, module))
+    const isPfmInstalled = module.modules.every((module) => isInstalled(Package.packages, module))
     Log.info([
       { msg: `${pfm}:${space}` },
       isPfmInstalled
-        ? { msg: `${Log.emoji.success} Installed`, type: 'success' }
-        : { msg: `${Log.emoji.fail} Not installed`, type: 'warn' },
+        ? { msg: `${Log.successEmoji} Installed`, type: 'success' }
+        : { msg: `${Log.failEmoji} Not installed`, type: 'warn' },
     ])
   }
 }

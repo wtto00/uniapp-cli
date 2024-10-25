@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import type { ManifestConfig } from '../../utils/manifest.config.js'
-import { androidDir } from '../../utils/path.js'
+import { androidDir, projectRoot } from '../../utils/path.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
@@ -62,7 +62,7 @@ export function appendStatistic(results: Results, manifest: ManifestConfig) {
       'com.google.firebase:firebase-analytics:21.3.0': {},
     })
     const googleServicesPath = resolve(androidDir, 'app', 'google-services.json')
-    results.filesCopy[googleServicesPath] = resolve(global.projectRoot, 'src', statics.google.config_android ?? '')
+    results.filesCopy[googleServicesPath] = resolve(projectRoot, 'src', statics.google.config_android ?? '')
     appendFeature(results.properties, {
       name: 'Statistic',
       value: 'io.dcloud.feature.statistics.StatisticsFeatureImpl',

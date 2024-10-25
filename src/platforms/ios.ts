@@ -1,19 +1,20 @@
-import { installPackages, uninstallPackages } from '../utils/exec.js'
-import { isInstalled } from '../utils/package.js'
-import type { ModuleClass } from './index.js'
+import { existsSync } from 'node:fs'
+import { androidDir } from '../utils/path.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const ios: ModuleClass = {
   modules: ['@dcloudio/uni-app-plus', 'uniapp-ios'],
 
   requirement() {},
 
-  platformAdd({ version }) {
-    await installPackages(this.modules.map((m) => `${m}@${version}`))
+  async platformAdd({ version }) {
+    await installModules(ios.modules, version)
   },
 
-  platformRemove({ packages }) {
-    const filterModules = this.modules.filter((module) => isInstalled(packages, module))
-    await uninstallPackages(filterModules)
+  async platformRemove() {
+    if (!existsSync(androidDir)) {
+      await uninstallModules(ios.modules)
+    }
   },
 
   run() {},

@@ -1,15 +1,22 @@
 import { resolve } from 'node:path'
 import { program } from 'commander'
-import { readPackageJSONSync } from './utils/package.js'
+import { Log } from './utils/log.js'
+import { Package, checkIsUniapp, readPackageJSONSync } from './utils/package.js'
 
-global.projectRoot = process.cwd()
+Package.init()
+
+checkIsUniapp(Package.packages)
 
 program
   .name('uniapp')
-  .version(`uniapp-cli v${readPackageJSONSync(resolve(import.meta.dirname, '..')).version}`)
+  .version(
+    `uniapp_cli v${readPackageJSONSync(resolve(import.meta.dirname, '..')).version}`,
+    '-v, --version',
+    'uniapp_cli 的版本号',
+  )
   .usage('<command> [options]')
-  .option('-d, --verbose', 'debug mode produces verbose log output for all activity')
-  .helpOption()
+  .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息')
+  .helpOption('-h, --help', '帮助信息')
   .allowUnknownOption(true)
   .showHelpAfterError(true)
   .showSuggestionAfterError(true)
@@ -17,13 +24,21 @@ program
 program
   .command('create')
   .usage('<app-name>')
-  .summary('Create a new project')
-  .description('Create a new project powered by uniapp-cli.')
-  .argument('<app-name>', 'Human readable name')
-  .option('-t, --template <template>', 'use a custom template from GitHub/GitLab/Bitbucket')
+  .summary('创建新应用')
+  .description('使用 uniapp_cli 创建新应用')
+  .argument('<app-name>', '应用名称')
+  .option('-t, --template <template>', '新建应用的模板，是一个 Git 仓库地址')
   .option('-f, --force', '如果目录已存在，强制覆盖')
-  .option('--no-cache', '不使用缓存')
-  .addHelpText('after', '\n示例:\n  uniapp create MyUniApp')
+  .addHelpText(
+    'after',
+    `
+示例:
+  uniapp create MyUniApp
+  uniapp create MyUniApp -t dcloudio/uni-preset-vue#vite-ts --force
+  uniapp create MyUniApp -t https://gitee.com/dcloudio/uni-preset-vue#vite-ts
+  uniapp create MyUniApp -t git@gitee.com:dcloudio/uni-preset-vue#vite
+`,
+  )
   .action((appName, options) => {
     void import('./create.js').then(({ create }) => create(appName, options))
   })
@@ -32,10 +47,10 @@ program
   .command('requirements')
   .alias('requirement')
   .usage('<platform ...>')
-  .summary('Checks and print out all the requirements for platforms specified')
-  .description('Checks and print out all the requirements for platforms specified.')
-  .argument('<platform...>', 'Platforms requirements you want to check')
-  .addHelpText('after', '\n示例:\n  uniapp requirements android')
+  .summary('检查给定平台的环境要求')
+  .description('检查给定平台的环境要求')
+  .argument('<platform...>', '想要检查的平台: android,ios,h5,mp-weixin...')
+  .addHelpText('after', '\n示例:\n  uniapp requirements android\n  uniapp requirement h5 mp-weixin')
   .action((platforms) => {
     void import('./requirements.js').then(({ requirements }) => requirements(platforms))
   })
@@ -43,15 +58,15 @@ program
 const platform = program
   .command('platform')
   .usage('<command> [options]')
-  .summary('Manage project platforms.')
-  .description('Manage project platforms.')
+  .summary('管理应用的平台')
+  .description('管理应用的平台')
 
 platform
   .command('add')
   .usage('<platform...>')
-  .summary('Add specified platforms and install them')
-  .description('Add specified platforms and install them.')
-  .argument('<platform...>', 'Specified platforms')
+  .summary('添加并安装给定的平台')
+  .description('添加并安装给定的平台')
+  .argument('<platform...>', '要添加的平台: android,ios,h5,mp-weixin...')
   .action((platforms) => {
     void import('./platform.js').then(({ add }) => add(platforms))
   })
@@ -59,17 +74,17 @@ platform
   .command('rm')
   .alias('remove')
   .usage('<platform...>')
-  .summary('Remove specified platforms')
-  .description('Remove specified platforms.')
-  .argument('<platform...>', 'Specified platforms')
+  .summary('移除并卸载给定的平台')
+  .description('移除并卸载给定的平台')
+  .argument('<platform...>', '要移除的平台: android,ios,h5,mp-weixin...')
   .action((platforms) => {
     void import('./platform.js').then(({ remove }) => remove(platforms))
   })
 platform
   .command('ls')
   .alias('list')
-  .summary('List all installed and available platforms')
-  .description('List all installed and available platforms.')
+  .summary('列出所有已安装和可用的平台')
+  .description('列出所有已安装和可用的平台')
   .action(() => {
     void import('./platform.js').then(({ list }) => list())
   })
@@ -77,13 +92,13 @@ platform
 program
   .command('run')
   .usage('<platform>')
-  .summary('Start development service')
-  .description('Start development service with a specified platform.')
-  .argument('<platform>', 'Specified platforms')
-  .option('--no-open', 'Do not automatically deploy to a device or emulator')
-  .option('--debug', 'Deploy a debug build\nOnly available on Android and iOS')
-  .option('--release', 'Deploy a release build\nOnly available on Android and iOS')
-  .option('--device <device>', 'Deploy a build to specified device.\nOnly available on Android and iOS')
+  .summary('开始运行给定的平台')
+  .description('开始运行给定的平台')
+  .argument('<platform>', '要运行的平台: android,ios,h5,mp-weixin...')
+  .option('--no-open', '不自动打开')
+  .option('--debug', '开发模式')
+  .option('--release', '发布模式')
+  .option('--device <device>', '运行到给定的设备上')
   .addHelpText(
     'after',
     '\n示例:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin',
@@ -95,13 +110,13 @@ program
 program
   .command('build')
   .usage('<platform>')
-  .summary('Build for a specified platform')
-  .description('Start development service with a specified platform.')
-  .argument('<platform>', 'Specified platforms')
-  .option('--no-open', 'Do not automatically open preview')
-  .option('--debug', 'Deploy a debug build\nOnly available on Android and iOS')
-  .option('--release', 'Deploy a release build\nOnly available on Android and iOS')
-  .option('--device <device>', 'Deploy a build to specified device.\nOnly available on Android and iOS')
+  .summary('打包给定的平台')
+  .description('打包给定的平台')
+  .argument('<platform>', '要打包的平台: android,ios,h5,mp-weixin...')
+  .option('--no-open', '不自动打开')
+  .option('--debug', '开发模式')
+  .option('--release', '发布模式')
+  .option('--device <device>', '运行到给定的设备上')
   .addHelpText(
     'after',
     '\n示例:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin',
@@ -112,4 +127,4 @@ program
 
 program.parse(process.argv)
 
-global.verbose = program.getOptionValue('verbose')
+Log.verbose = program.getOptionValue('verbose')
