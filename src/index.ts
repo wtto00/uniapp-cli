@@ -1,19 +1,14 @@
-import { resolve } from 'node:path'
 import { program } from 'commander'
 import { Log } from './utils/log.js'
-import { Package, checkIsUniapp, readPackageJSONSync } from './utils/package.js'
+import { App } from './utils/app.js'
+import { CLI_VERSION } from './utils/const.js'
+import { checkIsUniapp } from './utils/package.js'
 
-Package.init()
-
-checkIsUniapp(Package.packages)
+App.init()
 
 program
   .name('uniapp')
-  .version(
-    `uniapp_cli v${readPackageJSONSync(resolve(import.meta.dirname, '..')).version}`,
-    '-v, --version',
-    'uniapp_cli 的版本号',
-  )
+  .version(`uniapp_cli v${CLI_VERSION}`, '-v, --version', 'uniapp_cli 的版本号')
   .usage('<command> [options]')
   .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息')
   .helpOption('-h, --help', '帮助信息')
@@ -23,11 +18,11 @@ program
 
 program
   .command('create')
-  .usage('<app-name>')
-  .summary('创建新应用')
-  .description('使用 uniapp_cli 创建新应用')
-  .argument('<app-name>', '应用名称')
-  .option('-t, --template <template>', '新建应用的模板，是一个 Git 仓库地址')
+  .usage('<project-name>')
+  .summary('创建新项目')
+  .description('使用 uniapp_cli 创建新项目')
+  .argument('<project-name>', '项目名称')
+  .option('-t, --template <template>', '新建项目的模板，是一个 Git 仓库地址')
   .option('-f, --force', '如果目录已存在，强制覆盖')
   .addHelpText(
     'after',
@@ -39,8 +34,14 @@ program
   uniapp create MyUniApp -t git@gitee.com:dcloudio/uni-preset-vue#vite
 `,
   )
-  .action((appName, options) => {
-    void import('./create.js').then(({ create }) => create(appName, options))
+  .action(async (projectName, options) => {
+    try {
+      const { create } = await import('./create.js')
+      await create(projectName, options)
+    } catch (error) {
+      Log.error((error as Error).message || '创建新项目出错了。')
+      process.exit(1)
+    }
   })
 
 program
@@ -51,8 +52,15 @@ program
   .description('检查给定平台的环境要求')
   .argument('<platform...>', '想要检查的平台: android,ios,h5,mp-weixin...')
   .addHelpText('after', '\n示例:\n  uniapp requirements android\n  uniapp requirement h5 mp-weixin')
-  .action((platforms) => {
-    void import('./requirements.js').then(({ requirements }) => requirements(platforms))
+  .action(async (platforms) => {
+    try {
+      checkIsUniapp()
+      const { requirements } = await import('./requirements.js')
+      await requirements(platforms)
+    } catch (error) {
+      Log.error((error as Error).message || '检查平台环境要求出错了。')
+      process.exit(1)
+    }
   })
 
 const platform = program
@@ -67,8 +75,15 @@ platform
   .summary('添加并安装给定的平台')
   .description('添加并安装给定的平台')
   .argument('<platform...>', '要添加的平台: android,ios,h5,mp-weixin...')
-  .action((platforms) => {
-    void import('./platform.js').then(({ add }) => add(platforms))
+  .action(async (platforms) => {
+    try {
+      checkIsUniapp()
+      const { add } = await import('./platform.js')
+      await add(platforms)
+    } catch (error) {
+      Log.error((error as Error).message || '添加安装平台出错了。')
+      process.exit(1)
+    }
   })
 platform
   .command('rm')
@@ -77,16 +92,30 @@ platform
   .summary('移除并卸载给定的平台')
   .description('移除并卸载给定的平台')
   .argument('<platform...>', '要移除的平台: android,ios,h5,mp-weixin...')
-  .action((platforms) => {
-    void import('./platform.js').then(({ remove }) => remove(platforms))
+  .action(async (platforms) => {
+    try {
+      checkIsUniapp()
+      const { remove } = await import('./platform.js')
+      await remove(platforms)
+    } catch (error) {
+      Log.error((error as Error).message || '移除卸载平台出错了。')
+      process.exit(1)
+    }
   })
 platform
   .command('ls')
   .alias('list')
   .summary('列出所有已安装和可用的平台')
   .description('列出所有已安装和可用的平台')
-  .action(() => {
-    void import('./platform.js').then(({ list }) => list())
+  .action(async () => {
+    try {
+      checkIsUniapp()
+      const { list } = await import('./platform.js')
+      await list()
+    } catch (error) {
+      Log.error((error as Error).message || '列举平台出错了。')
+      process.exit(1)
+    }
   })
 
 program
@@ -103,8 +132,15 @@ program
     'after',
     '\n示例:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin',
   )
-  .action((platform, options) => {
-    void import('./run.js').then(({ run }) => run(platform, options))
+  .action(async (platform, options) => {
+    try {
+      checkIsUniapp()
+      const { run } = await import('./run.js')
+      await run(platform, options)
+    } catch (error) {
+      Log.error((error as Error).message || `运行平台 \`${platform}\` 出错了。`)
+      process.exit(1)
+    }
   })
 
 program
@@ -121,8 +157,15 @@ program
     'after',
     '\n示例:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin',
   )
-  .action((platform, options) => {
-    void import('./build.js').then(({ build }) => build(platform, options))
+  .action(async (platform, options) => {
+    try {
+      checkIsUniapp()
+      const { build } = await import('./build.js')
+      await build(platform, options)
+    } catch (error) {
+      Log.error((error as Error).message || `打包平台 \`${platform}\` 出错了。`)
+      process.exit(1)
+    }
   })
 
 program.parse(process.argv)

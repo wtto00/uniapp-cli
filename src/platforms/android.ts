@@ -7,7 +7,7 @@ import { getLibSDKDir } from '../android/utils.js'
 import type { BuildOptions } from '../build.js'
 import { gitIgnorePath } from '../utils/git.js'
 import { Log } from '../utils/log.js'
-import { UNIAPP_SDK_HOME, androidDir, androidPath, iosDir } from '../utils/path.js'
+import { UNIAPP_SDK_HOME, AndroidDir, AndroidPath, IOSDir } from '../utils/path.js'
 import { trimEnd } from '../utils/util.js'
 import { type ModuleClass, type PlatformAddOptions, installModules, uninstallModules } from './index.js'
 
@@ -82,20 +82,20 @@ const android: ModuleClass = {
     try {
       await addAndroid(version)
     } catch (error) {
-      rmSync(androidDir, { recursive: true, force: true })
+      rmSync(AndroidDir, { recursive: true, force: true })
       throw error
     }
 
-    gitIgnorePath(androidPath)
+    gitIgnorePath(AndroidPath)
 
     Log.success(`Android 平台已成功添加。${Log.successEmoji}`)
   },
 
   async platformRemove() {
-    if (!existsSync(iosDir)) {
+    if (!existsSync(IOSDir)) {
       await uninstallModules(android.modules)
     }
-    rmSync(androidDir, { recursive: true, force: true })
+    rmSync(AndroidDir, { recursive: true, force: true })
     Log.success('Android 平台已成功移除。')
   },
 

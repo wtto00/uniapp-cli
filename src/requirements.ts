@@ -1,6 +1,6 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
-import { Package, isInstalled } from './utils/package.js'
+import { isInstalled } from './utils/package.js'
 
 export async function requirements(platforms: PLATFORM[]) {
   const validPlatforms: PLATFORM[] = platforms.reduce<PLATFORM[]>((prev, pfm) => {
@@ -13,8 +13,8 @@ export async function requirements(platforms: PLATFORM[]) {
     Log.info(`${pfm}: `)
 
     const module = await importPlatform(pfm)
-    if (!module.modules.every((module) => isInstalled(Package.packages, module))) {
-      Log.error(`${Log.failEmoji} Platform \`${pfm}\` is not installed. Please use \`uniapp platform add ${pfm}\`.`)
+    if (!module.modules.every((module) => isInstalled(module))) {
+      Log.error(`${Log.failEmoji} 平台 \`${pfm}\` 还没有安装. 请运行 \`uniapp platform add ${pfm}\` 。`)
       continue
     }
     await module.requirement()

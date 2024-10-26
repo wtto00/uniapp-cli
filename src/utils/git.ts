@@ -1,12 +1,25 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { projectRoot } from './path.js'
+import { App } from './app.js'
 
 export function gitIgnorePath(ignorePath: string) {
-  const ignoreFilePath = resolve(projectRoot, '.gitignore')
+  const ignoreFilePath = resolve(App.projectRoot, '.gitignore')
   const content = readFileSync(ignoreFilePath, 'utf8')
   const lines = content.split('\n')
   if (lines.includes(ignorePath)) return
   lines.push(ignorePath, '')
   writeFileSync(ignoreFilePath, lines.join('\n'), 'utf8')
+}
+
+/**
+ * - https://github.com/user/repo
+ * - git@github.com:user/repo
+ * - ssh://git@hostname:port/user/repo.git
+ * - user/repo
+ */
+export function getRepoPath(repo: string) {
+  if (/^[0-9a-zA-Z](-[0-9a-zA-Z]+|[0-9a-zA-Z]*)[\/\\][0-9a-zA-Z\.\-_]+$/.test(repo)) {
+    return `https://github.com/${repo.replace(/\\/g, '/')}`
+  }
+  return repo.replace(/\\/g, '/')
 }

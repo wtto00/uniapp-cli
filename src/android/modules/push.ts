@@ -1,12 +1,13 @@
 import { extname, resolve } from 'node:path'
 import { Log } from '../../utils/log.js'
 import type { ManifestConfig } from '../../utils/manifest.config.js'
-import { androidDir, projectRoot } from '../../utils/path.js'
+import { AndroidDir } from '../../utils/path.js'
 import { appendMerge, appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
+import { App } from 'src/utils/app.js'
 
 export function appendPush(results: Results, manifest: ManifestConfig) {
   const Push = manifest['app-plus']?.modules?.Push
@@ -74,12 +75,12 @@ export function appendPush(results: Results, manifest: ManifestConfig) {
     for (const size of allSize) {
       if (icons.small?.[size]) {
         const iconPath = resolve(
-          androidDir,
+          AndroidDir,
           'app/src/main/res',
           `drawable-${size}`,
           `push${extname(icons.small?.[size])}`,
         )
-        results.filesCopy[iconPath] = resolve(projectRoot, 'src', icons.small?.[size])
+        results.filesCopy[iconPath] = resolve(App.projectRoot, 'src', icons.small?.[size])
       }
     }
   }
@@ -92,8 +93,8 @@ export function appendPush(results: Results, manifest: ManifestConfig) {
     // if (sdkForGj) results.libs.add(sdkForGj)
     // const fcmSdk = findLibSDK('fcm-')
     // if (fcmSdk) results.libs.add(fcmSdk)
-    const googleServicesPath = resolve(androidDir, 'app', 'google-services.json')
-    results.filesCopy[googleServicesPath] = resolve(projectRoot, 'src', fcm.config_android ?? '')
+    const googleServicesPath = resolve(AndroidDir, 'app', 'google-services.json')
+    results.filesCopy[googleServicesPath] = resolve(App.projectRoot, 'src', fcm.config_android ?? '')
     results.buildGradle.dependencies.add('com.google.gms:google-services:4.3.14')
     appendPlugin(results.appBuildGradle, ['com.google.gms.google-services'])
     appendDependencies(results.appBuildGradle, {
@@ -136,8 +137,8 @@ export function appendPush(results: Results, manifest: ManifestConfig) {
     results.buildGradle.dependencies.add('com.huawei.agconnect:agcp:1.6.0.300')
     results.buildGradle.allRepositories['https://developer.huawei.com/repo/'] = {}
     appendPlugin(results.appBuildGradle, ['com.android.application', 'com.huawei.agconnect'])
-    const agconnectServicesPath = resolve(androidDir, 'app', 'agconnect-services.json')
-    results.filesCopy[agconnectServicesPath] = resolve(projectRoot, 'src', hms.config ?? '')
+    const agconnectServicesPath = resolve(AndroidDir, 'app', 'agconnect-services.json')
+    results.filesCopy[agconnectServicesPath] = resolve(App.projectRoot, 'src', hms.config ?? '')
   }
   if (honor) {
     // 荣耀

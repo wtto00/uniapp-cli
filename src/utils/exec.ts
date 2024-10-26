@@ -12,6 +12,10 @@ export function outputRemoveColor(text: string) {
   return text.replace(/\x1B\[\d+m/g, '')
 }
 
+export function getErrorMessage(error: unknown) {
+  return (error as { stderr: string }).stderr || (error as { message: string }).message
+}
+
 /**
  * `@vue/cli` has been installed or not
  */

@@ -2,12 +2,12 @@ import { cpSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { checkConfig } from '../app-plus/check.js'
 import { AppPlusOS } from '../utils/manifest.config.js'
-import { getManifestJson } from '../utils/manifest.js'
-import { androidDir } from '../utils/path.js'
+import { AndroidDir } from '../utils/path.js'
 import { prepare } from './prepare.js'
+import { App } from 'src/utils/app.js'
 
 export default async function add(version: string) {
-  const manifest = getManifestJson()
+  const manifest = App.getManifestJson()
 
   if (!manifest) {
     throw Error('Failed to parse manifest.json.')
@@ -15,7 +15,7 @@ export default async function add(version: string) {
 
   checkConfig(manifest, AppPlusOS.Android)
 
-  cpSync(resolve(import.meta.dirname, '../../sdk/android'), androidDir, { recursive: true })
+  cpSync(resolve(import.meta.dirname, '../../sdk/android'), AndroidDir, { recursive: true })
 
   prepare(manifest, version)
 }

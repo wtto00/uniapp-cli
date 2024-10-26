@@ -1,11 +1,12 @@
 import { resolve } from 'node:path'
 import type { ManifestConfig } from '../../utils/manifest.config.js'
-import { androidDir, projectRoot } from '../../utils/path.js'
+import { AndroidDir } from '../../utils/path.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
+import { App } from 'src/utils/app.js'
 
 export function appendStatistic(results: Results, manifest: ManifestConfig) {
   const Statistic = manifest['app-plus']?.modules?.Statistic
@@ -61,8 +62,8 @@ export function appendStatistic(results: Results, manifest: ManifestConfig) {
     appendDependencies(results.appBuildGradle, {
       'com.google.firebase:firebase-analytics:21.3.0': {},
     })
-    const googleServicesPath = resolve(androidDir, 'app', 'google-services.json')
-    results.filesCopy[googleServicesPath] = resolve(projectRoot, 'src', statics.google.config_android ?? '')
+    const googleServicesPath = resolve(AndroidDir, 'app', 'google-services.json')
+    results.filesCopy[googleServicesPath] = resolve(App.projectRoot, 'src', statics.google.config_android ?? '')
     appendFeature(results.properties, {
       name: 'Statistic',
       value: 'io.dcloud.feature.statistics.StatisticsFeatureImpl',

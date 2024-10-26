@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { type ManifestConfig, PermissionRequest } from '../utils/manifest.config.js'
-import { UNIAPP_SDK_HOME, androidDir } from '../utils/path.js'
+import { UNIAPP_SDK_HOME, AndroidDir } from '../utils/path.js'
 import { appendSet, enumInclude, mergeSet } from '../utils/util.js'
 import { appendBarcode } from './modules/barcode.js'
 import { appendBluetooth } from './modules/bluetooth.js'
@@ -306,7 +306,7 @@ export function prepare(manifest: ManifestConfig, sdkVersion: string) {
   filesWrite[AndroidManifestFilePath] = generateAndroidManifest(androidManifest)
   const libFiles = mergeSet(libs, getDefaultLibs(sdkVersion))
   for (const lib of libFiles) {
-    filesCopy[resolve(androidDir, 'app/libs', lib)] = resolve(UNIAPP_SDK_HOME, 'android', sdkVersion, lib)
+    filesCopy[resolve(AndroidDir, 'app/libs', lib)] = resolve(UNIAPP_SDK_HOME, 'android', sdkVersion, lib)
   }
   filesWrite[AppBuildGradleFilePath] = genderateAppBuildGradle(appBuildGradle)
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
@@ -318,7 +318,7 @@ export function prepare(manifest: ManifestConfig, sdkVersion: string) {
     cpSync(filesCopy[target], target, { recursive: true })
   }
   for (const filePath in filesWrite) {
-    const fileFullPath = resolve(androidDir, filePath)
+    const fileFullPath = resolve(AndroidDir, filePath)
     const fileDir = dirname(fileFullPath)
     if (!existsSync(fileDir)) mkdirSync(fileDir, { recursive: true })
     writeFileSync(fileFullPath, filesWrite[filePath], 'utf8')

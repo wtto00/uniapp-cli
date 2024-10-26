@@ -2,7 +2,7 @@ import type { BuildOptions } from '../build.js'
 import { installPackages, uninstallPackages } from '../utils/exec.js'
 import { Log } from '../utils/log.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
-import { Package, getModuleVersion, isInstalled } from '../utils/package.js'
+import { getModuleVersion, isInstalled } from '../utils/package.js'
 
 type MaybePromise<T> = T | Promise<T>
 
@@ -92,12 +92,12 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
       return (await import('./quickapp-huawei.js')).default
     default:
       Log.error(`Unknown platform: ${platform}.`)
-      process.exit()
+      process.exit(1)
   }
 }
 
 export async function requireVue2(platform: PLATFORM) {
-  const vueVersion = await getModuleVersion(Package.packages, 'vue')
+  const vueVersion = await getModuleVersion('vue')
   if (!vueVersion.startsWith('2.')) {
     throw Error(`平台 ${platform} 只支持 vue@2，发现已安装版本 vue@${vueVersion}`)
   }
@@ -105,7 +105,7 @@ export async function requireVue2(platform: PLATFORM) {
 
 export async function installModules(modules: string[], version: string) {
   for (const module of modules) {
-    if (!isInstalled(Package.packages, module)) {
+    if (!isInstalled(module)) {
       await installPackages([`${module}@${version}`])
     }
   }
@@ -113,7 +113,7 @@ export async function installModules(modules: string[], version: string) {
 
 export async function uninstallModules(modules: string[]) {
   for (const module of modules) {
-    if (isInstalled(Package.packages, module)) {
+    if (isInstalled(module)) {
       await uninstallPackages([module])
     }
   }

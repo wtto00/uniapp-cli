@@ -14,9 +14,9 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "rootDir": "src",
     "outDir": "./dist"
   },
-  "files": ["./global.d.ts"],
   "include": ["src/**/*.ts"]
 }

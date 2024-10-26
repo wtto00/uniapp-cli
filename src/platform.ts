@@ -1,15 +1,15 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { Log } from './utils/log.js'
-import { Package, getModuleVersion, isInstalled } from './utils/package.js'
+import { getModuleVersion, isInstalled } from './utils/package.js'
 
 /**
  * add platforms
  */
 export async function add(platforms: PLATFORM[]) {
-  const uniVersoin = await getModuleVersion(Package.packages, '@dcloudio/uni-app')
+  const uniVersoin = await getModuleVersion('@dcloudio/uni-app')
 
   if (!uniVersoin) {
-    process.exit()
+    process.exit(1)
   }
 
   for (const pfm of platforms) {
@@ -53,7 +53,7 @@ export async function list() {
     const space = Array.from(Array(16 - pfm.length))
       .map(() => ' ')
       .join('')
-    const isPfmInstalled = module.modules.every((module) => isInstalled(Package.packages, module))
+    const isPfmInstalled = module.modules.every((module) => isInstalled(module))
     Log.info([
       { msg: `${pfm}:${space}` },
       isPfmInstalled

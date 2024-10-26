@@ -1,4 +1,4 @@
-import { Package, isInstalled } from '../utils/package.js'
+import { isInstalled } from '../utils/package.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 import quickAppUnion from './quickapp-union.js'
 
@@ -12,7 +12,7 @@ const quickAppHuawei: ModuleClass = {
   },
 
   async platformRemove() {
-    if (!isInstalled(Package.packages, quickAppUnion.modules[0])) {
+    if (!isInstalled(quickAppUnion.modules[0])) {
       await uninstallModules(quickAppHuawei.modules)
     }
   },

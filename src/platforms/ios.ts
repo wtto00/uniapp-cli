@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { androidDir } from '../utils/path.js'
+import { AndroidDir } from '../utils/path.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const ios: ModuleClass = {
@@ -12,7 +12,7 @@ const ios: ModuleClass = {
   },
 
   async platformRemove() {
-    if (!existsSync(androidDir)) {
+    if (!existsSync(AndroidDir)) {
       await uninstallModules(ios.modules)
     }
   },
