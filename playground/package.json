@@ -37,7 +37,7 @@
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "type-check": "vue-tsc --noEmit",
-    "uniapp": "node ../bin/uniapp.js"
+    "uniapp": "node ../bin/uniapp.mjs"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4020920240930001",
