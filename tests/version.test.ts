@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import { execaUniapp } from './helper.js'
 import { type PackageJson, readPackageJSON } from 'pkg-types'
 
-describe('help', async () => {
+describe('version', async () => {
   let packages = {} as PackageJson
 
   before(async () => {

@@ -18,8 +18,8 @@ export function gitIgnorePath(ignorePath: string) {
  * - user/repo
  */
 export function getRepoPath(repo: string) {
-  if (/^[0-9a-zA-Z](-[0-9a-zA-Z]+|[0-9a-zA-Z]*)[\/\\][0-9a-zA-Z\.\-_]+$/.test(repo)) {
-    return `https://github.com/${repo.replace(/\\/g, '/')}`
+  if (/^[0-9a-zA-Z](-[0-9a-zA-Z]+|[0-9a-zA-Z]*)\/[0-9a-zA-Z\.\-_]+$/.test(repo)) {
+    return `https://github.com/${repo}`
   }
-  return repo.replace(/\\/g, '/')
+  return repo
 }

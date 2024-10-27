@@ -33,21 +33,21 @@ describe('create', () => {
     }
   })
 
-  it('help', { timeout: 10000 }, async () => {
+  it('help create', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('help create')
     assert.equal(stdout, HELP_TEXT)
   })
 
-  it('--help', { timeout: 10000 }, async () => {
+  it('create --help', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('create --help')
     assert.equal(stdout, HELP_TEXT)
   })
 
-  it('None arguments', { timeout: 10000 }, () => {
+  it('create none arguments', { timeout: 10000 }, () => {
     assert.rejects(() => execaUniapp('create'), `error: missing required argument 'project-name'\n\n${HELP_TEXT}`)
   })
 
-  it('Invalid project name', { timeout: 10000 }, () => {
+  it('create invalid project name', { timeout: 10000 }, () => {
     assert.rejects(
       () => execaUniapp('create 你好'),
       (err: SyncResult) => {
@@ -61,7 +61,7 @@ describe('create', () => {
     )
   })
 
-  it('create', { timeout: 10000 }, () => {
+  it('create no template', { timeout: 10000 }, () => {
     assert.throws(
       () => execaUniappSync('create test-project'),
       `\x1B[34m?\x1B[39m \x1B[1m请选择新建项目的模板\x1B[22m \x1B[2m(Use arrow keys)\x1B[22m\n\x1B[36m❯ vitesse\x1B[39m
@@ -70,6 +70,13 @@ describe('create', () => {
   vue2
   vue3-alpha
   vue2-alpha\x1B[?25l\x1B[13G\n\x1B[?25h\x1B[31mUser force closed the prompt with 0 null\x1B[39m`,
+    )
+  })
+
+  it('--template invalid repository', { timeout: 10000 }, () => {
+    assert.rejects(
+      () => execaUniapp('create test-project-invlide-repository --template xxxx'),
+      "fatal: repository 'xxxx' does not exist",
     )
   })
 
