@@ -1,12 +1,9 @@
-import { Log } from '../utils/log.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const h5: ModuleClass = {
   modules: ['@dcloudio/uni-h5'],
 
-  requirement() {
-    Log.success(`${Log.successEmoji} Platform \`h5\` doesn't need any dependency.`)
-  },
+  requirement() {},
 
   async platformAdd({ version }) {
     await installModules(h5.modules, version)

@@ -33,21 +33,21 @@ describe('create', () => {
     }
   })
 
-  it('help create', { timeout: 10000 }, async () => {
+  it('help', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('help create')
     assert.equal(stdout, HELP_TEXT)
   })
 
-  it('create --help', { timeout: 10000 }, async () => {
+  it('--help', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('create --help')
     assert.equal(stdout, HELP_TEXT)
   })
 
-  it('create none arguments', { timeout: 10000 }, () => {
+  it('none arguments', { timeout: 10000 }, () => {
     assert.rejects(() => execaUniapp('create'), `error: missing required argument 'project-name'\n\n${HELP_TEXT}`)
   })
 
-  it('create invalid project name', { timeout: 10000 }, () => {
+  it('invalid project name', { timeout: 10000 }, () => {
     assert.rejects(
       () => execaUniapp('create 你好'),
       (err: SyncResult) => {
@@ -61,7 +61,7 @@ describe('create', () => {
     )
   })
 
-  it('create no template', { timeout: 10000 }, () => {
+  it('no template', { timeout: 10000 }, () => {
     assert.throws(
       () => execaUniappSync('create test-project'),
       `\x1B[34m?\x1B[39m \x1B[1m请选择新建项目的模板\x1B[22m \x1B[2m(Use arrow keys)\x1B[22m\n\x1B[36m❯ vitesse\x1B[39m

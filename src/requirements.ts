@@ -5,6 +5,7 @@ import { isInstalled } from './utils/package.js'
 export async function requirements(platforms: PLATFORM[]) {
   const validPlatforms: PLATFORM[] = platforms.reduce<PLATFORM[]>((prev, pfm) => {
     if (allPlatforms.includes(pfm)) prev.push(pfm)
+    else Log.warn(`无效的平台: ${pfm}`)
     return prev
   }, [])
 
@@ -14,11 +15,11 @@ export async function requirements(platforms: PLATFORM[]) {
 
     const module = await importPlatform(pfm)
     if (!module.modules.every((module) => isInstalled(module))) {
-      Log.error(`${Log.failEmoji} 平台 \`${pfm}\` 还没有安装. 请运行 \`uniapp platform add ${pfm}\` 。`)
+      Log.error(`${Log.failEmoji} 平台 \`${pfm}\` 还没有安装。请运行 \`uniapp platform add ${pfm}\` 添加安装`)
       continue
     }
+    Log.success(`${Log.successEmoji} 平台 \`${pfm}\` 已安装`)
     await module.requirement()
-
     Log.info()
   }
 }

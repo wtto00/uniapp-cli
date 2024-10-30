@@ -96,6 +96,21 @@ TODO:
 - 帮助信息中文
 - 平台完善
 
+## 测试
+
+1. 测试全部
+   ```shell
+   pnpm test
+   ```
+1. 测试某个文件
+   ```shell
+   node --import tsx --test tests/create.test.ts
+   ```
+1. 测试某个文件中的某一项
+   ```shell
+   node --import tsx --test --test-name-pattern="create no template" tests/create.test.ts
+   ```
+
 ## 版本注意事项
 
 - **oauth.qq**: qq_mta-sdk-1.6.2.jar（3.6.7 以下版本需要）
