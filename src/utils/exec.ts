@@ -1,15 +1,16 @@
 import { execa } from 'execa'
 import ora from 'ora'
-import { detect, resolveCommand } from 'package-manager-detector'
+import { resolveCommand } from 'package-manager-detector'
 import { Log } from './log.js'
+import { App } from './app.js'
 
 /**
  * Remove the color of the output text
  * @param text output text
  */
-export function outputRemoveColor(text: string) {
+export function stripAnsiColors(text: string) {
   // biome-ignore lint/suspicious/noControlCharactersInRegex: <explanation>
-  return text.replace(/\x1B\[\d+m/g, '')
+  return text.replace(/\x1B\[[0-?9;]*[mG]/g, '')
 }
 
 export function getErrorMessage(error: unknown) {
@@ -43,13 +44,12 @@ export async function createVueProject(appName: string, template: string, force 
 }
 
 export async function installPackages(packages: string[]) {
-  const pm = await detect()
-  if (!pm) throw new Error('没有检测到包管理器。')
-  const { command, args = [] } = resolveCommand(pm.agent, 'add', packages) ?? {}
-  if (!command || args.length === 0) throw Error(`无法转换执行命令: ${pm.agent} add ${packages.join(' ')}`)
+  const pm = App.getPackageManager()
+  const commands = resolveCommand(pm.agent, 'add', packages)
+  if (!commands) throw Error(`无法转换执行命令: ${pm.agent} add ${packages.join(' ')}`)
 
   const spinner = ora(`正在安装依赖 ${packages.join(', ')}`).start()
-  const { stderr } = await execa`${command} ${args}`
+  const { stderr } = await execa`${commands.command} ${commands.args}`
   if (stderr) {
     spinner.fail(`安装依赖 ${packages.join(', ')} 失败了。`)
     throw Error
@@ -58,13 +58,12 @@ export async function installPackages(packages: string[]) {
 }
 
 export async function uninstallPackages(packages: string[]) {
-  const pm = await detect()
-  if (!pm) throw new Error('没有检测到包管理器。')
-  const { command, args = [] } = resolveCommand(pm.agent, 'uninstall', packages) ?? {}
-  if (!command || args.length === 0) throw Error(`无法转换执行命令: ${pm.agent} uninstall ${packages.join(' ')}`)
+  const pm = App.getPackageManager()
+  const commands = resolveCommand(pm.agent, 'uninstall', packages)
+  if (!commands) throw Error(`无法转换执行命令: ${pm.agent} uninstall ${packages.join(' ')}`)
 
   const spinner = ora(`正在卸载依赖 ${packages.join(', ')}`).start()
-  const { stderr } = await execa`${command} ${args}`
+  const { stderr } = await execa`${commands.command} ${commands.args}`
   if (stderr) {
     spinner.fail(`卸载依赖 ${packages.join(', ')} 失败了。`)
     throw Error

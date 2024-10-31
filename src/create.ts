@@ -9,7 +9,6 @@ import validateProjectName from 'validate-npm-package-name'
 import { execa } from 'execa'
 import ora from 'ora'
 import { getRepoPath } from './utils/git.js'
-import { detect } from 'package-manager-detector'
 
 const TEMPLATES = [
   { name: 'vitesse', repo: 'uni-helper/vitesse-uni-app' },
@@ -110,12 +109,11 @@ export async function create(projectName: string, options: CreateOptoins) {
     Log.error((err as Error).message || '在文件 package.json 中重命名 name 失败。')
   }
 
-  const pm = await detect()
   Log.info(`
 应用 \`${projectName}\` 创建成功
 运行下面的命令开始:
 \tcd ${projectName}
-\t${pm?.name || 'npm'} i
+\t${App.getPackageManager().name} install
 \tuniapp run h5
 `)
 }

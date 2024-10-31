@@ -9,5 +9,7 @@
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifierEnding": "js"
 }

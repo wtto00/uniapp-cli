@@ -14,6 +14,9 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "./dist"

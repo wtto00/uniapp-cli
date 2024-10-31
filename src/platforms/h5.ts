@@ -1,4 +1,10 @@
+import { execa } from 'execa'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import { resolveCommand } from 'package-manager-detector'
+import { App } from '../utils/app.js'
+import open from 'open'
+import { Log } from '../utils/log.js'
+import { stripAnsiColors } from '../utils/exec.js'
 
 const h5: ModuleClass = {
   modules: ['@dcloudio/uni-h5'],
@@ -13,62 +19,53 @@ const h5: ModuleClass = {
     await uninstallModules(h5.modules)
   },
 
-  run(_options) {
-    // let success = false
-    // let over = false
-    // const output: string[] = []
-    // spawnExec('npx', ['uni', '-p', 'h5'], (msg) => {
-    //   if (options.open === false) return
-    //   if (over) return
-    //   output.push(outputRemoveColor(msg))
-    //   success ||= /ready in \d+ms./.test(msg)
-    //   if (!success) return
-    //   const regex = /Local:\s+(http:\/\/localhost:\d+)\//
-    //   const line = output.find((l) => regex.test(l))
-    //   if (line) {
-    //     const url = line.match(regex)?.[1]
-    //     if (url) {
-    //       Log.debug('Start open browser.')
-    //       import('open').then(({ default: open }) =>
-    //         open(url)
-    //           .then(() => {
-    //             Log.success('Browser has been opened.')
-    //           })
-    //           .catch(Log.error),
-    //       )
-    //     }
-    //   }
-    //   over = true
-    // })
+  async run(options) {
+    const pm = App.getPackageManager()
+    const commands = resolveCommand(pm.agent, 'execute-local', ['uni'])
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni`)
+
+    try {
+      let url = ''
+      let over = false
+      for await (const line of execa({
+        stdout: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${commands.command} ${commands.args}`) {
+        if (!options.open || over) continue
+        const text = stripAnsiColors(line)
+        if (!url) {
+          const matched = text.match(/Local:\s+(http:\/\/localhost:\d+)\//)
+          if (matched?.[1]) url = matched[1]
+        }
+        if (/ready in (\d+\.)?\d+m?s\./.test(text)) {
+          if (!url) continue
+          over = true
+          open(url)
+            .then(() => {
+              Log.success(`浏览器已打开: ${url}`)
+            })
+            .catch((error) => {
+              Log.error(error.message)
+            })
+        }
+      }
+    } catch (error) {
+      if ((error as Error).message.match(/CTRL-C/)) return
+      throw error
+    }
   },
 
-  build(_options) {
-    // let success = false
-    // let over = false
-    // const output: string[] = []
-    // spawnExec('npx', ['uni', 'build', '-p', 'h5'], (msg) => {
-    //   if (options.open === false) return
-    //   if (over) return
-    //   output.push(outputRemoveColor(msg))
-    //   success ||= /ready in \d+ms./.test(msg)
-    //   if (!success) return
-    //   const regex = /Local:\s+(http:\/\/localhost:\d+)\//
-    //   const line = output.find((l) => regex.test(l))
-    //   if (line) {
-    //     const url = line.match(regex)?.[1]
-    //     if (url) {
-    //       Log.debug('Start open browser.')
-    //       import('open').then(({ default: open }) =>
-    //         open(url)
-    //           .then(() => {
-    //             Log.success('Browser has been opened.')
-    //           })
-    //           .catch(Log.error),
-    //       )
-    //     }
-    //   }
-    //   over = true
-    // })
+  async build(_options) {
+    const pm = App.getPackageManager()
+    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', 'build'])
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni build`)
+
+    try {
+      await execa({ stdio: 'inherit' })`${commands.command} ${commands.args}`
+    } catch (error) {
+      if ((error as Error).message.match(/CTRL-C/)) return
+      throw error
+    }
   },
 }
 
