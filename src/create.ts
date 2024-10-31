@@ -42,7 +42,7 @@ export async function create(projectName: string, options: CreateOptoins) {
         Log.error(`Warning: ${warn}`)
       }
     }
-    process.exit(1)
+    return
   }
   Log.debug(`项目名称 ${projectName} 有效`)
 
@@ -52,7 +52,8 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   if (existsSync(projectPath)) {
     if (!force) {
-      throw Error(`\`${projectName}\` 已存在, 使用 \`--force\` 强制覆盖。`)
+      Log.error(`\`${projectName}\` 已存在, 使用 \`--force\` 强制覆盖。`)
+      return
     }
     const spinner = ora(`使用 \`--force\`，正在删除 \`${projectPath}\``).start()
     rmSync(projectPath, { force: true, recursive: true })
@@ -86,7 +87,10 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   const [repo, branch] = template.split('#')
 
-  if (!repo) throw Error('未知的模板仓库')
+  if (!repo) {
+    Log.error('未知的模板仓库')
+    return
+  }
 
   const spinner = ora(`正在克隆项目模板: ${template}`).start()
   try {
@@ -94,7 +98,8 @@ export async function create(projectName: string, options: CreateOptoins) {
     spinner.succeed(`项目模板 ${template} 已克隆完成。`)
   } catch (error) {
     spinner.fail(`克隆项目模板 ${template} 失败了。`)
-    throw Error(getErrorMessage(error))
+    Log.error(getErrorMessage(error))
+    return
   }
 
   Log.debug('删除项目模板中的 .git 目录')

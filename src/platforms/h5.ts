@@ -3,8 +3,8 @@ import { type ModuleClass, installModules, uninstallModules } from './index.js'
 import { resolveCommand } from 'package-manager-detector'
 import { App } from '../utils/app.js'
 import open from 'open'
-import { Log } from '../utils/log.js'
 import { stripAnsiColors } from '../utils/exec.js'
+import ora from 'ora'
 
 const h5: ModuleClass = {
   modules: ['@dcloudio/uni-h5'],
@@ -40,12 +40,13 @@ const h5: ModuleClass = {
         if (/ready in (\d+\.)?\d+m?s\./.test(text)) {
           if (!url) continue
           over = true
+          const spinner = ora('正在打开浏览器').start()
           open(url)
             .then(() => {
-              Log.success(`浏览器已打开: ${url}`)
+              spinner.succeed(`浏览器已打开: ${url}`)
             })
             .catch((error) => {
-              Log.error(error.message)
+              spinner.fail(`浏览器打开失败 ${error.message}`)
             })
         }
       }
@@ -61,7 +62,7 @@ const h5: ModuleClass = {
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni build`)
 
     try {
-      await execa({ stdio: 'inherit' })`${commands.command} ${commands.args}`
+      await execa({ stdio: 'inherit', env: { FORCE_COLOR: 'true' } })`${commands.command} ${commands.args}`
     } catch (error) {
       if ((error as Error).message.match(/CTRL-C/)) return
       throw error

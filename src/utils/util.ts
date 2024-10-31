@@ -61,3 +61,7 @@ export function trimEnd(source: string | undefined, trimStr: string) {
   }
   return target
 }
+
+export function isWindows() {
+  return process.platform === 'win32'
+}
