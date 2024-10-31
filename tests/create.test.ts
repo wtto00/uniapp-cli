@@ -88,7 +88,7 @@ describe('create', () => {
 应用 \`test-project-branch\` 创建成功
 运行下面的命令开始:
 \tcd test-project-branch
-\tpnpm i
+\tpnpm install
 \tuniapp run h5
 `,
     )
@@ -101,7 +101,7 @@ describe('create', () => {
     assert.match(stdout, /应用 `test-project-tag` 创建成功/)
   })
 
-  it('No --force', { timeout: 10000 }, () => {
+  it('no --force', { timeout: 10000 }, () => {
     mkdirSync('test-project-no-force')
     assert.rejects(
       () => execaUniapp('create test-project-no-force --template dcloudio/uni-preset-vue'),

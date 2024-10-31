@@ -15,10 +15,10 @@ export async function requirements(platforms: PLATFORM[]) {
 
     const module = await importPlatform(pfm)
     if (!module.modules.every((module) => isInstalled(module))) {
-      Log.error(`${Log.failEmoji} 平台 \`${pfm}\` 还没有安装。请运行 \`uniapp platform add ${pfm}\` 添加安装`)
+      Log.error(`${Log.failSignal} 平台 \`${pfm}\` 还没有安装。请运行 \`uniapp platform add ${pfm}\` 添加安装`)
       continue
     }
-    Log.success(`${Log.successEmoji} 平台 \`${pfm}\` 已安装`)
+    Log.success(`${Log.successSignal} 平台 \`${pfm}\` 已安装`)
     await module.requirement()
     Log.info()
   }

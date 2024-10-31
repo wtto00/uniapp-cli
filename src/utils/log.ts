@@ -3,8 +3,8 @@ import chalk from 'chalk'
 export const Log = {
   verbose: false,
 
-  successEmoji: '✅',
-  failEmoji: '❌',
+  successSignal: '✔',
+  failSignal: '✖',
 
   debug(...msgs: string[]) {
     if (!Log.verbose) return

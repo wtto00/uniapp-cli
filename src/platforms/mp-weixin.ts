@@ -24,6 +24,7 @@ function openWeixinDevTool(projectPath: string) {
   const cliPath = getWeixinDevToolCliPath()
   if (!cliPath) {
     Log.error('微信开发工具没有找到，请运行 `uniapp requirement mp-weixin` 查看详细信息')
+    return
   }
   const spinner = ora('正在打开微信开发者工具').start()
   automator
@@ -51,13 +52,13 @@ const mpWeixin: ModuleClass = {
     const cliPath = getWeixinDevToolCliPath()
 
     if (cliPath) {
-      Log.success(`${Log.successEmoji} 微信开发者工具已安装 (${cliPath})`)
+      Log.success(`${Log.successSignal} 微信开发者工具已安装 (${cliPath})`)
       return
     }
 
-    Log.warn(`${Log.failEmoji} 微信开发者工具没有安装`)
+    Log.warn(`${Log.failSignal} 微信开发者工具没有安装`)
     Log.info(
-      `   如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`,
+      `  如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`,
     )
   },
 

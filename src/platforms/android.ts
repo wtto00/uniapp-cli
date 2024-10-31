@@ -25,21 +25,21 @@ const android: ModuleClass = {
         const { stderr, stdout } = await execa`${javaBinPath} -version`
         const version = (stdout || stderr).split('\n')[0]
         if (version.includes(' version ')) {
-          Log.success(`${Log.successEmoji} ${version}`)
+          Log.success(`${Log.successSignal} ${version}`)
         } else {
-          Log.warn(`${Log.failEmoji} 检测 Java 版本失败了。`)
+          Log.warn(`${Log.failSignal} 检测 Java 版本失败了。`)
         }
       } else {
-        Log.warn(`${Log.failEmoji} Java 可执行文件不存在: ${javaBinPath}。`)
+        Log.warn(`${Log.failSignal} Java 可执行文件不存在: ${javaBinPath}。`)
       }
     } else {
-      Log.warn(`${Log.failEmoji} 没有设置环境变量: \`JAVA_HOME\` 。`)
+      Log.warn(`${Log.failSignal} 没有设置环境变量: \`JAVA_HOME\` 。`)
     }
     // ANDROID_HOME
     if (process.env.ANDROID_HOME) {
-      Log.success(`${Log.successEmoji} ANDROID_HOME=${process.env.ANDROID_HOME}`)
+      Log.success(`${Log.successSignal} ANDROID_HOME=${process.env.ANDROID_HOME}`)
     } else {
-      Log.warn(`${Log.failEmoji} 没有设置环境变量: \`ANDROID_HOME\` 。`)
+      Log.warn(`${Log.failSignal} 没有设置环境变量: \`ANDROID_HOME\` 。`)
     }
   },
 
@@ -88,7 +88,7 @@ const android: ModuleClass = {
 
     gitIgnorePath(AndroidPath)
 
-    Log.success(`Android 平台已成功添加。${Log.successEmoji}`)
+    Log.success(`Android 平台已成功添加。${Log.successSignal}`)
   },
 
   async platformRemove() {

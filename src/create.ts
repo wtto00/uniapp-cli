@@ -31,18 +31,18 @@ export async function create(projectName: string, options: CreateOptoins) {
   Log.debug(`验证项目名称 ${projectName} 是否有效`)
   const result = validateProjectName(projectName)
   if (!result.validForNewPackages) {
-    Log.error(`无效的项目名称: ${projectName}`)
+    const message = [`无效的项目名称: ${projectName}`]
     if (result.errors) {
       for (const err of result.errors) {
-        Log.error(`Error: ${err}`)
+        message.push(`Error: ${err}`)
       }
     }
     if (result.warnings) {
       for (const warn of result.warnings) {
-        Log.error(`Warning: ${warn}`)
+        message.push(`Warning: ${warn}`)
       }
     }
-    return
+    throw Error(message.join('\n'))
   }
   Log.debug(`项目名称 ${projectName} 有效`)
 
@@ -52,8 +52,7 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   if (existsSync(projectPath)) {
     if (!force) {
-      Log.error(`\`${projectName}\` 已存在, 使用 \`--force\` 强制覆盖。`)
-      return
+      throw Error(`\`${projectName}\` 已存在, 使用 \`--force\` 强制覆盖。`)
     }
     const spinner = ora(`使用 \`--force\`，正在删除 \`${projectPath}\``).start()
     rmSync(projectPath, { force: true, recursive: true })
@@ -88,8 +87,7 @@ export async function create(projectName: string, options: CreateOptoins) {
   const [repo, branch] = template.split('#')
 
   if (!repo) {
-    Log.error('未知的模板仓库')
-    return
+    throw Error('未知的模板仓库')
   }
 
   const spinner = ora(`正在克隆项目模板: ${template}`).start()
@@ -98,8 +96,7 @@ export async function create(projectName: string, options: CreateOptoins) {
     spinner.succeed(`项目模板 ${template} 已克隆完成。`)
   } catch (error) {
     spinner.fail(`克隆项目模板 ${template} 失败了。`)
-    Log.error(getErrorMessage(error))
-    return
+    throw Error(getErrorMessage(error))
   }
 
   Log.debug('删除项目模板中的 .git 目录')

@@ -57,8 +57,8 @@ export async function list() {
     Log.info([
       { msg: `${pfm}:${space}` },
       isPfmInstalled
-        ? { msg: `${Log.successEmoji} Installed`, type: 'success' }
-        : { msg: `${Log.failEmoji} Not installed`, type: 'warn' },
+        ? { msg: `${Log.successSignal} Installed`, type: 'success' }
+        : { msg: `${Log.failSignal} Not installed`, type: 'warn' },
     ])
   }
 }
