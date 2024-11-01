@@ -18,7 +18,7 @@ export function gitIgnorePath(ignorePath: string) {
  * - user/repo
  */
 export function getTemplateRepositoryUrl(repo: string) {
-  if (/^[0-9a-zA-Z](-[0-9a-zA-Z]+|[0-9a-zA-Z]*)\/[0-9a-zA-Z\.\-_]+$/.test(repo)) {
+  if (/^[0-9a-zA-Z]+(-[0-9a-zA-Z]+)*\/[\w\.\-]+$/.test(repo)) {
     return `https://github.com/${repo}`
   }
   return repo
