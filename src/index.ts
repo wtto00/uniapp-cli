@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import { Log } from './utils/log.js'
+import Log from './utils/log.js'
 import { App } from './utils/app.js'
 import { CLI_VERSION } from './utils/const.js'
 import { checkIsUniapp } from './utils/package.js'

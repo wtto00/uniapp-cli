@@ -1,6 +1,6 @@
 import type { BuildOptions } from '../build.js'
 import { installPackages, uninstallPackages } from '../utils/exec.js'
-import { Log } from '../utils/log.js'
+import Log from '../utils/log.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
 import { getModuleVersion, isInstalled } from '../utils/package.js'
 

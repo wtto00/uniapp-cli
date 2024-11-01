@@ -1,7 +1,7 @@
 import type { BuildOptions } from './build.js'
 import { importPlatform } from './platforms/index.js'
 import { type PLATFORM, allPlatforms } from './platforms/index.js'
-import { Log } from './utils/log.js'
+import Log from './utils/log.js'
 import { isInstalled } from './utils/package.js'
 
 export async function run(platform: PLATFORM, options: BuildOptions) {

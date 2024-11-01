@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import inquirer from 'inquirer'
 import { readPackageJSON, writePackageJSON } from 'pkg-types'
 import { createVueProject, getErrorMessage, installVueCli, isVueCliInstalled } from './utils/exec.js'
-import { Log } from './utils/log.js'
+import Log from './utils/log.js'
 import { App } from './utils/app.js'
 import validateProjectName from 'validate-npm-package-name'
 import { execa } from 'execa'
 import ora from 'ora'
-import { getRepoPath } from './utils/git.js'
+import { getTemplateRepositoryUrl } from './utils/git.js'
 
 const TEMPLATES = [
   { name: 'vitesse', repo: 'uni-helper/vitesse-uni-app' },
@@ -80,6 +80,9 @@ export async function create(projectName: string, options: CreateOptoins) {
       await createVueProject(projectName, template, force)
       return
     }
+  } else {
+    Log.warn(`正在使用自定义模板 ${template}，请确保拥有模板仓库的访问权限`)
+    Log.info()
   }
 
   Log.debug(`克隆仓库 ${template}`)
@@ -92,7 +95,7 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   const spinner = ora(`正在克隆项目模板: ${template}`).start()
   try {
-    await execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${getRepoPath(repo)} ${projectName}`
+    await execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${getTemplateRepositoryUrl(repo)} ${projectName}`
     spinner.succeed(`项目模板 ${template} 已克隆完成。`)
   } catch (error) {
     spinner.fail(`克隆项目模板 ${template} 失败了。`)

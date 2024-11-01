@@ -17,7 +17,7 @@ export function gitIgnorePath(ignorePath: string) {
  * - ssh://git@hostname:port/user/repo.git
  * - user/repo
  */
-export function getRepoPath(repo: string) {
+export function getTemplateRepositoryUrl(repo: string) {
   if (/^[0-9a-zA-Z](-[0-9a-zA-Z]+|[0-9a-zA-Z]*)\/[0-9a-zA-Z\.\-_]+$/.test(repo)) {
     return `https://github.com/${repo}`
   }

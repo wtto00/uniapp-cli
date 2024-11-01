@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { Log } from '../utils/log.js'
+import Log from '../utils/log.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 import { isWindows } from '../utils/util.js'
 import { execa } from 'execa'

@@ -1,4 +1,4 @@
-import { Log } from '../utils/log.js'
+import Log from '../utils/log.js'
 import { AppPlusOS, type ManifestConfig } from '../utils/manifest.config.js'
 import { checkAd } from './modules/ad.js'
 import { checkGeolocation } from './modules/geolocation.js'

@@ -1,5 +1,5 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
-import { Log } from './utils/log.js'
+import Log from './utils/log.js'
 import { getModuleVersion, isInstalled } from './utils/package.js'
 
 /**

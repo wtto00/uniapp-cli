@@ -3,6 +3,7 @@ import { execaUniapp, execaUniappSync } from './helper.js'
 import assert from 'node:assert'
 import type { SyncResult } from 'execa'
 import { existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import Log from '../src/utils/log.js'
 
 const HELP_TEXT = `Usage: uniapp create <project-name>
 
@@ -53,8 +54,7 @@ describe('create', () => {
       (err: SyncResult) => {
         assert.equal(
           err.stdout,
-          `\u001b[31m无效的项目名称: 你好\u001b[39m
-\u001b[31mError: name can only contain URL-friendly characters\u001b[39m`,
+          `${Log.errorColor('无效的项目名称: 你好')}\n${Log.errorColor('Error: name can only contain URL-friendly characters')}`,
         )
         return true
       },
@@ -84,7 +84,9 @@ describe('create', () => {
     const { stdout } = await execaUniapp('create test-project-branch --template dcloudio/uni-preset-vue#vite-ts')
     assert.equal(
       stdout,
-      `
+      `${Log.warnColor('正在使用自定义模板 dcloudio/uni-preset-vue#vite-ts，请确保拥有模板仓库的访问权限')}
+
+
 应用 \`test-project-branch\` 创建成功
 运行下面的命令开始:
 \tcd test-project-branch
@@ -106,7 +108,7 @@ describe('create', () => {
     assert.rejects(
       () => execaUniapp('create test-project-no-force --template dcloudio/uni-preset-vue'),
       (err: SyncResult) => {
-        assert.equal(err.stdout, '\x1B[31m`test-project-no-force` 已存在, 使用 `--force` 强制覆盖。\x1B[39m')
+        assert.equal(err.stdout, Log.errorColor('`test-project-no-force` 已存在, 使用 `--force` 强制覆盖。'))
         return true
       },
     )

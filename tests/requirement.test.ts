@@ -1,10 +1,10 @@
 import { after, before, describe, it } from 'node:test'
 import { execaUniapp } from './helper'
 import assert from 'node:assert'
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
-import { Log } from '../src/utils/log.js'
+import { existsSync, rmSync, writeFileSync } from 'node:fs'
+import Log from '../src/utils/log.js'
 import { isWindows } from '../src/utils/util.js'
-import { dirname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 
 const HELP_TEXT = `Usage: uniapp requirements|requirement <platform ...>
 
@@ -50,24 +50,38 @@ describe('requirement', () => {
 
   it('invalid platform', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('requirement xxx')
-    assert.equal(stdout, '\x1B[33m无效的平台: xxx\x1B[39m')
+    assert.equal(stdout, Log.warnColor('无效的平台: xxx'))
   })
 
   it('h5', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('requirement h5')
-    assert.equal(stdout, `h5: \n\x1B[32m${Log.successSignal} 平台 \`h5\` 已安装\x1B[39m\n`)
+    assert.equal(stdout, `h5: \n${Log.successColor(`${Log.successSignal} 平台 \`h5\` 已安装`)}\n`)
   })
 
   it('mp-weixin', { timeout: 10000 }, async () => {
+    const defaultPath = isWindows()
+      ? 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat'
+      : '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
+    const isInstall = existsSync(defaultPath)
     const { stdout } = await execaUniapp('requirement mp-weixin')
-    assert.equal(
-      stdout,
-      `mp-weixin: 
-\x1B[32m✔ 平台 \`mp-weixin\` 已安装\x1B[39m
-\x1B[33m✖ 微信开发者工具没有安装\x1B[39m
+    if (isInstall) {
+      assert.equal(
+        stdout,
+        `mp-weixin: 
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${defaultPath})`)}
+`,
+      )
+    } else {
+      assert.equal(
+        stdout,
+        `mp-weixin: 
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.errorColor(`${Log.failSignal} 微信开发者工具没有安装`)}
   如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
 `,
-    )
+      )
+    }
   })
 
   it('mp-weixin env', { timeout: 10000 }, async () => {
@@ -79,45 +93,34 @@ describe('requirement', () => {
     assert.equal(
       stdout,
       `mp-weixin: 
-\x1B[32m✔ 平台 \`mp-weixin\` 已安装\x1B[39m
-\x1B[32m✔ 微信开发者工具已安装 (${cliPath})\x1B[39m
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${cliPath})`)}
 `,
     )
     process.env.WEIXIN_DEV_TOOL = undefined
     rmSync(cliPath, { force: true, recursive: true })
   })
 
-  it('mp-weixin default cli path', { timeout: 10000, skip: isWindows() }, async () => {
-    if (isWindows()) return
-    const cliPath = resolve('/Applications/wechatwebdevtools.app/Contents/MacOS/cli')
-    const cliExist = existsSync(cliPath)
-    if (!cliExist) {
-      mkdirSync(dirname(cliPath), { recursive: true })
-      writeFileSync(cliPath, '', 'utf8')
-    }
-    const { stdout } = await execaUniapp('requirement mp-weixin')
-    assert.equal(
-      stdout,
-      `mp-weixin: 
-\x1B[32m✔ 平台 \`mp-weixin\` 已安装\x1B[39m
-\x1B[32m✔ 微信开发者工具已安装 (${cliPath})\x1B[39m
-`,
-    )
-    if (!cliExist) rmSync(cliPath, { force: true, recursive: true })
-  })
-
   it('h5 mp-weixin', { timeout: 10000 }, async () => {
+    const defaultPath = isWindows()
+      ? 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat'
+      : '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
+    const isInstall = existsSync(defaultPath)
     const { stdout } = await execaUniapp('requirement h5 mp-weixin')
     assert.equal(
       stdout,
       `h5: 
-\x1B[32m${Log.successSignal} 平台 \`h5\` 已安装\x1B[39m
+${Log.successColor(`${Log.successSignal} 平台 \`h5\` 已安装`)}
 
 mp-weixin: 
-\x1B[32m✔ 平台 \`mp-weixin\` 已安装\x1B[39m
-\x1B[33m✖ 微信开发者工具没有安装\x1B[39m
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${
+  isInstall
+    ? `${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${defaultPath})`)}\n`
+    : `${Log.errorColor(`${Log.failSignal} 微信开发者工具没有安装`)}
   如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
-`,
+`
+}`,
     )
   })
 
