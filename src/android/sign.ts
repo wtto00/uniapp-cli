@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
+import { App } from '../utils/app.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
-import { App } from 'src/utils/app.js'
 
 export interface SignConfig {
   KEYSTORE_PATH?: string

@@ -1,13 +1,13 @@
 import { existsSync } from 'node:fs'
-import Log from '../utils/log.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
-import { isWindows } from '../utils/util.js'
+import { resolve } from 'node:path'
 import { execa } from 'execa'
+import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
-import { resolve } from 'node:path'
-import ora from 'ora'
+import Log from '../utils/log.js'
+import { isWindows } from '../utils/util.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 function getWeixinDevToolCliPath() {
   if (process.env.WEIXIN_DEV_TOOL) {

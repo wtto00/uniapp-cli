@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { type ManifestConfig, PermissionRequest } from '../utils/manifest.config.js'
-import { UNIAPP_SDK_HOME, AndroidDir } from '../utils/path.js'
+import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { appendSet, enumInclude, mergeSet } from '../utils/util.js'
 import { appendBarcode } from './modules/barcode.js'
 import { appendBluetooth } from './modules/bluetooth.js'

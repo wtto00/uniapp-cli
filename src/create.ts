@@ -1,14 +1,14 @@
 import { existsSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
-import inquirer from 'inquirer'
-import { readPackageJSON, writePackageJSON } from 'pkg-types'
-import { createVueProject, getErrorMessage, installVueCli, isVueCliInstalled } from './utils/exec.js'
-import Log from './utils/log.js'
-import { App } from './utils/app.js'
-import validateProjectName from 'validate-npm-package-name'
 import { execa } from 'execa'
+import inquirer from 'inquirer'
 import ora from 'ora'
+import { readPackageJSON, writePackageJSON } from 'pkg-types'
+import validateProjectName from 'validate-npm-package-name'
+import { App } from './utils/app.js'
+import { createVueProject, getErrorMessage, installVueCli, isVueCliInstalled } from './utils/exec.js'
 import { getTemplateRepositoryUrl } from './utils/git.js'
+import Log from './utils/log.js'
 
 const TEMPLATES = [
   { name: 'vitesse', repo: 'uni-helper/vitesse-uni-app' },

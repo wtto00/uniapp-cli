@@ -1,10 +1,10 @@
 import { execa } from 'execa'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import open from 'open'
+import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector'
 import { App } from '../utils/app.js'
-import open from 'open'
 import { stripAnsiColors } from '../utils/exec.js'
-import ora from 'ora'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const h5: ModuleClass = {
   modules: ['@dcloudio/uni-h5'],

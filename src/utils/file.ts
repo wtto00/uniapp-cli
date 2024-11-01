@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
-import JSON5 from 'json5'
 import { resolve } from 'node:path'
+import JSON5 from 'json5'
 import { App } from './app.js'
 
 export function readJsonFile<T extends object>(jsonPath: string, isJson5?: boolean) {

@@ -1,4 +1,5 @@
 import { extname, resolve } from 'node:path'
+import { App } from '../../utils/app.js'
 import Log from '../../utils/log.js'
 import type { ManifestConfig } from '../../utils/manifest.config.js'
 import { AndroidDir } from '../../utils/path.js'
@@ -7,7 +8,6 @@ import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
-import { App } from 'src/utils/app.js'
 
 export function appendPush(results: Results, manifest: ManifestConfig) {
   const Push = manifest['app-plus']?.modules?.Push

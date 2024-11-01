@@ -1,8 +1,8 @@
+import { type DetectResult, detectSync } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
-import type { ManifestConfig } from './manifest.config.js'
 import { readJsonFile } from './file.js'
-import { detectSync, type DetectResult } from 'package-manager-detector'
 import Log from './log.js'
+import type { ManifestConfig } from './manifest.config.js'
 
 export const App = {
   projectRoot: '',
