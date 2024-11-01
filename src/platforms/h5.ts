@@ -28,6 +28,7 @@ const h5: ModuleClass = {
       let url = ''
       let over = false
       for await (const line of execa({
+        stderr: ['inherit', 'pipe'],
         stdout: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`) {

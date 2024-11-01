@@ -73,6 +73,7 @@ const mpWeixin: ModuleClass = {
     try {
       let over = false
       for await (const line of execa({
+        stderr: ['inherit', 'pipe'],
         stdout: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`) {
@@ -96,6 +97,7 @@ const mpWeixin: ModuleClass = {
 
     try {
       const { stdout, stderr } = await execa({
+        stderr: ['inherit', 'pipe'],
         stdout: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`

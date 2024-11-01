@@ -17,8 +17,6 @@
     "test": "globstar -- node --import tsx --test tests/**/*.test.ts",
     "preinstall": "npx -y only-allow pnpm",
     "check": "biome check --write src",
-    "format": "biome format --write src",
-    "lint": "biome lint --write src",
     "prepare": "husky && echo npx lint-staged > .husky/pre-commit"
   },
   "repository": {
@@ -62,6 +60,6 @@
   },
   "packageManager": "pnpm@9.12.2",
   "lint-staged": {
-    "*": ["biome format", "biome check", "biome lint"]
+    "*": ["biome check"]
   }
 }
