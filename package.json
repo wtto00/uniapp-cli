@@ -60,6 +60,6 @@
   },
   "packageManager": "pnpm@9.12.2",
   "lint-staged": {
-    "*": ["biome check"]
+    "*": ["biome check --write"]
   }
 }
