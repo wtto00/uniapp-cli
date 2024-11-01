@@ -15,7 +15,7 @@ export default async function add(version: string) {
 
   checkConfig(manifest, AppPlusOS.Android)
 
-  cpSync(resolve(import.meta.dirname, '../../sdk/android'), AndroidDir, { recursive: true })
+  cpSync(resolve(import.meta.dirname, '../../templates/android'), AndroidDir, { recursive: true })
 
   prepare(manifest, version)
 }

@@ -6,7 +6,7 @@
   "bin": {
     "uniapp": "./bin/uniapp.mjs"
   },
-  "files": ["bin", "sdk", "dist"],
+  "files": ["bin", "templates", "dist"],
   "scripts": {
     "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
     "uniapp": "tsx src/index.ts",
@@ -23,8 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wtto00/uniapp-cli.git",
-    "directory": "packages/cli"
+    "url": "git+https://github.com/wtto00/uniapp-cli.git"
   },
   "keywords": ["uniapp", "cli"],
   "author": "wtto00 <wtto00@outlook.com>",
