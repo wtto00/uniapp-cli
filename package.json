@@ -6,11 +6,7 @@
   "bin": {
     "uniapp": "./bin/uniapp.mjs"
   },
-  "files": [
-    "bin",
-    "sdk",
-    "dist"
-  ],
+  "files": ["bin", "sdk", "dist"],
   "scripts": {
     "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
     "uniapp": "tsx src/index.ts",
@@ -22,17 +18,15 @@
     "preinstall": "npx -y only-allow pnpm",
     "check": "biome check --write src",
     "format": "biome format --write src",
-    "lint": "biome lint --write src"
+    "lint": "biome lint --write src",
+    "prepare": "husky && echo npx lint-staged > .husky/pre-commit"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wtto00/uniapp-cli.git",
     "directory": "packages/cli"
   },
-  "keywords": [
-    "uniapp",
-    "cli"
-  ],
+  "keywords": ["uniapp", "cli"],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
   "engines": {
@@ -62,8 +56,13 @@
     "@types/validate-npm-package-name": "^4.0.2",
     "@wtto00/biome-config": "^0.0.1",
     "globstar": "^1.0.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
   },
-  "packageManager": "pnpm@9.12.2"
+  "packageManager": "pnpm@9.12.2",
+  "lint-staged": {
+    "*": ["biome check", "biome format", "biome lint"]
+  }
 }
