@@ -26,9 +26,6 @@ importers:
       json5:
         specifier: ^2.2.3
         version: 2.2.3
-      miniprogram-automator:
-        specifier: ^0.12.1
-        version: 0.12.1
       open:
         specifier: ^10.1.0
         version: 10.1.0

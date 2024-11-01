@@ -6,7 +6,6 @@ import { execa } from 'execa'
 import { resolveCommand } from 'package-manager-detector'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
-import automator from 'miniprogram-automator'
 import { resolve } from 'node:path'
 import ora from 'ora'
 
@@ -27,17 +26,13 @@ function openWeixinDevTool(projectPath: string) {
     return
   }
   const spinner = ora('正在打开微信开发者工具').start()
-  automator
-    .launch({
-      cliPath,
-      projectPath: resolve(App.projectRoot, projectPath),
-    })
-    .then(() => {
+  execa({ stdio: 'inherit' })`${cliPath} open --project ${resolve(App.projectRoot, projectPath)}`.then(({ stderr }) => {
+    if (stderr) {
+      spinner.fail(`微信开发者工具打开出错了: ${stderr}`)
+    } else {
       spinner.succeed('微信开发者工具已打开')
-    })
-    .catch((error) => {
-      spinner.fail(error.message)
-    })
+    }
+  })
 }
 
 const mpWeixin: ModuleClass = {
