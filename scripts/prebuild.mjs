@@ -7,6 +7,7 @@ const packages = JSON.parse(packageContent)
 
 const constFilePath = resolve(import.meta.dirname, '../src/utils/const.ts')
 
-const constFileContent = `export const CLI_VERSION = '${packages.version}'`
+const constFileContent = `export const CLI_VERSION = '${packages.version}'
+`
 
 writeFileSync(constFilePath, constFileContent, { encoding: 'utf8' })

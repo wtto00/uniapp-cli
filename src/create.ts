@@ -118,7 +118,7 @@ export async function create(projectName: string, options: CreateOptoins) {
 应用 \`${projectName}\` 创建成功
 运行下面的命令开始:
 \tcd ${projectName}
-\t${App.getPackageManager().name} install
+\t${App.getPackageManager({ notWarn: true }).name} install
 \tuniapp run h5
 `)
 }

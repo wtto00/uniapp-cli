@@ -31,10 +31,10 @@ export const App = {
     return App.manifest
   },
 
-  getPackageManager(): DetectResult {
+  getPackageManager(options?: { notWarn?: boolean }): DetectResult {
     if (!App.packageManager) {
       App.packageManager = detectSync()
-      if (!App.packageManager) {
+      if (!App.packageManager && !options?.notWarn) {
         Log.warn('没有检测到已配置的包管理器，请在 package.json 中配置 packageManager 属性')
       }
     }
