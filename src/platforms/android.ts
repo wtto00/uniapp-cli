@@ -65,16 +65,17 @@ const android: ModuleClass = {
       try {
         for (const lib in sdkFiles) {
           spinner.text = `正在下载Android SDK Lib文件: ${lib}`
+          const libPath = resolve(targetDir, lib)
+          if (existsSync(libPath)) continue
           const libUrl = `${UNIAPP_ANDROID_SDK_URL}/libs/${sdkFiles[lib]}`
           const libFetchRes = await fetch(libUrl)
           const libContent = await libFetchRes.arrayBuffer()
-          writeFileSync(resolve(targetDir, lib), new Uint8Array(libContent))
+          writeFileSync(libPath, new Uint8Array(libContent))
         }
         spinner.succeed('Android SDK Lib文件已下载完成')
         renameSync(targetDir, getLibSDKDir(version))
       } catch (error) {
         spinner.fail((error as Error).message)
-        rmSync(targetDir, { recursive: true, force: true })
         throw Error('下载Android SDK Lib文件失败了，请重试')
       }
     }
@@ -87,8 +88,6 @@ const android: ModuleClass = {
     }
 
     gitIgnorePath(AndroidPath)
-
-    Log.success(`Android 平台已成功添加。${Log.successSignal}`)
   },
 
   async platformRemove() {
@@ -96,7 +95,6 @@ const android: ModuleClass = {
       await uninstallModules(android.modules)
     }
     rmSync(AndroidDir, { recursive: true, force: true })
-    Log.success('Android 平台已成功移除。')
   },
 
   run(_options: BuildOptions) {

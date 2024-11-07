@@ -22,9 +22,10 @@ export async function add(platforms: PLATFORM[]) {
 
     try {
       await module.platformAdd({ version: uniVersoin })
+      Log.success(`${Log.successSignal} 平台 ${pfm} 已成功添加。`)
     } catch (error) {
       module.platformRemove()
-      Log.error((error as Error).message)
+      Log.error(`${Log.failSignal} 平台 ${pfm} 添加失败: ${(error as Error).message}`)
     }
   }
 }
@@ -40,7 +41,12 @@ export async function remove(platforms: PLATFORM[]) {
       continue
     }
     const module = await importPlatform(pfm)
-    await module.platformRemove()
+    try {
+      await module.platformRemove()
+      Log.success(`${Log.successSignal} 平台 ${pfm} 已成功移除。`)
+    } catch (error) {
+      Log.error(`${Log.failSignal} 平台 ${pfm} 移除失败: ${(error as Error).message}`)
+    }
   }
 }
 
