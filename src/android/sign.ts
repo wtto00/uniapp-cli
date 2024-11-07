@@ -9,23 +9,16 @@ export interface SignConfig {
   KEY_ALIAS?: string
 }
 
-export function getSignConfig(manifest: ManifestConfig) {
-  const config = {
-    KEYSTORE_PATH: process.env.KEYSTORE_PATH,
-    STORE_PASSWORD: process.env.STORE_PASSWORD,
-    KEY_PASSWORD: process.env.KEY_PASSWORD,
-    KEY_ALIAS: process.env.KEY_ALIAS,
-  } satisfies SignConfig
+export function initSignEnv(manifest: ManifestConfig) {
   const { keystore, password, aliasname } = manifest['app-plus']?.distribute?.android ?? {}
   if (keystore) {
-    config.KEYSTORE_PATH = resolve(App.projectRoot, 'src', keystore)
+    process.env.KEYSTORE_PATH = resolve(App.projectRoot, 'src', keystore)
   }
   if (password) {
-    config.STORE_PASSWORD = password
-    config.KEY_PASSWORD = password
+    process.env.STORE_PASSWORD = password
+    process.env.KEY_PASSWORD = password
   }
   if (aliasname) {
-    config.KEY_ALIAS = aliasname
+    process.env.KEY_ALIAS = aliasname
   }
-  return config
 }

@@ -1,8 +1,9 @@
 import type { BuildOptions } from '../build.js'
+import { App } from '../utils/app.js'
 import { installPackages, uninstallPackages } from '../utils/exec.js'
 import Log from '../utils/log.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
-import { getModuleVersion, isInstalled } from '../utils/package.js'
+import { isInstalled } from '../utils/package.js'
 
 type MaybePromise<T> = T | Promise<T>
 
@@ -97,7 +98,7 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
 }
 
 export async function requireVue2(platform: PLATFORM) {
-  const vueVersion = await getModuleVersion('vue')
+  const vueVersion = App.getVueVersion()
   if (!vueVersion.startsWith('2.')) {
     throw Error(`平台 ${platform} 只支持 vue@2，发现已安装版本 vue@${vueVersion}`)
   }

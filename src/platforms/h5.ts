@@ -1,7 +1,7 @@
 import { execa } from 'execa'
 import open from 'open'
 import ora from 'ora'
-import { resolveCommand } from 'package-manager-detector'
+import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'

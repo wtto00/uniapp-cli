@@ -6,7 +6,7 @@ import { AppPlusOS } from '../utils/manifest.config.js'
 import { AndroidDir } from '../utils/path.js'
 import { prepare } from './prepare.js'
 
-export default async function add(version: string) {
+export default async function add() {
   const manifest = App.getManifestJson()
 
   if (!manifest) {
@@ -17,5 +17,5 @@ export default async function add(version: string) {
 
   cpSync(resolve(import.meta.dirname, '../../templates/android'), AndroidDir, { recursive: true })
 
-  prepare(manifest, version)
+  prepare(manifest)
 }

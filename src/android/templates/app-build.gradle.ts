@@ -29,12 +29,12 @@ export interface AppBuildGradle {
 export const defaultAppBuildGradle: AppBuildGradle = {
   plugins: new Set(['com.android.application']),
   dependencies: {
-    'androidx.recyclerview:recyclerview:${rootProject.ext.androidxVersion}': {},
+    'androidx.recyclerview:recyclerview:1.1.0': {},
     'com.facebook.fresco:fresco:2.5.0': {},
     'com.facebook.fresco:animated-gif:2.5.0': {},
 
-    'androidx.appcompat:appcompat:${rootProject.ext.androidxVersion}': {},
-    'androidx.legacy:legacy-support-v4:${rootProject.ext.androidxVersion}': {},
+    'androidx.appcompat:appcompat:1.1.0': {},
+    'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0': {},
     'com.github.bumptech.glide:glide:4.9.0': {},
     'com.alibaba:fastjson:1.2.83': {},
     'androidx.webkit:webkit:1.3.0': {},
@@ -214,24 +214,31 @@ android {
             targetCompatibility JavaVersion.VERSION_1_8
         }
     }
+    def keystorePath = System.getenv('KEYSTORE_PATH') ?: null
     signingConfigs {
         config {
-            keyAlias System.getenv('KEY_ALIAS')
-            keyPassword System.getenv('KEY_PASSWORD')
-            storeFile file(System.getenv('KEYSTORE_PATH'))
-            storePassword System.getenv('STORE_PASSWORD')
-            v1SigningEnabled true
-            v2SigningEnabled true
+            if (keystorePath != null) {
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+                storeFile file(System.getenv('KEYSTORE_PATH'))
+                storePassword System.getenv('STORE_PASSWORD')
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
         }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.config
+            if (keystorePath != null) {
+                signingConfig signingConfigs.config
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            signingConfig signingConfigs.config
+            if (keystorePath != null) {
+                signingConfig signingConfigs.config
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

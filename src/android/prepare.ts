@@ -1,5 +1,6 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
+import { App } from '../utils/app.js'
 import { type ManifestConfig, PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { appendSet, enumInclude, mergeSet } from '../utils/util.js'
@@ -297,11 +298,15 @@ export function prepareUTSResults(uniModulesPath: string): Results {
   return results
 }
 
-export function prepare(manifest: ManifestConfig, sdkVersion: string) {
+export function prepare(manifest: ManifestConfig, debug?: boolean) {
+  const sdkVersion = App.getUniVersion()
   const results = prepareResults(manifest, sdkVersion)
 
   const { androidManifest, libs, filesWrite, filesCopy, appBuildGradle, buildGradle, properties, control, strings } =
     results
+  if (debug) {
+    libs.add('debug-server-release.aar')
+  }
 
   filesWrite[AndroidManifestFilePath] = generateAndroidManifest(androidManifest)
   const libFiles = mergeSet(libs, getDefaultLibs(sdkVersion))
@@ -311,7 +316,7 @@ export function prepare(manifest: ManifestConfig, sdkVersion: string) {
   filesWrite[AppBuildGradleFilePath] = genderateAppBuildGradle(appBuildGradle)
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
   filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
-  filesWrite[ControlFilePath] = genderateDcloudControl(control)
+  filesWrite[ControlFilePath] = genderateDcloudControl(control, debug)
   filesWrite[StringsFilePath] = genderateStrings(strings)
 
   for (const target in filesCopy) {

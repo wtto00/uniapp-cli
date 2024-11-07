@@ -1,16 +1,13 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
+import { App } from './utils/app.js'
 import Log from './utils/log.js'
-import { getModuleVersion, isInstalled } from './utils/package.js'
+import { isInstalled } from './utils/package.js'
 
 /**
  * add platforms
  */
 export async function add(platforms: PLATFORM[]) {
-  const uniVersoin = await getModuleVersion('@dcloudio/uni-app')
-
-  if (!uniVersoin) {
-    process.exit(1)
-  }
+  const uniVersoin = App.getUniVersion()
 
   for (const pfm of platforms) {
     if (!allPlatforms.includes(pfm)) {

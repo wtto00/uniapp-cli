@@ -11,7 +11,7 @@ export function readJsonFile<T extends object>(jsonPath: string, isJson5?: boole
   const content = readFileSync(fullPath, { encoding: 'utf8' })
   try {
     return (isJson5 ? JSON5 : JSON).parse(content) as T
-  } catch (_error) {
+  } catch {
     throw Error(`解析JSON文件 \`${jsonPath}\` 失败。`)
   }
 }

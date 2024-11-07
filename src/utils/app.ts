@@ -3,6 +3,7 @@ import type { PackageJson } from 'pkg-types'
 import { readJsonFile } from './file.js'
 import Log from './log.js'
 import type { ManifestConfig } from './manifest.config.js'
+import { getModuleVersion } from './package.js'
 
 export const App = {
   projectRoot: '',
@@ -12,6 +13,10 @@ export const App = {
   manifest: null as ManifestConfig | null,
 
   packageManager: null as DetectResult | null,
+
+  uniVersoin: '',
+
+  vueVersion: '',
 
   init() {
     App.projectRoot = process.cwd()
@@ -39,5 +44,21 @@ export const App = {
       }
     }
     return App.packageManager ?? { name: 'npm', agent: 'npm' }
+  },
+
+  getUniVersion(): string {
+    if (!App.uniVersoin) {
+      App.uniVersoin = getModuleVersion('@dcloudio/uni-app')
+      if (!App.uniVersoin) throw Error('获取 @dcloudio/uni-app 版本号失败')
+    }
+    return App.uniVersoin
+  },
+
+  getVueVersion(): string {
+    if (!App.vueVersion) {
+      App.vueVersion = getModuleVersion('vue')
+      if (!App.vueVersion) throw Error('获取 vue 版本号失败')
+    }
+    return App.vueVersion
   },
 }

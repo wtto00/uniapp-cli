@@ -30,9 +30,7 @@ export const defaultBuildGradle: BuildGradle = {
     'http://maven.aliyun.com/nexus/content/repositories/jcenter': {},
     'https://mvn.getui.com/nexus/content/repositories/releases': {},
   },
-  ext: {
-    androidXVersion: '1.1.0',
-  },
+  ext: {},
 }
 
 export function mergeBuildGradle(gradle1: Partial<BuildGradle>, gradle2: Partial<BuildGradle>): BuildGradle {

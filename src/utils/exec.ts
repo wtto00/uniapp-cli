@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 import ora from 'ora'
-import { resolveCommand } from 'package-manager-detector'
+import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from './app.js'
 import Log from './log.js'
 

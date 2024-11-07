@@ -2,9 +2,13 @@ import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:f
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import ora from 'ora'
+import { resolveCommand } from 'package-manager-detector/commands'
 import addAndroid from '../android/add.js'
+import runAndroid from '../android/run.js'
 import { getLibSDKDir } from '../android/utils.js'
 import type { BuildOptions } from '../build.js'
+import { App } from '../utils/app.js'
+import { stripAnsiColors } from '../utils/exec.js'
 import { gitIgnorePath } from '../utils/git.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, UNIAPP_SDK_HOME } from '../utils/path.js'
@@ -23,9 +27,14 @@ const android: ModuleClass = {
       const javaBinPath = resolve(process.env.JAVA_HOME, `bin/java${process.platform === 'win32' ? '.exe' : ''}`)
       if (existsSync(javaBinPath)) {
         const { stderr, stdout } = await execa`${javaBinPath} -version`
-        const version = (stdout || stderr).split('\n')[0]
-        if (version.includes(' version ')) {
-          Log.success(`${Log.successSignal} ${version}`)
+        const raw = (stdout || stderr).split('\n')[0]
+        if (raw.includes(' version ')) {
+          const version = (stdout || stderr).match(/build ([\d\.]+)/)?.[1]
+          if (version?.startsWith('1.8')) {
+            Log.success(`${Log.successSignal} ${raw}`)
+          } else {
+            Log.warn(`${Log.failSignal} java@${version} 可能不支持，请下载 java@1.8`)
+          }
         } else {
           Log.warn(`${Log.failSignal} 检测 Java 版本失败了。`)
         }
@@ -54,6 +63,9 @@ const android: ModuleClass = {
       let sdkFiles: Record<string, string> = {}
       try {
         const fetchResult = await fetch(url)
+        if (fetchResult.status === 404) {
+          throw Error(`Android 平台暂不支持版本 ${version}`)
+        }
         sdkFiles = await fetchResult.json()
         if (!sdkFiles) throw Error()
       } catch (error) {
@@ -81,7 +93,7 @@ const android: ModuleClass = {
     }
 
     try {
-      await addAndroid(version)
+      await addAndroid()
     } catch (error) {
       rmSync(AndroidDir, { recursive: true, force: true })
       throw error
@@ -97,26 +109,42 @@ const android: ModuleClass = {
     rmSync(AndroidDir, { recursive: true, force: true })
   },
 
-  run(_options: BuildOptions) {
-    // const uniappProcess = spawnExec('npx', ['uni', '-p', 'app-android'], async (msg) => {
-    //   const doneChange = /DONE {2}Build complete\. Watching for changes\.{3}/.test(msg)
-    //   if (!doneChange) return
-    //   Log.info('\nstart build android:')
-    //   const scriptPath = resolve(projectRoot, 'node_modules/uniapp-android/dist/run.js')
-    //   if (!existsSync(scriptPath)) {
-    //     Log.error(`File \`${scriptPath}\` does't exist.`)
-    //     killChildProcess(uniappProcess)
-    //     return
-    //   }
-    //   const build = await dynamicImport<(options: BuildOptions) => Promise<string>>(scriptPath)
-    //   try {
-    //     const deviceName = await build(options)
-    //     if (!options.device) options.device = deviceName
-    //   } catch (error) {
-    //     Log.error((error as Error).message)
-    //     killChildProcess(uniappProcess)
-    //   }
-    // })
+  async run(options: BuildOptions) {
+    const pm = App.getPackageManager()
+    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', '-p', 'app-android'])
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni -p app-android`)
+
+    try {
+      let isBuilding = false
+      let willRun = false
+      const build = async () => {
+        if (isBuilding) {
+          willRun = true
+          return
+        }
+        isBuilding = true
+        await runAndroid(options)
+        isBuilding = false
+        if (willRun) {
+          willRun = false
+          await build()
+        }
+      }
+      for await (const line of execa({
+        stderr: ['inherit', 'pipe'],
+        stdout: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${commands.command} ${commands.args}`) {
+        if (!options.open) continue
+        const text = stripAnsiColors(line)
+        if (text === 'DONE  Build complete. Watching for changes...') {
+          build()
+        }
+      }
+    } catch (error) {
+      if ((error as Error).message.match(/CTRL-C/)) return
+      throw error
+    }
   },
 
   build(_options: BuildOptions) {},

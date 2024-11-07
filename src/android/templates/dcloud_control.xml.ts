@@ -10,8 +10,8 @@ export function mergeControl(control1?: Control, control2?: Control) {
   } as Control
 }
 
-export function genderateDcloudControl(control: Control) {
-  return `<hbuilder>
+export function genderateDcloudControl(control: Control, debug?: boolean) {
+  return `<hbuilder ${debug ? 'debug="true" syncDebug="true"' : ''}>
 <apps>
     <app appid="${control.appid}" appver=""/>
 </apps>

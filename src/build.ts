@@ -4,8 +4,6 @@ import { isInstalled } from './utils/package.js'
 
 export interface BuildOptions {
   open: boolean
-  debug?: boolean
-  release?: boolean
   device?: string
 }
 
@@ -18,7 +16,9 @@ export async function build(platform: PLATFORM, options: BuildOptions) {
   const module = await importPlatform(platform)
 
   if (module.modules.some((module) => !isInstalled(module))) {
-    Log.error(`Platform ${platform} has not been installed. Run \`uni platform add ${platform}\` to add this platform.`)
+    Log.error(
+      `Platform ${platform} has not been installed. Run \`uniapp platform add ${platform}\` to add this platform.`,
+    )
     return
   }
 
