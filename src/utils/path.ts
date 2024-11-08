@@ -1,6 +1,6 @@
 import { homedir } from 'node:os'
 import { relative, resolve } from 'node:path'
-import { App } from './app'
+import { App } from './app.js'
 
 export const AndroidPath = 'platforms/android'
 export const IOSPath = 'platforms/ios'

@@ -21,8 +21,12 @@ const h5: ModuleClass = {
 
   async run(options) {
     const pm = App.getPackageManager()
-    const commands = resolveCommand(pm.agent, 'execute-local', ['uni'])
-    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni`)
+    const args = ['uni']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       let url = ''
@@ -57,10 +61,14 @@ const h5: ModuleClass = {
     }
   },
 
-  async build(_options) {
+  async build(options) {
     const pm = App.getPackageManager()
-    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', 'build'])
-    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni build`)
+    const args = ['uni', 'build']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       await execa({ stdio: 'inherit', env: { FORCE_COLOR: 'true' } })`${commands.command} ${commands.args}`

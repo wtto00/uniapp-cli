@@ -1,9 +1,10 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import type { Results } from '../prepare.js'
 import { appendPermissions } from '../templates/AndroidManifest.xml.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendLivePusher(results: Results, manifest: ManifestConfig) {
+export function appendLivePusher(results: Results) {
+  const manifest = App.getManifestJson()
   const LivePusher = manifest['app-plus']?.modules?.LivePusher
   if (!LivePusher) return
 

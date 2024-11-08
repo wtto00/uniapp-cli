@@ -67,8 +67,12 @@ const mpWeixin: ModuleClass = {
 
   async run(options) {
     const pm = App.getPackageManager()
-    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', '-p', 'mp-weixin'])
-    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni -p mp-weixin`)
+    const args = ['uni', '-p', 'mp-weixin']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       let over = false
@@ -92,8 +96,12 @@ const mpWeixin: ModuleClass = {
 
   async build(options) {
     const pm = App.getPackageManager()
-    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', 'build', '-p', 'mp-weixin'])
-    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni build -p mp-weixin`)
+    const args = ['uni', 'build', '-p', 'mp-weixin']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       const { stdout, stderr } = await execa({
@@ -103,7 +111,7 @@ const mpWeixin: ModuleClass = {
       })`${commands.command} ${commands.args}`
       if (!options.open) return
 
-      if (/DONE {2}Build complete\./.test(stdout as string)) {
+      if (/DONE {2}Build complete\./.test(stdout)) {
         openWeixinDevTool('dist/build/mp-weixin')
       }
 

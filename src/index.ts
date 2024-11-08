@@ -125,13 +125,9 @@ program
   .description('开始运行给定的平台')
   .argument('<platform>', '要运行的平台: android,ios,h5,mp-weixin...')
   .option('--no-open', '不自动打开')
-  .option('--debug', '开发模式')
-  .option('--release', '发布模式')
+  .option('--mode', 'vite 环境模式')
   .option('--device <device>', '运行到给定的设备上')
-  .addHelpText(
-    'after',
-    '\n示例:\n  uniapp run android --release --device myEmulator\n  uniapp run ios --debug\n  uniapp run mp-weixin',
-  )
+  .addHelpText('after', '\n示例:\n  uniapp run android --device myEmulator\n  uniapp run ios\n  uniapp run mp-weixin')
   .action(async (platform, options) => {
     try {
       checkIsUniapp()
@@ -150,13 +146,10 @@ program
   .description('打包给定的平台')
   .argument('<platform>', '要打包的平台: android,ios,h5,mp-weixin...')
   .option('--no-open', '不自动打开')
-  .option('--debug', '开发模式')
-  .option('--release', '发布模式')
+  .option('--mode', 'vite 环境模式')
+  .option('--bundle', '打包产物: aab,apk(默认)')
   .option('--device <device>', '运行到给定的设备上')
-  .addHelpText(
-    'after',
-    '\n示例:\n  uniapp build android --release\n  uniapp build ios --debug\n  uniapp build mp-weixin',
-  )
+  .addHelpText('after', '\n示例:\n  uniapp build android --bundle aab\n  uniapp build io\n  uniapp build mp-weixin')
   .action(async (platform, options) => {
     try {
       checkIsUniapp()

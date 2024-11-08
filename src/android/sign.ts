@@ -1,6 +1,5 @@
 import { resolve } from 'node:path'
 import { App } from '../utils/app.js'
-import type { ManifestConfig } from '../utils/manifest.config.js'
 
 export interface SignConfig {
   KEYSTORE_PATH?: string
@@ -9,7 +8,8 @@ export interface SignConfig {
   KEY_ALIAS?: string
 }
 
-export function initSignEnv(manifest: ManifestConfig) {
+export function initSignEnv() {
+  const manifest = App.getManifestJson()
   const { keystore, password, aliasname } = manifest['app-plus']?.distribute?.android ?? {}
   if (keystore) {
     process.env.KEYSTORE_PATH = resolve(App.projectRoot, 'src', keystore)

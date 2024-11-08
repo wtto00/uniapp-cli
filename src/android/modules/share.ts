@@ -1,4 +1,4 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
@@ -6,10 +6,13 @@ import { appendDependencies } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 import { findLibSDK } from '../utils.js'
 
-export function appendShare(results: Results, manifest: ManifestConfig, sdkVersion: string) {
+export function appendShare(results: Results) {
+  const manifest = App.getManifestJson()
   const Share = manifest['app-plus']?.modules?.Share
   if (!Share) return
   const share = manifest['app-plus']?.distribute?.sdkConfigs?.share
+
+  const sdkVersion = App.getUniVersion()
 
   if (share?.weixin) {
     // 3.7.6及以上版本，微信SDK改为gradle依赖，需要将libs目录下的wechat-sdk-android-without-mta-X.X.X.aar移除

@@ -5,6 +5,9 @@ import { isInstalled } from './utils/package.js'
 export interface BuildOptions {
   open: boolean
   device?: string
+  /** vite mode */
+  mode?: string
+  bundle?: 'apk' | 'aab'
 }
 
 export async function build(platform: PLATFORM, options: BuildOptions) {

@@ -1,10 +1,11 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import type { Results } from '../prepare.js'
 import { appendPermissions } from '../templates/AndroidManifest.xml.js'
 import { defaultAppBuildGradle } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendBluetooth(results: Results, manifest: ManifestConfig) {
+export function appendBluetooth(results: Results) {
+  const manifest = App.getManifestJson()
   const Bluetooth = manifest['app-plus']?.modules?.Bluetooth
   if (!Bluetooth) return
 

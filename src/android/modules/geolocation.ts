@@ -1,10 +1,12 @@
-import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
+import { AppPlusOS } from '../../utils/manifest.config.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies } from '../templates/app-build.gradle.js'
 
-export function appendGeolocation(results: Results, manifest: ManifestConfig) {
+export function appendGeolocation(results: Results) {
+  const manifest = App.getManifestJson()
   const Geolocation = manifest['app-plus']?.modules?.Geolocation
   if (!Geolocation) return
 

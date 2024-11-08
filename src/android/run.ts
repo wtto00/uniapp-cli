@@ -1,32 +1,57 @@
 import { cpSync, existsSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
-import { execa } from 'execa'
+import { type ResultPromise, execa } from 'execa'
+import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
+import ora from 'ora'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
+import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
 import { initSignEnv } from './sign.js'
+import { assetsAppsPath, devDistPath, getWwwPath } from './www.js'
 
-export default async function run(options: BuildOptions) {
-  const manifest = App.getManifestJson()
-  prepare(manifest, true)
-  initSignEnv(manifest)
-  const appsDir = resolve(AndroidDir, 'app/src/main/assets/apps')
-  if (existsSync(appsDir)) {
-    rmSync(appsDir, { recursive: true })
+let logcatProcess: ResultPromise<{
+  stdout: ('inherit' | GeneratorTransform<false>)[]
+  stderr: 'inherit'
+  buffer: false
+  reject: false
+}>
+
+function killLogcat() {
+  if (logcatProcess && !logcatProcess.killed) {
+    logcatProcess.kill()
   }
-  const wwwDir = resolve(appsDir, `${manifest.appid}/www`)
-  cpSync(resolve(App.projectRoot, 'dist/dev/app'), wwwDir, { recursive: true })
+}
+
+export default async function run(options: BuildOptions, isBuild?: boolean) {
+  killLogcat()
+  Log.debug('清理 Android 资源')
+  await cleanAndroid()
+  Log.info('准备 Android 打包所需资源')
+  prepare({ debug: true })
+  Log.debug('准备打包签名信息')
+  initSignEnv()
+  Log.debug('前端打包资源嵌入 Android 资源中')
+  if (existsSync(assetsAppsPath)) {
+    rmSync(assetsAppsPath, { recursive: true })
+  }
+  cpSync(devDistPath, getWwwPath(), { recursive: true })
   const gradleExePath = getGradleExePath()
   try {
+    let argv = 'assembleDebug'
+    if (isBuild) {
+      if (options.bundle === 'aab') argv = 'bundleRelease'
+      else argv = 'assembleRelease'
+    }
     const { stderr } = await execa({
       stdio: 'inherit',
       env: { FORCE_COLOR: 'true' },
       cwd: AndroidDir,
-    })`${gradleExePath} assembleDebug`
+    })`${gradleExePath} ${argv}`
     if (stderr) {
       Log.error(`${Log.failSignal} Android打包出错了: ${stderr}`)
       return
@@ -35,7 +60,16 @@ export default async function run(options: BuildOptions) {
     Log.error(`${Log.failSignal} Android打包出错了`)
     return
   }
-  const apkPath = `${AndroidPath}/app/build/outputs/apk/debug/app-debug.apk`
+  let apkPath = `${AndroidPath}/app/build/outputs`
+  if (isBuild) {
+    if (options.bundle === 'aab') {
+      apkPath += '/bundle/release/app-release.aab'
+    } else {
+      apkPath += '/apk/release/app-release.apk'
+    }
+  } else {
+    apkPath += '/apk/debug/app-debug.apk'
+  }
   Log.success(`${Log.successSignal} Android打包成功: ${apkPath}`)
 
   try {
@@ -51,17 +85,33 @@ export default async function run(options: BuildOptions) {
       return
     }
     const deviceName = options.device || devices[0].name
-    Log.debug(`安装 ${apkPath} 到设备 \`${deviceName}\``)
+    const spinner = ora(`安装 ${apkPath} 到设备 \`${deviceName}\``).start()
     const apkFullPath = resolve(App.projectRoot, apkPath)
     await android.install(deviceName, apkFullPath, { r: true })
-    Log.success(`${Log.successSignal} 已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
+    spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
+
+    await android.adb(deviceName, 'logcat -c')
+
     Log.debug('开始拉起App')
+    const manifest = App.getManifestJson()
     await android.adb(
       deviceName,
       `shell am start -n ${manifest['app-plus']?.distribute?.android?.packagename}/io.dcloud.PandoraEntry`,
     )
-    // const proc = execa({ stdio: 'inherit' })`adb logcat console:D *:S -v raw -v color`
+
+    logcatProcess = execa({
+      stdout: [
+        function* (line: string) {
+          yield line.replace(/I\/console \( \d+\)/g, '')
+        } as GeneratorTransform<false>,
+        'inherit',
+      ],
+      stderr: 'ignore',
+      buffer: false,
+      reject: false,
+    })`${android.adbBin} logcat console:D *:S -v raw -v color -v time`
   } catch (error) {
     Log.error(`${Log.failSignal} 出错了: ${(error as Error).message}`)
+    killLogcat()
   }
 }

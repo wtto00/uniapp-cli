@@ -1,11 +1,14 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import type { Results } from '../prepare.js'
 import { appendDependencies, appendPackagingOptions } from '../templates/app-build.gradle.js'
 import { findLibSDK } from '../utils.js'
 
-export function appendFacialRecognitionVerify(results: Results, manifest: ManifestConfig, sdkVersion: string) {
+export function appendFacialRecognitionVerify(results: Results) {
+  const manifest = App.getManifestJson()
   const FacialRecognitionVerify = manifest['app-plus']?.modules?.FacialRecognitionVerify
   if (!FacialRecognitionVerify) return
+
+  const sdkVersion = App.getUniVersion()
 
   results.libs.add('uni-facialRecognitionVerify-release.aar')
   if (manifest['app-plus']?.distribute?.android?.abiFilters?.find((item) => item.startsWith('x86'))) {

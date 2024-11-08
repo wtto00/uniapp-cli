@@ -1,11 +1,13 @@
-import { AppPlusOS, type ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
+import { AppPlusOS } from '../../utils/manifest.config.js'
 import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
 import { generateWXPayEntryActivity, getWXPayEntryActivityFilePath } from '../templates/WXPayEntryActivity.java.js'
 import { appendDependencies, mergeNumberField } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendPayment(results: Results, manifest: ManifestConfig) {
+export function appendPayment(results: Results) {
+  const manifest = App.getManifestJson()
   const Payment = manifest['app-plus']?.modules?.Payment
   if (!Payment) return
 

@@ -1,11 +1,12 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import { appendMerge, appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendProvider } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendBarcode(results: Results, manifest: ManifestConfig) {
+export function appendBarcode(results: Results) {
+  const manifest = App.getManifestJson()
   const ad = manifest['app-plus']?.distribute?.sdkConfigs?.ad
   if (!ad) return
 

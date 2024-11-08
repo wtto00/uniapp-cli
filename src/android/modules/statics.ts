@@ -1,6 +1,5 @@
 import { resolve } from 'node:path'
 import { App } from '../../utils/app.js'
-import type { ManifestConfig } from '../../utils/manifest.config.js'
 import { AndroidDir } from '../../utils/path.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
@@ -8,7 +7,8 @@ import { appendMetaData, appendPermissions, appendService } from '../templates/A
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendStatistic(results: Results, manifest: ManifestConfig) {
+export function appendStatistic(results: Results) {
+  const manifest = App.getManifestJson()
   const Statistic = manifest['app-plus']?.modules?.Statistic
   if (!Statistic) return
 

@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
-import { type ManifestConfig, PermissionRequest } from '../utils/manifest.config.js'
+import { PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { appendSet, enumInclude, mergeSet } from '../utils/util.js'
 import { appendBarcode } from './modules/barcode.js'
@@ -56,8 +56,8 @@ import {
   generateDcloudProperties,
   mergeProperties,
 } from './templates/dcloud_properties.xml.js'
+import { LibsPath, getDefaultLibs } from './templates/libs.js'
 import { type Strings, StringsFilePath, genderateStrings } from './templates/strings.xml.js'
-import { findLibSDK } from './utils.js'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -117,19 +117,8 @@ export function mergeResults(results1: Results, results2: Results) {
   } as Results
 }
 
-export function getDefaultLibs(sdkVersion: string) {
-  const libs = new Set(['lib.5plus.base-release.aar', 'uniapp-v8-release.aar', 'breakpad-build-release.aar'])
-
-  const androidGifDrawableRelease = findLibSDK('android-gif-drawable-release@', sdkVersion)
-  if (androidGifDrawableRelease) libs.add(androidGifDrawableRelease)
-
-  const oaidSdk = findLibSDK('oaid_sdk_', sdkVersion)
-  if (oaidSdk) libs.add(oaidSdk)
-
-  return libs
-}
-
-export function prepareResults(manifest: ManifestConfig, sdkVersion: string): Results {
+export function prepareResults(): Results {
+  const manifest = App.getManifestJson()
   const results = createEmptyResults()
 
   // name
@@ -225,47 +214,47 @@ export function prepareResults(manifest: ManifestConfig, sdkVersion: string): Re
   if (buildFeatures) results.appBuildGradle.buildFeatures = buildFeatures
 
   // Oauth
-  appendOauth(results, manifest)
+  appendOauth(results)
   // Bluetooth
-  appendBluetooth(results, manifest)
+  appendBluetooth(results)
   // Speech
-  appendSpeech(results, manifest)
+  appendSpeech(results)
   // Camera
-  appendCamera(results, manifest)
+  appendCamera(results)
   // Share
-  appendShare(results, manifest, sdkVersion)
+  appendShare(results)
   // Geolocation
-  appendGeolocation(results, manifest)
+  appendGeolocation(results)
   // Push
-  appendPush(results, manifest)
+  appendPush(results)
   // Statistic
-  appendStatistic(results, manifest)
+  appendStatistic(results)
   // Barcode
-  appendBarcode(results, manifest)
+  appendBarcode(results)
   // FaceID
-  appendFaceID(results, manifest)
+  appendFaceID(results)
   // Fingerprint
-  appendFingerprint(results, manifest)
+  appendFingerprint(results)
   // FacialRecognitionVerify
-  appendFacialRecognitionVerify(results, manifest, sdkVersion)
+  appendFacialRecognitionVerify(results)
   // iBeacon
-  appendIBeacon(results, manifest)
+  appendIBeacon(results)
   // LivePusher
-  appendLivePusher(results, manifest)
+  appendLivePusher(results)
   // Maps
-  appendMaps(results, manifest)
+  appendMaps(results)
   // Messaging
-  appendMessaging(results, manifest)
+  appendMessaging(results)
   // Payment
-  appendPayment(results, manifest)
+  appendPayment(results)
   // Record
-  appendRecord(results, manifest)
+  appendRecord(results)
   // SQLite
-  appendSQLite(results, manifest)
+  appendSQLite(results)
   // VideoPlayer
-  appendVideoPlayer(results, manifest)
+  appendVideoPlayer(results)
   // Webview-x5
-  appendWebviewX5(results, manifest)
+  appendWebviewX5(results)
 
   // channel_list
 
@@ -298,25 +287,25 @@ export function prepareUTSResults(uniModulesPath: string): Results {
   return results
 }
 
-export function prepare(manifest: ManifestConfig, debug?: boolean) {
+export function prepare(options?: { debug?: boolean }) {
   const sdkVersion = App.getUniVersion()
-  const results = prepareResults(manifest, sdkVersion)
+  const results = prepareResults()
 
   const { androidManifest, libs, filesWrite, filesCopy, appBuildGradle, buildGradle, properties, control, strings } =
     results
-  if (debug) {
+  if (options?.debug) {
     libs.add('debug-server-release.aar')
   }
 
   filesWrite[AndroidManifestFilePath] = generateAndroidManifest(androidManifest)
-  const libFiles = mergeSet(libs, getDefaultLibs(sdkVersion))
+  const libFiles = mergeSet(libs, getDefaultLibs())
   for (const lib of libFiles) {
-    filesCopy[resolve(AndroidDir, 'app/libs', lib)] = resolve(UNIAPP_SDK_HOME, 'android', sdkVersion, lib)
+    filesCopy[resolve(AndroidDir, LibsPath, lib)] = resolve(UNIAPP_SDK_HOME, 'android', sdkVersion, lib)
   }
   filesWrite[AppBuildGradleFilePath] = genderateAppBuildGradle(appBuildGradle)
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
   filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
-  filesWrite[ControlFilePath] = genderateDcloudControl(control, debug)
+  filesWrite[ControlFilePath] = genderateDcloudControl(control, options?.debug)
   filesWrite[StringsFilePath] = genderateStrings(strings)
 
   for (const target in filesCopy) {

@@ -1,9 +1,10 @@
-import type { ManifestConfig } from '../../utils/manifest.config.js'
+import { App } from '../../utils/app.js'
 import { appendSet } from '../../utils/util.js'
 import type { Results } from '../prepare.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 
-export function appendVideoPlayer(results: Results, manifest: ManifestConfig) {
+export function appendVideoPlayer(results: Results) {
+  const manifest = App.getManifestJson()
   const VideoPlayer = manifest['app-plus']?.modules?.VideoPlayer
   if (!VideoPlayer) return
 

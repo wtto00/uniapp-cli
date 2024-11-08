@@ -111,8 +111,12 @@ const android: ModuleClass = {
 
   async run(options: BuildOptions) {
     const pm = App.getPackageManager()
-    const commands = resolveCommand(pm.agent, 'execute-local', ['uni', '-p', 'app-android'])
-    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local uni -p app-android`)
+    const args = ['uni', '-p', 'app-android']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       let isBuilding = false
@@ -147,7 +151,33 @@ const android: ModuleClass = {
     }
   },
 
-  build(_options: BuildOptions) {},
+  async build(options: BuildOptions) {
+    const pm = App.getPackageManager()
+    const args = ['uni', 'build', '-p', 'app-android']
+    if (options.mode) {
+      args.push('--mode', options.mode)
+    }
+    const commands = resolveCommand(pm.agent, 'execute-local', args)
+    if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
+
+    try {
+      const { stdout, stderr } = await execa({
+        stderr: ['inherit', 'pipe'],
+        stdout: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${commands.command} ${commands.args}`
+      if (!options.open) return
+
+      if (/DONE {2}Build complete\./.test(stdout)) {
+        await runAndroid(options, true)
+      }
+
+      if (stderr) throw Error(stderr)
+    } catch (error) {
+      if ((error as Error).message.match(/CTRL-C/)) return
+      throw error
+    }
+  },
 }
 
 export default android
