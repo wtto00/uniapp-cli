@@ -101,12 +101,13 @@ const mpWeixin: ModuleClass = {
         stdout: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`
-      if (stderr) throw Error(stderr)
       if (!options.open) return
 
       if (/DONE {2}Build complete\./.test(stdout as string)) {
         openWeixinDevTool('dist/build/mp-weixin')
       }
+
+      if (stderr) throw Error(stderr)
     } catch (error) {
       if ((error as Error).message.match(/CTRL-C/)) return
       throw error
