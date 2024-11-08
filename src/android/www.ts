@@ -10,3 +10,5 @@ export function getWwwPath() {
 }
 
 export const devDistPath = resolve(App.projectRoot, 'dist/dev/app')
+
+export const buildDistPath = resolve(App.projectRoot, 'dist/build/app')

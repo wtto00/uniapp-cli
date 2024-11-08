@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, renameSync, rmSync, watch, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import ora from 'ora'
@@ -6,6 +6,7 @@ import { resolveCommand } from 'package-manager-detector/commands'
 import addAndroid from '../android/add.js'
 import runAndroid from '../android/run.js'
 import { getLibSDKDir } from '../android/utils.js'
+import { devDistPath } from '../android/www.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
@@ -134,15 +135,24 @@ const android: ModuleClass = {
           await build()
         }
       }
+      let over = false
       for await (const line of execa({
         stderr: ['inherit', 'pipe'],
         stdout: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`) {
-        if (!options.open) continue
+        if (!options.open || over) continue
         const text = stripAnsiColors(line)
         if (text === 'DONE  Build complete. Watching for changes...') {
+          over = true
           build()
+          let clock: NodeJS.Timeout
+          watch(devDistPath, { persistent: true, recursive: true }, () => {
+            clearTimeout(clock)
+            clock = setTimeout(() => {
+              build()
+            }, 500)
+          })
         }
       }
     } catch (error) {

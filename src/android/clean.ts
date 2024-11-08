@@ -13,12 +13,15 @@ import { LibsPath } from './templates/libs.js'
 import { StringsFilePath } from './templates/strings.xml.js'
 import { assetsAppsPath } from './www.js'
 
-export async function cleanAndroid() {
+export async function cleanAndroidBuild() {
   try {
     await execa({ stdio: 'inherit', cwd: AndroidDir })`${getGradleExePath()} clean`
   } catch {
     Log.error('gradle clean 失败')
   }
+}
+
+export function cleanAndroid() {
   const files = [
     BuildGradleFilePath,
     AppBuildGradleFilePath,

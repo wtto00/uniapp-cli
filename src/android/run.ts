@@ -12,7 +12,7 @@ import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
 import { initSignEnv } from './sign.js'
-import { assetsAppsPath, devDistPath, getWwwPath } from './www.js'
+import { assetsAppsPath, buildDistPath, devDistPath, getWwwPath } from './www.js'
 
 let logcatProcess: ResultPromise<{
   stdout: ('inherit' | GeneratorTransform<false>)[]
@@ -30,7 +30,7 @@ function killLogcat() {
 export default async function run(options: BuildOptions, isBuild?: boolean) {
   killLogcat()
   Log.debug('清理 Android 资源')
-  await cleanAndroid()
+  cleanAndroid()
   Log.info('准备 Android 打包所需资源')
   prepare({ debug: true })
   Log.debug('准备打包签名信息')
@@ -39,7 +39,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   if (existsSync(assetsAppsPath)) {
     rmSync(assetsAppsPath, { recursive: true })
   }
-  cpSync(devDistPath, getWwwPath(), { recursive: true })
+  cpSync(isBuild ? buildDistPath : devDistPath, getWwwPath(), { recursive: true })
   const gradleExePath = getGradleExePath()
   try {
     let argv = 'assembleDebug'
@@ -85,19 +85,22 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
       return
     }
     const deviceName = options.device || devices[0].name
+    const manifest = App.getManifestJson()
+    const packagename = manifest['app-plus']?.distribute?.android?.packagename ?? ''
     const spinner = ora(`安装 ${apkPath} 到设备 \`${deviceName}\``).start()
+    if (await android.isInstalled(deviceName, packagename)) {
+      spinner.info(`卸载应用 ${packagename}`)
+      await android.adb(deviceName, `uninstall ${packagename}`)
+    }
     const apkFullPath = resolve(App.projectRoot, apkPath)
+    spinner.info(`安装应用 ${packagename}`)
     await android.install(deviceName, apkFullPath, { r: true })
     spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
 
     await android.adb(deviceName, 'logcat -c')
 
     Log.debug('开始拉起App')
-    const manifest = App.getManifestJson()
-    await android.adb(
-      deviceName,
-      `shell am start -n ${manifest['app-plus']?.distribute?.android?.packagename}/io.dcloud.PandoraEntry`,
-    )
+    await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
 
     logcatProcess = execa({
       stdout: [
