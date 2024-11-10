@@ -28,10 +28,10 @@ program
     'after',
     `
 示例:
-  uniapp create MyUniApp
-  uniapp create MyUniApp -t dcloudio/uni-preset-vue#vite-ts --force
-  uniapp create MyUniApp -t https://gitee.com/dcloudio/uni-preset-vue#vite-ts
-  uniapp create MyUniApp -t git@gitee.com:dcloudio/uni-preset-vue#vite
+  uniapp create my-uniapp
+  uniapp create my-uniapp -t dcloudio/uni-preset-vue#vite-ts --force
+  uniapp create my-uniapp -t https://gitee.com/dcloudio/uni-preset-vue#vite-ts
+  uniapp create my-uniapp -t git@gitee.com:dcloudio/uni-preset-vue#vite
 `,
   )
   .action(async (projectName, options) => {

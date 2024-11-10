@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="144" height="144">
+  <defs>
+    <clipPath id="prefix__a">
+      <rect width="144" height="144" rx="0" />
+    </clipPath>
+    <clipPath id="prefix__b">
+      <rect x="24" y="51" width="120" height="96" rx="0" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#prefix__a)">
+    <rect width="144" height="144" rx="0" fill="#2B9939" />
+    <path d="M30 30v90h84V30H96v72H48V30H30z" fill="#FFF" />
+    <g clip-path="url(#prefix__b)">
+      <rect x="84" y="83" width="60" height="60" rx="30" fill="#FFF" />
+      <path
+        d="M111.093 114.03l-9.11 9.11c-.44.44-1.152.44-1.59 0l-1.063-1.062a1.125 1.125 0 01-.002-1.59l7.22-7.253-7.22-7.254a1.125 1.125 0 01.002-1.589l1.062-1.062c.44-.44 1.152-.44 1.591 0l9.11 9.11c.44.439.44 1.151 0 1.59zM129 122.61v-1.5c0-.621-.504-1.125-1.125-1.125h-14.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h14.25c.621 0 1.125-.504 1.125-1.125z"
+        fill="#000" style="mix-blend-mode:passthrough" />
+    </g>
+  </g>
+</svg>

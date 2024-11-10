@@ -1,9 +1,9 @@
-import { after, describe, it } from 'node:test'
-import { execaUniapp, execaUniappSync } from './helper.js'
 import assert from 'node:assert'
-import type { SyncResult } from 'execa'
 import { existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { after, describe, it } from 'node:test'
+import type { SyncResult } from 'execa'
 import Log from '../src/utils/log.js'
+import { execaUniapp, execaUniappSync } from './helper.js'
 
 const HELP_TEXT = `Usage: uniapp create <project-name>
 
@@ -18,10 +18,10 @@ Options:
   -h, --help                 帮助信息
 
 示例:
-  uniapp create MyUniApp
-  uniapp create MyUniApp -t dcloudio/uni-preset-vue#vite-ts --force
-  uniapp create MyUniApp -t https://gitee.com/dcloudio/uni-preset-vue#vite-ts
-  uniapp create MyUniApp -t git@gitee.com:dcloudio/uni-preset-vue#vite
+  uniapp create my-uniapp
+  uniapp create my-uniapp -t dcloudio/uni-preset-vue#vite-ts --force
+  uniapp create my-uniapp -t https://gitee.com/dcloudio/uni-preset-vue#vite-ts
+  uniapp create my-uniapp -t git@gitee.com:dcloudio/uni-preset-vue#vite
 `
 
 describe('create', () => {

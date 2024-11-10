@@ -1,10 +1,10 @@
-import { after, before, describe, it } from 'node:test'
-import { execaUniapp } from './helper'
 import assert from 'node:assert'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { after, before, describe, it } from 'node:test'
 import Log from '../src/utils/log.js'
 import { isWindows } from '../src/utils/util.js'
-import { resolve } from 'node:path'
+import { execaUniapp } from './helper'
 
 const HELP_TEXT = `Usage: uniapp requirements|requirement <platform ...>
 
@@ -77,7 +77,7 @@ ${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${defau
         stdout,
         `mp-weixin: 
 ${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
-${Log.errorColor(`${Log.failSignal} 微信开发者工具没有安装`)}
+${Log.warnColor(`${Log.failSignal} 微信开发者工具没有安装`)}
   如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
 `,
       )
@@ -117,7 +117,7 @@ ${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
 ${
   isInstall
     ? `${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${defaultPath})`)}\n`
-    : `${Log.errorColor(`${Log.failSignal} 微信开发者工具没有安装`)}
+    : `${Log.warnColor(`${Log.failSignal} 微信开发者工具没有安装`)}
   如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
 `
 }`,
