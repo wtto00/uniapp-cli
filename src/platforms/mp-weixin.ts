@@ -26,13 +26,17 @@ function openWeixinDevTool(projectPath: string) {
     return
   }
   const spinner = ora('正在打开微信开发者工具').start()
-  execa({ stdio: 'inherit' })`${cliPath} open --project ${resolve(App.projectRoot, projectPath)}`.then(({ stderr }) => {
-    if (stderr) {
-      spinner.fail(`微信开发者工具打开出错了: ${stderr}`)
-    } else {
-      spinner.succeed('微信开发者工具已打开')
-    }
-  })
+  execa({ stdio: 'inherit' })`${cliPath} ${['open', '--project', resolve(App.projectRoot, projectPath)]}`
+    .then(({ stderr }) => {
+      if (stderr) {
+        spinner.fail('微信开发者工具打开出错了')
+      } else {
+        spinner.succeed('微信开发者工具已打开')
+      }
+    })
+    .catch((_err) => {
+      spinner.fail('微信开发者工具打开出错了')
+    })
 }
 
 const mpWeixin: ModuleClass = {
@@ -113,9 +117,9 @@ const mpWeixin: ModuleClass = {
 
       if (/DONE {2}Build complete\./.test(stdout)) {
         openWeixinDevTool('dist/build/mp-weixin')
+      } else if (stderr) {
+        throw Error(stderr)
       }
-
-      if (stderr) throw Error(stderr)
     } catch (error) {
       if ((error as Error).message.match(/CTRL-C/)) return
       throw error

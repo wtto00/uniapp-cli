@@ -1,5 +1,6 @@
-import { cp, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { cp, existsSync, mkdirSync, readFile, readdirSync, rmSync, statSync, writeFile, writeFileSync } from 'node:fs'
 import { basename, extname, resolve } from 'node:path'
+import inquirer from 'inquirer'
 import ora from 'ora'
 import { readPackageJSON } from 'pkg-types'
 import { App } from './utils/app.js'
@@ -33,7 +34,6 @@ const dependencies: Record<string, string> = {
   '@dcloudio/uni-components': latestUniappVersion,
   '@dcloudio/uni-h5': latestUniappVersion,
   vue: '^3.4.21',
-  'vue-i18n': '^9.1.9',
 }
 const devDependencies: Record<string, string> = {
   '@dcloudio/types': '^3.4.8',
@@ -60,6 +60,16 @@ export async function transform(source: string, target?: string) {
   } else {
     mkdirSync(targetDir, { recursive: true })
   }
+
+  const { optionalDependencies } = await inquirer.prompt<{ optionalDependencies: string[] }>([
+    {
+      type: 'checkbox',
+      name: 'optionalDependencies',
+      message: '是否使用下面所列举的服务',
+      choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
+      default: [],
+    },
+  ])
 
   try {
     const files = readdirSync(sourceDir)
@@ -101,13 +111,17 @@ export async function transform(source: string, target?: string) {
     if (!packageJson.scripts) packageJson.scripts = {}
     packageJson.scripts.dev = 'uniapp run h5'
     packageJson.scripts.build = 'uniapp build h5'
+    packageJson.scripts.uniapp = 'uniapp'
     if (!packageJson.dependencies) packageJson.dependencies = {}
-    for (const key in dependencies) {
-      packageJson.dependencies[key] = dependencies[key]
+    for (const dep in dependencies) {
+      packageJson.dependencies[dep] = dependencies[dep]
+    }
+    for (const dep of optionalDependencies) {
+      packageJson.dependencies[dep] = 'latest'
     }
     if (!packageJson.devDependencies) packageJson.devDependencies = {}
-    for (const key in devDependencies) {
-      packageJson.devDependencies[key] = devDependencies[key]
+    for (const dep in devDependencies) {
+      packageJson.devDependencies[dep] = devDependencies[dep]
     }
     writeFileSync(resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2), 'utf8')
 
@@ -129,13 +143,33 @@ export default defineConfig({
       }
     }
 
+    spinnner.text = '正在处理文件index.html'
+    const indexHtmlPath = resolve(targetDir, 'index.html')
+    if (existsSync(indexHtmlPath)) {
+      const content = await new Promise<string>((resolve) =>
+        readFile(indexHtmlPath, 'utf8', (err, data) => {
+          if (err) spinnner.info('文件 index.html 读取失败')
+          resolve(data)
+        }),
+      )
+      if (content) {
+        await new Promise((resolve) =>
+          writeFile(indexHtmlPath, content.replace(/(\/main\.[jt]s)/, '/src$1'), (err) => {
+            if (err) spinnner.info('文件 index.html 写入失败')
+            resolve(undefined)
+          }),
+        )
+      }
+    }
+
     spinnner.succeed(`应用 ${basename(sourceDir)} 已成功转换到 ${basename(targetDir)}`)
+
     Log.info(`
-  运行下面的命令开始:
-  \tcd ${dirname}
-  \t${App.getPackageManager({ notWarn: true }).name} install
-  \tuniapp run h5
-  `)
+运行下面的命令开始:
+\tcd ${dirname}
+\t${App.getPackageManager({ notWarn: true }).name} install
+\tuniapp run h5
+`)
   } catch (error) {
     rmSync(targetDir, { force: true, recursive: true })
     throw error

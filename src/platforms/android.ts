@@ -1,18 +1,20 @@
-import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
-import addAndroid from '../android/add.js'
+import { prepare } from '../android/prepare.js'
 import runAndroid from '../android/run.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { devDistPath } from '../android/www.js'
+import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import { watchFiles } from '../utils/file.js'
 import { gitIgnorePath } from '../utils/git.js'
 import Log from '../utils/log.js'
+import { AppPlusOS } from '../utils/manifest.config.js'
 import { AndroidDir, AndroidPath, IOSDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { trimEnd } from '../utils/util.js'
 import { type ModuleClass, type PlatformAddOptions, installModules, uninstallModules } from './index.js'
@@ -55,6 +57,12 @@ const android: ModuleClass = {
   },
 
   async platformAdd({ version }: PlatformAddOptions) {
+    const manifest = App.getManifestJson()
+
+    if (!manifest) throw Error('文件 manifest.json 解析失败')
+
+    checkConfig(manifest, AppPlusOS.Android)
+
     await installModules(android.modules, version)
 
     const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', version)
@@ -95,7 +103,8 @@ const android: ModuleClass = {
     }
 
     try {
-      await addAndroid()
+      cpSync(resolve(import.meta.dirname, '../../templates/android'), AndroidDir, { recursive: true })
+      prepare()
     } catch (error) {
       rmSync(AndroidDir, { recursive: true, force: true })
       throw error

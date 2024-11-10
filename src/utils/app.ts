@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { type DetectResult, detectSync } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
 import { readJsonFile } from './file.js'
@@ -20,6 +22,17 @@ export const App = {
 
   init() {
     App.projectRoot = process.cwd()
+    const configPath = resolve(App.projectRoot, 'uniapp_cli.config.json')
+    if (existsSync(configPath)) {
+      const config = readJsonFile<Record<string, unknown>>(configPath, true)
+      for (const key in config.env || {}) {
+        if (typeof config[key] === 'object') {
+          process.env[key] = JSON.stringify(config[key])
+        } else {
+          process.env[key] = config[key]?.toString()
+        }
+      }
+    }
   },
 
   getPackageJson(): PackageJson {
