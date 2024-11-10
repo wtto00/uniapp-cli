@@ -12,11 +12,11 @@ describe('version', async () => {
 
   it('--version', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('--version')
-    assert.strictEqual(stdout, `uni-app-cli v${packages.version}`)
+    assert.strictEqual(stdout, `uniapp-cli v${packages.version}`)
   })
 
   it('-v', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('--version')
-    assert.strictEqual(stdout, `uni-app-cli v${packages.version}`)
+    assert.strictEqual(stdout, `uniapp-cli v${packages.version}`)
   })
 })

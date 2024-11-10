@@ -7,7 +7,7 @@ import { execaUniapp, execaUniappSync } from './helper.js'
 
 const HELP_TEXT = `Usage: uniapp create <project-name>
 
-使用 uni-app-cli 创建新项目
+使用 uniapp-cli 创建新项目
 
 Arguments:
   project-name               项目名称

@@ -10,23 +10,23 @@
 ::: code-group
 
 ```bash [npm]
-npm i -g uni-app-cli
+npm i -g @wtto00/uniapp-cli
 ```
 
 ```bash [pnpm]
-pnpm add -g uni-app-cli
+pnpm add -g @wtto00/uniapp-cli
 ```
 
 ```bash [yarn]
-yarn global add uni-app-cli
+yarn global add @wtto00/uniapp-cli
 ```
 
 ```bash [bun]
-bun install -g uni-app-cli
+bun install -g @wtto00/uniapp-cli
 ```
 
 ```bash [deno]
-deno install -g npm:uni-app-cli
+deno install -g npm:@wtto00/uniapp-cli
 ```
 
 :::
@@ -41,7 +41,7 @@ uniapp --help
 Usage: uniapp <command> [options]
 
 Options:
-  -v, --version                           uni-app-cli 的版本号
+  -v, --version                           uniapp-cli 的版本号
   -d, --verbose                           调试模式，输出 debug 级别的日志信息
   -h, --help                              帮助信息
 

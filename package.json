@@ -1,5 +1,5 @@
 {
-  "name": "uni-app-cli",
+  "name": "@wtto00/uniapp-cli",
   "version": "0.0.1-alpha",
   "description": "CLI for uniapp.",
   "type": "module",
