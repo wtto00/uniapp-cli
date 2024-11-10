@@ -1,5 +1,5 @@
-import { execa, execaSync } from 'execa'
 import { relative, resolve } from 'node:path'
+import { execa, execaSync } from 'execa'
 
 export async function execaUniapp(args: string) {
   const tsxPath = relative(process.cwd(), resolve(import.meta.dirname, '../node_modules/.bin/tsx'))

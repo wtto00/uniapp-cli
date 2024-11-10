@@ -1,7 +1,7 @@
-import { before, describe, it } from 'node:test'
 import assert from 'node:assert'
-import { execaUniapp } from './helper.js'
+import { before, describe, it } from 'node:test'
 import { type PackageJson, readPackageJSON } from 'pkg-types'
+import { execaUniapp } from './helper.js'
 
 describe('version', async () => {
   let packages = {} as PackageJson
