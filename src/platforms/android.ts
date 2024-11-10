@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, renameSync, rmSync, watch, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import ora from 'ora'
@@ -10,6 +10,7 @@ import { devDistPath } from '../android/www.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { stripAnsiColors } from '../utils/exec.js'
+import { watchFiles } from '../utils/file.js'
 import { gitIgnorePath } from '../utils/git.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, UNIAPP_SDK_HOME } from '../utils/path.js'
@@ -120,21 +121,6 @@ const android: ModuleClass = {
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
-      let isBuilding = false
-      let willRun = false
-      const build = async () => {
-        if (isBuilding) {
-          willRun = true
-          return
-        }
-        isBuilding = true
-        await runAndroid(options)
-        isBuilding = false
-        if (willRun) {
-          willRun = false
-          await build()
-        }
-      }
       let over = false
       for await (const line of execa({
         stderr: ['inherit', 'pipe'],
@@ -145,14 +131,7 @@ const android: ModuleClass = {
         const text = stripAnsiColors(line)
         if (text === 'DONE  Build complete. Watching for changes...') {
           over = true
-          build()
-          let clock: NodeJS.Timeout
-          watch(devDistPath, { persistent: true, recursive: true }, () => {
-            clearTimeout(clock)
-            clock = setTimeout(() => {
-              build()
-            }, 500)
-          })
+          watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
         }
       }
     } catch (error) {

@@ -30,6 +30,7 @@ function killLogcat() {
 export default async function run(options: BuildOptions, isBuild?: boolean) {
   killLogcat()
   Log.debug('清理 Android 资源')
+  // await cleanAndroidBuild()
   cleanAndroid()
   Log.info('准备 Android 打包所需资源')
   prepare({ debug: true })
@@ -91,6 +92,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
     if (await android.isInstalled(deviceName, packagename)) {
       spinner.info(`卸载应用 ${packagename}`)
       await android.adb(deviceName, `uninstall ${packagename}`)
+      // await android.adb(deviceName, `shell run-as ${packagename} rm -rf /data/data/${packagename}/cache/*`)
     }
     const apkFullPath = resolve(App.projectRoot, apkPath)
     spinner.info(`安装应用 ${packagename}`)

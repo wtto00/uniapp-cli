@@ -11,5 +11,15 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.importModuleSpecifierEnding": "js"
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "nodejs-testing.extensions": [
+    {
+      "extensions": ["mjs", "cjs", "js"],
+      "parameters": []
+    },
+    {
+      "extensions": ["mts", "cts", "ts"],
+      "parameters": ["--import", "tsx"]
+    }
+  ]
 }
