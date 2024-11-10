@@ -17,7 +17,7 @@ CLI for uni-app
 ## 安装
 
 ```shell
-npm i -g uniapp_cli
+npm i -g uni-app-cli
 ```
 
 ## 用法

@@ -9,7 +9,7 @@ uniapp help create
 ```
 Usage: uniapp create <project-name>
 
-使用 uniapp_cli 创建新项目
+使用 uni-app-cli 创建新项目
 
 Arguments:
   project-name               项目名称
@@ -46,7 +46,7 @@ Options:
 
 ## 项目模板
 
-`uniapp_cli` 内置了几种模板:
+`uni-app-cli` 内置了几种模板:
 
 - [vitesse](https://github.com/uni-helper/vitesse-uni-app): 背靠 `Uni Helper` 团队，告别 `HBuilderX` ，拥抱现代前端开发
 - [vue3-ts](https://github.com/dcloudio/uni-preset-vue/tree/vite-ts): `DCloud` 官方的 `vue3` + `typescript` 模板

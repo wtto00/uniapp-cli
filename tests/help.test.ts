@@ -5,7 +5,7 @@ import { execaUniapp } from './helper.js'
 const HELP_TEXT = `Usage: uniapp <command> [options]
 
 Options:
-  -v, --version                           uniapp_cli 的版本号
+  -v, --version                           uni-app-cli 的版本号
   -d, --verbose                           调试模式，输出 debug 级别的日志信息
   -h, --help                              帮助信息
 

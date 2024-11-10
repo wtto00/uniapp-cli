@@ -8,7 +8,7 @@ App.init()
 
 program
   .name('uniapp')
-  .version(`uniapp_cli v${CLI_VERSION}`, '-v, --version', 'uniapp_cli 的版本号')
+  .version(`uni-app-cli v${CLI_VERSION}`, '-v, --version', 'uni-app-cli 的版本号')
   .usage('<command> [options]')
   .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息')
   .helpOption('-h, --help', '帮助信息')
@@ -20,7 +20,7 @@ program
   .command('create')
   .usage('<project-name>')
   .summary('创建新项目')
-  .description('使用 uniapp_cli 创建新项目')
+  .description('使用 uni-app-cli 创建新项目')
   .argument('<project-name>', '项目名称')
   .option('-t, --template <template>', '新建项目的模板，是一个 Git 仓库地址')
   .option('-f, --force', '如果目录已存在，强制覆盖')

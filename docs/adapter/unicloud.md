@@ -1,6 +1,6 @@
 # uniCloud
 
-在 `uniapp_cli.config.json` 中配置 `UNI_CLOUD_PROVIDER`:
+在 `uniapp-cli.config.json` 中配置 `UNI_CLOUD_PROVIDER`:
 
 ```jsonc
 {

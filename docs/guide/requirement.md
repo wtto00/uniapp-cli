@@ -40,8 +40,8 @@ uniapp requirement android
 
 开发 Android App 需要以下环境:
 
-- **Java**: 版本 `1.8`，并设置 `JAVA_HOME` 环境变量或者在`uniapp_cli.config.json`中的`env`中设置`JAVA_HOME`
-- **Android SDK**: 需要设置 `ANDROID_HOME` 环境变量为`Android SDK` 所在目录位置，或者在 `uniapp_cli.config.json`中的`env`中设置`ANDROID_HOME`。
+- **Java**: 版本 `1.8`，并设置 `JAVA_HOME` 环境变量或者在`uniapp-cli.config.json`中的`env`中设置`JAVA_HOME`
+- **Android SDK**: 需要设置 `ANDROID_HOME` 环境变量为`Android SDK` 所在目录位置，或者在 `uniapp-cli.config.json`中的`env`中设置`ANDROID_HOME`。
 
   可在 `Android Studio` 中配置 `Android SDK`。如下图所示:
 
@@ -71,7 +71,7 @@ uniapp requirement mp-weixin
 
 开发微信小程序需要以下环境:
 
-- **微信开发者工具**: 需要设置 `WEIXIN_DEV_TOOL` 环境变量为微信开发者工具的 `cli`(`Widnows` 上为 `cli.bat`) 可执行文件所在的位置，或者在 `uniapp_cli.config.json`中的`env`中设置`WEIXIN_DEV_TOOL`。
+- **微信开发者工具**: 需要设置 `WEIXIN_DEV_TOOL` 环境变量为微信开发者工具的 `cli`(`Widnows` 上为 `cli.bat`) 可执行文件所在的位置，或者在 `uniapp-cli.config.json`中的`env`中设置`WEIXIN_DEV_TOOL`。
 
   默认位置为:
 
