@@ -23,7 +23,9 @@ export default defineConfig({
     logo: '/logo.svg',
     nav: [
       { text: '指南', link: '/guide/getting-started', activeMatch: '/guide/' },
+      { text: '配置', link: '/config/', activeMatch: '/config/' },
       { text: '适配', link: '/adapter/', activeMatch: '/adapter/' },
+      { text: 'QA', link: '/qa/', activeMatch: '/qa/' },
     ],
 
     sidebar: {
@@ -45,10 +47,25 @@ export default defineConfig({
           base: '/guide/',
         },
       ],
+      '/config/': [
+        {
+          text: '配置',
+          items: [{ text: '配置文件', link: '' }],
+          base: '/config/',
+        },
+      ],
       '/adapter/': [
         {
           text: '适配',
-          items: [{ text: 'uniCloud', link: '/adapter/unicloud' }],
+          items: [{ text: 'uniCloud', link: 'unicloud' }],
+          base: '/adapter/',
+        },
+      ],
+      '/qa/': [
+        {
+          text: '常见问题',
+          items: [{ text: 'scss', link: 'scss' }],
+          base: '/qa/',
         },
       ],
     },
