@@ -10,10 +10,14 @@ export default defineConfig({
       'link',
       {
         rel: 'icon',
-        href: '/logo.svg',
+        href: '/uniapp-cli/logo.svg',
       },
     ],
   ],
+  sitemap: {
+    hostname: 'https://wtto00.github.io/uniapp-cli/',
+  },
+  lastUpdated: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
@@ -49,11 +53,16 @@ export default defineConfig({
       ],
     },
 
+    search: {
+      provider: 'local',
+    },
+
     docFooter: {
       prev: '上一页',
       next: '下一页',
     },
     outlineTitle: '页面导航',
+    lastUpdated: { text: '上次更新' },
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/wtto00/uniapp-cli' }],
   },

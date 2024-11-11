@@ -2,7 +2,7 @@
 
 使用 `uniapp requirement` 或者 `uniapp requirements` 检查个平台的开发环境要求。
 
-## Help
+## 帮助信息
 
 ```bash
 uniapp help requirement

@@ -1,6 +1,8 @@
 # 创建项目
 
-## Help
+使用 `uniapp create` 快速创建 `uniapp` 项目。
+
+## 帮助信息
 
 ```bash
 uniapp help create
