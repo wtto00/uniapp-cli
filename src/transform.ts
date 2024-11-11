@@ -35,6 +35,14 @@ const dependencies: Record<string, string> = {
   '@dcloudio/uni-h5': latestUniappVersion,
   vue: '^3.4.21',
 }
+const tsDependencies: Record<'dev' | 'deps', Record<string, string>> = {
+  deps: {},
+  dev: {
+    '@vue/tsconfig': '^0.1.3',
+    typescript: '^4.9.4',
+    'vue-tsc': '^1.0.24',
+  },
+}
 const devDependencies: Record<string, string> = {
   '@dcloudio/types': '^3.4.8',
   '@dcloudio/uni-automator': latestUniappVersion,
@@ -103,6 +111,8 @@ export async function transform(source: string, target?: string) {
       })
     }
 
+    const isTS = existsSync(resolve(targetDir, 'src', 'main.ts'))
+
     spinnner.text = '正在处理文件package.json'
     const packageJson = await readPackageJSON(targetDir)
     packageJson.name ||= basename(sourceDir)
@@ -112,6 +122,7 @@ export async function transform(source: string, target?: string) {
     packageJson.scripts.dev = 'uniapp run h5'
     packageJson.scripts.build = 'uniapp build h5'
     packageJson.scripts.uniapp = 'uniapp'
+    if (isTS) packageJson.scripts['type-check'] = 'vue-tsc --noEmit'
     if (!packageJson.dependencies) packageJson.dependencies = {}
     for (const dep in dependencies) {
       packageJson.dependencies[dep] = dependencies[dep]
@@ -123,7 +134,53 @@ export async function transform(source: string, target?: string) {
     for (const dep in devDependencies) {
       packageJson.devDependencies[dep] = devDependencies[dep]
     }
+    if (isTS) {
+      for (const dep in tsDependencies.deps) {
+        packageJson.dependencies[dep] = tsDependencies.deps[dep]
+      }
+      for (const dep in tsDependencies.dev) {
+        packageJson.devDependencies[dep] = tsDependencies.dev[dep]
+      }
+    }
     writeFileSync(resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2), 'utf8')
+
+    const tsconfigName = `${isTS ? 't' : 'j'}sconfig.json`
+    spinnner.text = `正在处理文件${tsconfigName}`
+    const tsconfigPath = resolve(targetDir, tsconfigName)
+    if (!existsSync(tsconfigPath)) {
+      writeFileSync(
+        tsconfigPath,
+        isTS
+          ? `{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext", "dom"],
+    "types": ["@dcloudio/types"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+}`
+          : `{
+  "compilerOptions": {
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext", "dom"],
+    "types": ["@dcloudio/types"]
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.vue"]
+}`,
+        'utf8',
+      )
+    } else {
+      spinnner.info(`检测到文件 ${tsconfigName} , 请手动修改 paths 配置`)
+    }
 
     spinnner.text = '正在处理文件vite.config.js'
     const vitePath = resolve(targetDir, 'vite.config.js')
