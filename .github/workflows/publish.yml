@@ -1,4 +1,4 @@
-name: "Publish"
+name: Publish
 on:
   push:
     tags:
@@ -16,7 +16,7 @@ jobs:
           draft: true
           generate_release_notes: true
 
-  Publish:
+  Publish-NPM:
     needs: Release
     runs-on: ubuntu-latest
     permissions:

@@ -1,9 +1,13 @@
 import { existsSync } from 'node:fs'
-import { AndroidDir } from '../utils/path.js'
+import { AndroidDir, IOSDir } from '../utils/path.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const ios: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus', 'uniapp-ios'],
+  modules: ['@dcloudio/uni-app-plus'],
+
+  isInstalled() {
+    return existsSync(IOSDir)
+  },
 
   requirement() {},
 

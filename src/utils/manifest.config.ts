@@ -126,6 +126,12 @@ export enum PermissionRequest {
   ONCE = 'once',
   NONE = 'none',
 }
+export enum AndroidAbiFilters {
+  ARM32 = 'armeabi-v7a',
+  ARM64 = 'arm64-v8a',
+  X86 = 'x86',
+  x64 = 'x86_64',
+}
 export interface AppPlusDistributeAndroid {
   /**
    * 从3.1.10版本开始使用App离线SDK需要申请Appkey
@@ -143,7 +149,7 @@ export interface AppPlusDistributeAndroid {
   /** Android平台App注册的scheme，多个scheme使用“,”分割，详情参考：Android平台设置UrlSchemes */
   schemes?: string
   /** Android平台App支持的cpu类型，详情参考：Android平台设置CPU类型 */
-  abiFilters?: string[]
+  abiFilters?: AndroidAbiFilters[]
   /** Android平台App使用的权限 */
   permissions?: string[]
   /** 是否自定义Android权限配置 */

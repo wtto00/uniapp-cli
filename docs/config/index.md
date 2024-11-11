@@ -115,25 +115,31 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 请使用绝对路径；如果使用相对路径，请注意是**相对于 `src` 目录中的位置**。
 
-推荐使用环境变量的方式配置此变量，而不是在 `uniapp-cli.config.json` 中配置。
+等同于使用环境变量，也可以在项目中的 `manifest.json` 中配置 `app-plus.distribute.android.keystore`。
+
+三种方式都是一样的效果。
+
+优先级是 `manifest.json中的配置` > `uniapp-cli.config.json中的配置` > `环境变量中的配置`。
+
+以下 `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS` 是同样的逻辑。
 
 ## STORE_PASSWORD
 
 安卓打包签名密钥文件的密码。
 
-推荐使用环境变量的方式配置此变量，而不是在 `uniapp-cli.config.json` 中配置。
+等同于使用环境变量，也可以在项目中的 `manifest.json` 中配置 `app-plus.distribute.android.password`。
 
 ## KEY_PASSWORD
 
 安卓打包签名密钥别名的密码。
 
-推荐使用环境变量的方式配置此变量，而不是在 `uniapp-cli.config.json` 中配置。
+等同于使用环境变量，也可以在项目中的 `manifest.json` 中配置 `app-plus.distribute.android.password`。
 
 ## KEY_ALIAS
 
 安卓打包签名密钥别名。
 
-推荐使用环境变量的方式配置此变量，而不是在 `uniapp-cli.config.json` 中配置。
+等同于使用环境变量，也可以在项目中的 `manifest.json` 中配置 `app-plus.distribute.android.aliasname`。
 
 ## WEIXIN_DEV_TOOL
 

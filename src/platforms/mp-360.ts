@@ -1,14 +1,11 @@
-import { type ModuleClass, PLATFORM, installModules, requireVue2, uninstallModules } from './index.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mp360: ModuleClass = {
   modules: ['@dcloudio/uni-mp-360'],
 
-  async requirement() {
-    await requireVue2(PLATFORM.MP_360)
-  },
+  async requirement() {},
 
   async platformAdd({ version }) {
-    await requireVue2(PLATFORM.MP_360)
     await installModules(mp360.modules, version)
   },
 

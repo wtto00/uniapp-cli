@@ -17,9 +17,9 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "alwaysStrict": true,
+    "rootDir": ".",
     "baseUrl": ".",
-    "rootDir": "src",
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/*.mjs"]
 }

@@ -1,14 +1,11 @@
-import { type ModuleClass, PLATFORM, installModules, requireVue2, uninstallModules } from './index.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpXHS: ModuleClass = {
   modules: ['@dcloudio/uni-mp-xhs'],
 
-  async requirement() {
-    await requireVue2(PLATFORM.MP_XHS)
-  },
+  async requirement() {},
 
   async platformAdd({ version }) {
-    await requireVue2(PLATFORM.MP_XHS)
     await installModules(mpXHS.modules, version)
   },
 

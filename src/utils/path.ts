@@ -4,9 +4,11 @@ import { App } from './app.js'
 
 export const AndroidPath = 'platforms/android'
 export const IOSPath = 'platforms/ios'
+export const harmonyPath = 'platforms/harmony'
 
 export const AndroidDir = resolve(App.projectRoot, AndroidPath)
 export const IOSDir = resolve(App.projectRoot, IOSPath)
+export const HarmonyDir = resolve(App.projectRoot, harmonyPath)
 
 export const UNIAPP_SDK_HOME = process.env.UNIAPP_SDK_HOME || resolve(homedir(), '.uniapp')
 

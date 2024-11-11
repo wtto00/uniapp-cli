@@ -11,7 +11,7 @@ export async function add(platforms: PLATFORM[]) {
 
   for (const pfm of platforms) {
     if (!allPlatforms.includes(pfm)) {
-      Log.error(`${pfm} is not an valid platform value.\n`)
+      Log.error(`${pfm} 不是一个有效的平台。\n`)
       continue
     }
 
@@ -21,8 +21,8 @@ export async function add(platforms: PLATFORM[]) {
       await module.platformAdd({ version: uniVersoin })
       Log.success(`${Log.successSignal} 平台 ${pfm} 已成功添加。`)
     } catch (error) {
-      module.platformRemove()
       Log.error(`${Log.failSignal} 平台 ${pfm} 添加失败: ${(error as Error).message}`)
+      module.platformRemove()
     }
   }
 }
@@ -51,17 +51,18 @@ export async function remove(platforms: PLATFORM[]) {
  * list platforms
  */
 export async function list() {
-  for (const pfm of allPlatforms) {
-    const module = await importPlatform(pfm)
-    const space = Array.from(Array(16 - pfm.length))
+  for (const platform of allPlatforms) {
+    const module = await importPlatform(platform)
+    const space = Array.from(Array(20 - platform.length))
       .map(() => ' ')
       .join('')
-    const isPfmInstalled = module.modules.every((module) => isInstalled(module))
+    const isPlatformModulesInstalled =
+      module.modules.every((module) => isInstalled(module)) && (module.isInstalled?.() ?? true)
     Log.info([
-      { msg: `${pfm}:${space}` },
-      isPfmInstalled
-        ? { msg: `${Log.successSignal} Installed`, type: 'success' }
-        : { msg: `${Log.failSignal} Not installed`, type: 'warn' },
+      { msg: `${platform}:${space}` },
+      isPlatformModulesInstalled
+        ? { msg: `${Log.successSignal} 已安装`, type: 'success' }
+        : { msg: `${Log.failSignal} 未安装`, type: 'warn' },
     ])
   }
 }

@@ -14,6 +14,7 @@ export interface PlatformAddOptions {
 }
 export interface ModuleClass {
   modules: string[]
+  isInstalled?: () => boolean
   requirement: () => MaybePromise<void>
   platformAdd: (options: PlatformAddOptions) => MaybePromise<void>
   platformRemove: () => MaybePromise<void>
@@ -39,23 +40,7 @@ export enum PLATFORM {
   MP_QUICKAPP_UNION = 'quickapp-union',
   MP_QUICKAPP_HUAWEI = 'quickapp-huawei',
 }
-export const allPlatforms = [
-  PLATFORM.ANDROID,
-  PLATFORM.IOS,
-  PLATFORM.H5,
-  PLATFORM.MP_WEIXIN,
-  PLATFORM.MP_ALIPAY,
-  PLATFORM.MP_BAIDU,
-  PLATFORM.MP_TOUTIAO,
-  PLATFORM.MP_LARK,
-  PLATFORM.MP_QQ,
-  PLATFORM.MP_KUAISHOU,
-  PLATFORM.MP_JD,
-  PLATFORM.MP_360,
-  PLATFORM.MP_XHS,
-  PLATFORM.MP_QUICKAPP_UNION,
-  PLATFORM.MP_QUICKAPP_HUAWEI,
-]
+export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
 
 export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
   switch (platform) {

@@ -129,4 +129,16 @@ ${
   it('ios', { timeout: 10000, todo: true })
 
   it('harmony', { timeout: 10000, todo: true })
+
+  it('mp-alipay', { todo: true })
+  it('mp-baidu', { todo: true })
+  it('mp-toutiao', { todo: true })
+  it('mp-lark', { todo: true })
+  it('mp-qq', { todo: true })
+  it('mp-kuaishou', { todo: true })
+  it('mp-jd', { todo: true })
+  it('mp-360', { todo: true })
+  it('mp-xhs', { todo: true })
+  it('quickapp-union', { todo: true })
+  it('quickapp-huawei', { todo: true })
 })

@@ -8,15 +8,16 @@
   },
   "files": ["bin", "templates", "dist"],
   "scripts": {
-    "dev": "tsc -p tsconfig.json --pretty --declaration --sourceMap --watch",
+    "dev": "tsc -p tsconfig.build.json --pretty --declaration --sourceMap --watch",
     "uniapp": "tsx src/index.ts",
     "build": "pnpm build:js && pnpm build:type",
-    "build:js": "tsc -p tsconfig.json --pretty --removeComments --sourceMap",
-    "build:type": "tsc -p tsconfig.json --pretty --declaration --emitDeclarationOnly",
-    "prebuild": "node scripts/prebuild.mjs",
+    "build:js": "tsc -p tsconfig.build.json --pretty --removeComments --sourceMap",
+    "build:type": "tsc -p tsconfig.build.json --pretty --declaration --emitDeclarationOnly",
     "test": "globstar -- node --import tsx --test tests/**/*.test.ts",
+    "type:check": "tsc --noEmit",
+    "check": "biome check --write .",
+    "prebuild": "node scripts/prebuild.mjs",
     "preinstall": "npx -y only-allow pnpm",
-    "check": "biome check --write src",
     "prepare": "husky && echo npx lint-staged > .husky/pre-commit"
   },
   "repository": {

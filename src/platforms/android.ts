@@ -25,6 +25,10 @@ const UNIAPP_ANDROID_SDK_URL =
 const android: ModuleClass = {
   modules: ['@dcloudio/uni-app-plus'],
 
+  isInstalled() {
+    return existsSync(AndroidDir)
+  },
+
   async requirement() {
     // JAVA_HOME
     if (process.env.JAVA_HOME) {
