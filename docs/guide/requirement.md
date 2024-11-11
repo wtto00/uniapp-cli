@@ -40,8 +40,8 @@ uniapp requirement android
 
 开发 Android App 需要以下环境:
 
-- [JAVA_HOME](../config#java-home)
-- [ANDROID_HOME](../config#android-home)
+- [JAVA_HOME](../config/#java-home)
+- [ANDROID_HOME](../config/#android-home)
 
 ## iOS App
 
@@ -67,7 +67,7 @@ uniapp requirement mp-weixin
 
 开发微信小程序需要以下环境:
 
-- [WEIXIN_DEV_TOOL](../config#weixin-dev-tool)
+- [WEIXIN_DEV_TOOL](../config/#weixin-dev-tool)
 
 ## 支付宝小程序
 
