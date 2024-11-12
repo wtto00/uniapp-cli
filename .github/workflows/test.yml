@@ -44,5 +44,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Prepare
+        run: |
+          mkdir ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "Host *" > ~/.ssh/config
+          echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
+
       - name: Test
         run: pnpm test

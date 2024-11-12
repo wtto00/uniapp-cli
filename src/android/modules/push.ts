@@ -22,7 +22,7 @@ export function appendPush(results: Results) {
 
   const { appid, appkey, appsecret, icons, offline, fcm, mi, meizu, hms, honor, oppo, vivo } = push.unipush
 
-  // HBuilderX 3.99及以上版本所需的libs仅为：
+  // HBuilderX 3.99及以上版本所需的libs仅为:
   appendSet(results.libs, ['aps-release.aar', 'aps-unipush-release.aar'])
 
   appendMerge(results.appBuildGradle, 'manifestPlaceholders', {

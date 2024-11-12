@@ -1,6 +1,6 @@
 {
   "name": "@wtto00/uniapp-cli",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "CLI for uniapp.",
   "type": "module",
   "bin": {
@@ -61,6 +61,7 @@
   },
   "packageManager": "pnpm@9.12.2",
   "lint-staged": {
+    "package.json": ["pnpm prebuild", "git add src/utils/const.ts"],
     "*": ["biome check --no-errors-on-unmatched --write"]
   }
 }

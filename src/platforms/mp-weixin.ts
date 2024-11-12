@@ -44,7 +44,7 @@ const mpWeixin: ModuleClass = {
 
   async requirement() {
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
-      Log.error(`微信开发者平台不支持平台: ${process.platform}`)
+      Log.error(`${Log.failSignal} 微信开发者平台不支持平台: ${process.platform}`)
       return
     }
 

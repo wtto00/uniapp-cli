@@ -1,4 +1,6 @@
-# uniCloud
+# uniCloud 适配指南
+
+如果项目中使用了 `uniCloud`，需要按照以下方式配置，才可以正常连接 `云端云函数`。不支持连接 `本地云函数`。
 
 在 `uniapp-cli.config.json` 中配置 `UNI_CLOUD_PROVIDER`:
 
@@ -29,9 +31,9 @@
 export UNI_CLOUD_PROVIDER='[{"accessTokenKey":"access_token_mp-****","clientSecret":"****","endpoint":"https://api.next.bspapp.com","envType":"public","provider":"aliyun","requestUrl":"https://api.next.bspapp.com/client","spaceId":"mp-****","spaceName":"****","id":"****"}]'
 ```
 
-![unicloud后台信息](/unicloud.png)
+打开 [uniCloud 后台](https://unicloud.dcloud.net.cn/)，选择用到的服务空间，点击进入详情，如下图所示:
 
-如上图所示:
+![unicloud后台信息](/unicloud.png)
 
 - **accessTokenKey**: 等于 `access_token_` + 图中的 `SpaceId`
 - **clientSecret**: 等于图中的 `ClientSecret`
