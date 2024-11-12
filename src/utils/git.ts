@@ -1,10 +1,10 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { App } from './app.js'
 
 export function gitIgnorePath(ignorePath: string) {
   const ignoreFilePath = resolve(App.projectRoot, '.gitignore')
-  const content = readFileSync(ignoreFilePath, 'utf8')
+  const content = existsSync(ignoreFilePath) ? readFileSync(ignoreFilePath, 'utf8') : 'node_modules\ndist'
   const lines = content.split('\n')
   if (lines.includes(ignorePath)) return
   lines.push(ignorePath, '')
