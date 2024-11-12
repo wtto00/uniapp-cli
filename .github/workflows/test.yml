@@ -49,6 +49,7 @@ jobs:
           mkdir ~/.ssh
           echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh -T git@gitee.com
 
       - name: Test
         run: pnpm test

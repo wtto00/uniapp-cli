@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { rmSync, writeFileSync } from 'node:fs'
+import { rm, writeFileSync } from 'node:fs'
 import { after, before, describe, it } from 'node:test'
 import { execaSync } from 'execa'
 import { readJsonFile } from '../src/utils/file.js'
@@ -12,20 +12,25 @@ describe('android', () => {
     async () => {
       execaUniappSync('create test-project-android --template dcloudio/uni-preset-vue#vite-ts')
       process.chdir('test-project-android')
-      execaSync({ shell: true })`pnpm --ignore-workspace install`
+      execaSync({ shell: true })`pnpm --ignore-workspace --no-lockfile install`
     },
     { timeout: 60000 },
   )
 
   after(
-    () => {
+    async () => {
       process.chdir('..')
-      rmSync('test-project-android', { force: true, recursive: true })
+      await new Promise((resolve, reject) =>
+        setTimeout(() => {
+          rm('test-project-android', { force: true, recursive: true }, (err) => {
+            if (err) reject(err)
+            else resolve(undefined)
+          })
+        }, 1000),
+      )
     },
     { timeout: 60000 },
   )
-
-  it('requirement', { timeout: 10000 }, async () => {})
 
   it('add', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform add android')
