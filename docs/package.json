@@ -1,6 +1,6 @@
 {
   "name": "uniapp-cli-doc",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "Document of CLI for uniapp.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
