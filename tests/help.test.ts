@@ -12,10 +12,10 @@ Options:
 Commands:
   create [options] <project-name>         创建新项目
   requirements|requirement <platform...>  检查给定平台的环境要求
+  transform [options] <source> [target]   转换HBuilderX项目到CLI项目
   platform                                管理应用的平台
   run [options] <platform>                开始运行给定的平台
   build [options] <platform>              打包给定的平台
-  transform <source> [target]             转换HBuilderX项目到CLI项目
   help [command]                          display help for command`
 
 describe('help', async () => {

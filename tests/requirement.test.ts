@@ -59,11 +59,21 @@ describe('requirement', () => {
   })
 
   it('mp-weixin', { timeout: 10000 }, async () => {
+    const { stdout } = await execaUniapp('requirement mp-weixin')
+    if (process.platform !== 'win32' && process.platform !== 'darwin') {
+      assert.equal(
+        stdout,
+        `mp-weixin: 
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.errorColor(`${Log.failSignal} 微信开发者平台不支持平台: ${process.platform}`)}
+`,
+      )
+      return
+    }
     const defaultPath = isWindows()
       ? 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat'
       : '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
     const isInstall = existsSync(defaultPath)
-    const { stdout } = await execaUniapp('requirement mp-weixin')
     if (isInstall) {
       assert.equal(
         stdout,
@@ -90,6 +100,16 @@ ${Log.warnColor(`${Log.failSignal} 微信开发者工具没有安装`)}
     process.env.WEIXIN_DEV_TOOL = cliPath
     writeFileSync(cliPath, '', 'utf8')
     const { stdout } = await execaUniapp('requirement mp-weixin')
+    if (process.platform !== 'win32' && process.platform !== 'darwin') {
+      assert.equal(
+        stdout,
+        `mp-weixin: 
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.errorColor(`${Log.failSignal} 微信开发者平台不支持平台: ${process.platform}`)}
+`,
+      )
+      return
+    }
     assert.equal(
       stdout,
       `mp-weixin: 
@@ -107,6 +127,19 @@ ${Log.successColor(`${Log.successSignal} 微信开发者工具已安装 (${cliPa
       : '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
     const isInstall = existsSync(defaultPath)
     const { stdout } = await execaUniapp('requirement h5 mp-weixin')
+    if (process.platform !== 'win32' && process.platform !== 'darwin') {
+      assert.equal(
+        stdout,
+        `h5: 
+${Log.successColor(`${Log.successSignal} 平台 \`h5\` 已安装`)}
+
+mp-weixin: 
+${Log.successColor(`${Log.successSignal} 平台 \`mp-weixin\` 已安装`)}
+${Log.errorColor(`${Log.failSignal} 微信开发者平台不支持平台: ${process.platform}`)}
+`,
+      )
+      return
+    }
     assert.equal(
       stdout,
       `h5: 
@@ -123,12 +156,6 @@ ${
 }`,
     )
   })
-
-  it('android', { timeout: 10000, todo: true })
-
-  it('ios', { timeout: 10000, todo: true })
-
-  it('harmony', { timeout: 10000, todo: true })
 
   it('mp-alipay', { todo: true })
   it('mp-baidu', { todo: true })

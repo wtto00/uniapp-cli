@@ -44,5 +44,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Prepare
+        run: echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+
       - name: Test
         run: pnpm test
