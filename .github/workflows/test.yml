@@ -45,7 +45,10 @@ jobs:
         run: pnpm i
 
       - name: Prepare
-        run: mkdir ~/.ssh && echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+        run: |
+          mkdir ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
       - name: Test
         run: pnpm test
