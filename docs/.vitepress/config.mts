@@ -44,6 +44,9 @@ export default defineConfig({
             { text: '创建项目', link: 'create' },
             { text: '检查环境', link: 'requirement' },
             { text: '转换项目', link: 'transform' },
+            { text: '平台管理', link: 'platform' },
+            { text: '启动运行', link: 'run' },
+            { text: '构建打包', link: 'build' },
           ],
           base: '/guide/',
         },
@@ -58,7 +61,10 @@ export default defineConfig({
       '/adapter/': [
         {
           text: '适配',
-          items: [{ text: 'uniCloud', link: 'unicloud' }],
+          items: [
+            { text: 'uniCloud', link: 'unicloud' },
+            { text: 'Android', link: 'android' },
+          ],
           base: '/adapter/',
         },
       ],
