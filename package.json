@@ -61,6 +61,7 @@
   },
   "packageManager": "pnpm@9.12.2",
   "lint-staged": {
+    "package.json": ["pnpm prebuild", "git add src/utils/const.ts"],
     "*": ["biome check --no-errors-on-unmatched --write"]
   }
 }
