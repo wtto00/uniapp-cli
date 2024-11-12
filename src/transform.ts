@@ -1,4 +1,4 @@
-import { cp, existsSync, mkdirSync, readFile, readdirSync, rmSync, statSync, writeFile, writeFileSync } from 'node:fs'
+import { cp, existsSync, readFile, readdirSync, rename, rmSync, statSync, writeFile, writeFileSync } from 'node:fs'
 import { basename, extname, resolve } from 'node:path'
 import inquirer from 'inquirer'
 import ora from 'ora'
@@ -53,20 +53,36 @@ const devDependencies: Record<string, string> = {
   vite: '^5.2.8',
 }
 
-export async function transform(source: string, target?: string) {
+export interface TransformOptions {
+  force?: boolean
+}
+
+export async function transform(source: string, target?: string, options?: TransformOptions) {
   const sourceDir = resolve(App.projectRoot, source)
   if (!existsSync(sourceDir)) {
     throw Error(`应用 ${source} 不存在`)
   }
-  const dirname = target || basename(source)
-  const targetDir = resolve(App.projectRoot, dirname)
+  const targetName = target || basename(source)
+  const targetDir = resolve(App.projectRoot, targetName)
 
-  if (existsSync(targetDir)) {
-    if (readdirSync(targetDir).length > 0) {
-      throw Error(`目录 ${targetDir} 非空`)
+  const isSameDir = targetDir === sourceDir
+
+  if (isSameDir) {
+    if (!options?.force) {
+      throw Error('转换后的目录与原目录相同，请使用 `--force` 参数强制修改原项目')
     }
-  } else {
-    mkdirSync(targetDir, { recursive: true })
+  } else if (!target) {
+    Log.info(`没有设定CLI项目位置，默认选择目录 ${targetName}`)
+  }
+
+  if (!isSameDir && existsSync(targetDir)) {
+    if (readdirSync(targetDir).length > 0) {
+      if (options?.force) {
+        rmSync(targetDir, { force: true, recursive: true })
+      } else {
+        throw Error(`目录 ${targetName} 非空，使用 \`--force\` 强制覆盖`)
+      }
+    }
   }
 
   const { optionalDependencies } = await inquirer.prompt<{ optionalDependencies: string[] }>([
@@ -81,9 +97,9 @@ export async function transform(source: string, target?: string) {
 
   try {
     const files = readdirSync(sourceDir)
-    const spinnner = ora('正在复制文件').start()
+    const spinnner = ora('正在处理文件').start()
     for (const file of files) {
-      spinnner.text = `正在复制文件: ${file}`
+      spinnner.text = `正在处理文件: ${file}`
       const filePath = resolve(sourceDir, file)
       if (ignorePath.includes(file)) continue
       if (
@@ -91,24 +107,35 @@ export async function transform(source: string, target?: string) {
         keepExtNames.includes(extname(file).substring(1)) ||
         (statSync(filePath).isDirectory() && !keepDirs.includes(file))
       ) {
-        await new Promise((resolveCallback) => {
-          cp(filePath, resolve(targetDir, 'src', file), { recursive: true }, (err) => {
-            if (err) spinnner.info(`文件 ${file} 复制失败`)
-            resolveCallback(undefined)
+        if (isSameDir) {
+          await new Promise((resolveCallback) => {
+            rename(filePath, resolve(targetDir, 'src', file), (err) => {
+              if (err) spinnner.info(`文件 ${file} 移动失败`)
+              resolveCallback(undefined)
+            })
           })
-        })
+        } else {
+          await new Promise((resolveCallback) => {
+            cp(filePath, resolve(targetDir, 'src', file), { recursive: true }, (err) => {
+              if (err) spinnner.info(`文件 ${file} 复制失败`)
+              resolveCallback(undefined)
+            })
+          })
+        }
         continue
       }
       if (notSupportFiles.includes(file)) {
         Log.warn(`\n文件 ${file} 暂不支持，请手动处理`)
         continue
       }
-      await new Promise((resolveCallback) => {
-        cp(filePath, resolve(targetDir, file), { recursive: true }, (err) => {
-          if (err) spinnner.info(`文件 ${file} 复制失败`)
-          resolveCallback(undefined)
+      if (!isSameDir) {
+        await new Promise((resolveCallback) => {
+          cp(filePath, resolve(targetDir, file), { recursive: true }, (err) => {
+            if (err) spinnner.info(`文件 ${file} 复制失败`)
+            resolveCallback(undefined)
+          })
         })
-      })
+      }
     }
 
     const isTS = existsSync(resolve(targetDir, 'src', 'main.ts'))
@@ -223,7 +250,7 @@ export default defineConfig({
 
     Log.info(`
 运行下面的命令开始:
-\tcd ${dirname}
+\tcd ${targetName}
 \t${App.getPackageManager({ notWarn: true }).name} install
 \tuniapp run h5
 `)

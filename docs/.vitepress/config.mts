@@ -43,6 +43,7 @@ export default defineConfig({
           items: [
             { text: '创建项目', link: 'create' },
             { text: '检查环境', link: 'requirement' },
+            { text: '转换项目', link: 'transform' },
           ],
           base: '/guide/',
         },

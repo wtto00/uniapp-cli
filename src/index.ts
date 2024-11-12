@@ -63,6 +63,28 @@ program
     }
   })
 
+program
+  .command('transform')
+  .usage('<source> [target]')
+  .summary('转换HBuilderX项目到CLI项目')
+  .description('把一个HBuilderX创建的项目，转换为CLI创建的项目')
+  .argument('<source>', 'HBuilderX项目所在的目录位置')
+  .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目目录名')
+  .option('-f, --force', '如果目录已存在，强制覆盖')
+  .addHelpText(
+    'after',
+    '\n示例:\n  uniapp transform project-by-hbuilderx project-by-cli\n  uniapp transform project-by-hbuilderx',
+  )
+  .action(async (source, target, options) => {
+    try {
+      const { transform } = await import('./transform.js')
+      await transform(source, target, options)
+    } catch (error) {
+      Log.error((error as Error).message || '转换项目出错了')
+      process.exit(1)
+    }
+  })
+
 const platform = program
   .command('platform')
   .usage('<command> [options]')
@@ -157,27 +179,6 @@ program
       await build(platform, options)
     } catch (error) {
       Log.error((error as Error).message || `打包平台 \`${platform}\` 出错了。`)
-      process.exit(1)
-    }
-  })
-
-program
-  .command('transform')
-  .usage('<source> [target]')
-  .summary('转换HBuilderX项目到CLI项目')
-  .description('把一个HBuilderX创建的项目，转换为CLI创建的项目')
-  .argument('<source>', 'HBuilderX项目所在的目录位置')
-  .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目目录名')
-  .addHelpText(
-    'after',
-    '\n示例:\n  uniapp transform project-by-hbuilderx project-by-cli\n  uniapp transform project-by-hbuilderx',
-  )
-  .action(async (source, target) => {
-    try {
-      const { transform } = await import('./transform.js')
-      await transform(source, target)
-    } catch (error) {
-      Log.error((error as Error).message || '转换项目出错了')
       process.exit(1)
     }
   })

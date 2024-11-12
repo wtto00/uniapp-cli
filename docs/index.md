@@ -30,13 +30,16 @@ features:
   - title: 检查开发环境完整性
     icon: 🔎
     details: uniapp requirement 检查开发环境完整性，缺少哪些依赖一目了然
+  - title: 转换 HBuilderX 项目
+    icon: 🔄
+    details: uniapp transform 转换 HBuilderX 项目到 CLI 项目
+  - title: 便捷管理各平台
+    icon: 🗂️
+    details: uniapp platform 便捷地添加、移除、列举对应的平台
   - title: 快速启动项目
     icon: ⏩
     details: uniapp run 快速启动项目，并支持热更新
   - title: 一键打包各平台
     icon: 📦
     details: uniapp build 打包各平台
-  - title: 转换 HBuilderX 项目
-    icon: 🔄
-    details: uniapp transform 转换 HBuilderX 项目到 CLI 项目
 ---
