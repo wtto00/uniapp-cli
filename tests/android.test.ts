@@ -12,9 +12,9 @@ describe('android', () => {
     async () => {
       execaUniappSync('create test-project-android --template dcloudio/uni-preset-vue#vite-ts')
       process.chdir('test-project-android')
-      execaSync({ shell: true })`pnpm --ignore-workspace --no-lockfile install`
+      execaSync`pnpm --ignore-workspace --no-lockfile install`
     },
-    { timeout: 60000 },
+    { timeout: 90000 },
   )
 
   after(
@@ -29,7 +29,7 @@ describe('android', () => {
         }, 1000),
       )
     },
-    { timeout: 60000 },
+    { timeout: 90000 },
   )
 
   it('add', { timeout: 60000 }, async () => {

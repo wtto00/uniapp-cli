@@ -8,6 +8,11 @@ export interface BuildOptions {
   /** vite mode */
   mode?: string
   bundle?: 'apk' | 'aab'
+  /** Android签名 */
+  keystore?: string
+  storepasswd?: string
+  keypasswd?: string
+  alias?: string
 }
 
 export async function build(platform: PLATFORM, options: BuildOptions) {
