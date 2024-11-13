@@ -33,7 +33,7 @@
   "bugs": {
     "url": "https://github.com/wtto00/uniapp-cli/issues"
   },
-  "homepage": "https://github.com/wtto00/uniapp-cli#readme",
+  "homepage": "https://wtto00.github.io/uniapp-cli/",
   "dependencies": {
     "@wtto00/android-tools": "^1.0.5",
     "chalk": "^5.3.0",
