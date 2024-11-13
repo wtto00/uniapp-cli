@@ -35,7 +35,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   Log.info('准备 Android 打包所需资源')
   prepare({ debug: true })
   Log.debug('准备打包签名信息')
-  initSignEnv()
+  initSignEnv(options)
   Log.debug('前端打包资源嵌入 Android 资源中')
   if (existsSync(assetsAppsPath)) {
     rmSync(assetsAppsPath, { recursive: true })

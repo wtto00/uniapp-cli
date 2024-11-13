@@ -14,14 +14,18 @@ Usage: uniapp build <platform>
 打包给定的平台
 
 Arguments:
-  platform           要打包的平台: android,ios,h5,mp-weixin...
+  platform                     要打包的平台: android,ios,h5,mp-weixin...
 
 Options:
-  --no-open          不自动打开
-  --mode <mode>      vite 环境模式
-  --bundle <bundle>  打包产物: aab,apk(默认)
-  --device <device>  运行到指定的设备上
-  -h, --help         帮助信息
+  --no-open                    不自动打开
+  --mode <mode>                vite 环境模式
+  --bundle <bundle>            打包产物: aab,apk(默认)
+  --device <device>            运行到指定的设备上
+  --keystore <keystore>        Android签名密钥文件所在位置
+  --storepasswd <storepasswd>  Android签名密钥的密码
+  --alias <alias>              Android签名密钥别名
+  --keypasswd <keypasswd>      Android签名密钥别名的密码
+  -h, --help                   帮助信息
 
 示例:
   uniapp build android --bundle aab
@@ -29,19 +33,37 @@ Options:
   uniapp build mp-weixin
 ```
 
-## --no-open
+## 参数说明
+
+### --no-open
 
 同 [运行参数--no-open](./run#no-open)。
 
 - `H5` 平台此参数无效。
 
-## --mode
+### --mode
 
 同 [运行参数--mode](./run#mode)。
 
-## --device
+### --device
 
 同 [运行参数--device](./run#device)。
+
+### --keystore
+
+同 [运行参数--keystore](./run#keystore)。
+
+### --storepasswd
+
+同 [运行参数--storepasswd](./run#storepasswd)。
+
+### --alias
+
+同 [运行参数--alias](./run#alias)。
+
+### --keypasswd
+
+同 [运行参数--keypasswd](./run#keypasswd)。
 
 ## H5
 

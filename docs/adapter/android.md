@@ -4,10 +4,22 @@
 
 参见 [Requiement Android App](../guide/requirement.html#android-app)。
 
-## 运行打包要求
+## appkey
 
-- 需要在 `manifest.json` 中配置 `app-plus.distribute.android.dcloud_appkey`。[appkey 申请](https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html)。
-- 需要配置 [签名](../config/#keystore-path)。
+需要在 `manifest.json` 中配置 `app-plus.distribute.android.dcloud_appkey`。
+
+[appkey 申请说明](https://nativesupport.dcloud.net.cn/AppDocs/usesdk/appkey.html)
+
+## 签名配置
+
+运行或者打包需要配置签名，否则会和 `appkey` 不对应，而无法运行。
+
+签名主要包括四个信息:
+
+- **keystore**: [查看配置 KEYSTORE_PATH](../config/#keystore-path)
+- **storepasswd**: [查看配置 STORE_PASSWORD](../config/#store-password)
+- **alias**: [查看配置 KEY_ALIAS](../config/#key-alias)
+- **keypasswd**: [查看配置 KEY_PASSWORD](../config/#key-password)
 
 ## uni 一键登录
 

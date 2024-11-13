@@ -149,6 +149,10 @@ program
   .option('--no-open', '不自动打开')
   .option('--mode <mode>', 'vite 环境模式')
   .option('--device <device>', '运行到指定的设备上')
+  .option('--keystore <keystore>', 'Android签名密钥文件所在位置')
+  .option('--storepasswd <storepasswd>', 'Android签名密钥的密码')
+  .option('--alias <alias>', 'Android签名密钥别名')
+  .option('--keypasswd <keypasswd>', 'Android签名密钥别名的密码')
   .addHelpText('after', '\n示例:\n  uniapp run android --device myEmulator\n  uniapp run ios\n  uniapp run mp-weixin')
   .action(async (platform, options) => {
     try {
@@ -171,6 +175,10 @@ program
   .option('--mode <mode>', 'vite 环境模式')
   .option('--bundle <bundle>', '打包产物: aab,apk(默认)')
   .option('--device <device>', '运行到指定的设备上')
+  .option('--keystore <keystore>', 'Android签名密钥文件所在位置')
+  .option('--storepasswd <storepasswd>', 'Android签名密钥的密码')
+  .option('--alias <alias>', 'Android签名密钥别名')
+  .option('--keypasswd <keypasswd>', 'Android签名密钥别名的密码')
   .addHelpText('after', '\n示例:\n  uniapp build android --bundle aab\n  uniapp build ios\n  uniapp build mp-weixin')
   .action(async (platform, options) => {
     try {

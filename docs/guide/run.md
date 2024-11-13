@@ -14,13 +14,17 @@ Usage: uniapp run <platform>
 开始运行给定的平台
 
 Arguments:
-  platform           要运行的平台: android,ios,h5,mp-weixin...
+  platform                     要运行的平台: android,ios,h5,mp-weixin...
 
 Options:
-  --no-open          不自动打开
-  --mode <mode>      vite 环境模式
-  --device <device>  运行到指定的设备上
-  -h, --help         帮助信息
+  --no-open                    不自动打开
+  --mode <mode>                vite 环境模式
+  --device <device>            运行到指定的设备上
+  --keystore <keystore>        Android签名密钥文件所在位置
+  --storepasswd <storepasswd>  Android签名密钥的密码
+  --alias <alias>              Android签名密钥别名
+  --keypasswd <keypasswd>      Android签名密钥别名的密码
+  -h, --help                   帮助信息
 
 示例:
   uniapp run android --device myEmulator
@@ -28,7 +32,9 @@ Options:
   uniapp run mp-weixin
 ```
 
-## --no-open
+## 参数说明
+
+### --no-open
 
 运行完毕后，是否自动打开平台所对应的工具。
 
@@ -39,15 +45,31 @@ Options:
 - mp-weixin: [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 - 其他: 待开发
 
-## --mode
+### --mode
 
 `vite` 框架的 [模式](https://vitejs.cn/vite3-cn/guide/env-and-mode.html#modes) 配置。
 
-## --device
+### --device
 
 运行到 `Android` 平台时，要打开的已连接设备的名称。设备名称可通过 `adb devices` 来获取。
 
 如果存在多个已连接的 `Android` 设备或者模拟器，此参数会用到。
+
+### --keystore
+
+安卓打包签名密钥文件所在位置。[查看配置 KEYSTORE_PATH](../config/#keystore-path)
+
+### --storepasswd
+
+安卓打包签名密钥文件的密码。[查看配置 KEYSTORE_PATH](../config/#keystore-path)
+
+### --alias
+
+安卓打包签名密钥别名。[查看配置 KEYSTORE_PATH](../config/#keystore-path)
+
+### --keypasswd
+
+安卓打包签名密钥别名的密码。[查看配置 KEYSTORE_PATH](../config/#keystore-path)
 
 ## H5
 
