@@ -12,7 +12,7 @@ Arguments:
 Options:
   --no-open          不自动打开
   --mode <mode>      vite 环境模式
-  --device <device>  运行到给定的设备上
+  --device <device>  运行到指定的设备上
   -h, --help         帮助信息
 
 示例:

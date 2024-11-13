@@ -148,7 +148,7 @@ program
   .argument('<platform>', '要运行的平台: android,ios,h5,mp-weixin...')
   .option('--no-open', '不自动打开')
   .option('--mode <mode>', 'vite 环境模式')
-  .option('--device <device>', '运行到给定的设备上')
+  .option('--device <device>', '运行到指定的设备上')
   .addHelpText('after', '\n示例:\n  uniapp run android --device myEmulator\n  uniapp run ios\n  uniapp run mp-weixin')
   .action(async (platform, options) => {
     try {
@@ -170,7 +170,7 @@ program
   .option('--no-open', '不自动打开')
   .option('--mode <mode>', 'vite 环境模式')
   .option('--bundle <bundle>', '打包产物: aab,apk(默认)')
-  .option('--device <device>', '运行到给定的设备上')
+  .option('--device <device>', '运行到指定的设备上')
   .addHelpText('after', '\n示例:\n  uniapp build android --bundle aab\n  uniapp build ios\n  uniapp build mp-weixin')
   .action(async (platform, options) => {
     try {
