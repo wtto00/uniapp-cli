@@ -11,10 +11,10 @@ export function appendBarcode(results: Results) {
   if (!ad) return
 
   appendMetaData(results.androidManifest, {
-    DCLOUD_AD_SPLASH: { value: `${ad.config.splash ?? false}` },
+    DCLOUD_AD_SPLASH: { value: `${ad.config?.splash ?? false}` },
   })
 
-  if (ad.config.nvue) {
+  if (ad.config?.nvue) {
     results.libs.add('weex_ad-release.aar')
   }
 

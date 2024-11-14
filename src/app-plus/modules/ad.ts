@@ -5,7 +5,7 @@ export function checkAd(manifest: ManifestConfig, _os: AppPlusOS) {
   if (!ad) return
 
   const { config, ...vendor } = ad
-  if (!config.adid) {
+  if (!config?.adid) {
     throw Error(
       '您配置了uni-ad广告，请在文件manifest.json中配置uni-ad广告的广告标识-联盟ID: app-plus.distribute.sdkConfigs.ad.config.adid',
     )

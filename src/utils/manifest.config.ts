@@ -391,7 +391,7 @@ export interface AppPlusDistributeSdkConfigs {
     huawei?: object
   }
   ad?: {
-    config: {
+    config?: {
       /** 开屏广告 */
       splash?: boolean
       adid?: string
@@ -651,8 +651,8 @@ export interface AppPlusDistributeIOS {
   idfa?: boolean
   /** 应用的能力配置（Capabilities） */
   capabilities?: {
-    entitlements: object
-    plists: object
+    entitlements?: object
+    plists?: object
   }
   /** 应用的CFBundleName名称，默认值为HBuilder */
   CFBundleName?: string
@@ -1291,7 +1291,7 @@ export interface ManifestConfig {
   uniStatistics?: UniStatistics
   /** APP 特有配置 */
   'app-plus'?: AppPlus
-  channel_list?: { id: string; name?: string }[]
+  channel_list?: { id?: string; name?: string }[]
   /** H5 特有配置 */
   h5?: H5
   /** 快应用特有配置 */
