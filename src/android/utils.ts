@@ -15,3 +15,5 @@ export function findLibSDK(prefix: string, sdkVersion: string) {
   }
   return libs.find((file) => file.startsWith(prefix))
 }
+
+export const resourceSizes = ['ldpi', 'mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'] as const

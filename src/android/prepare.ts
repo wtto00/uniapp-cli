@@ -1,5 +1,5 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { dirname, extname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
 import { PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
@@ -58,6 +58,7 @@ import {
 } from './templates/dcloud_properties.xml.js'
 import { LibsPath, getDefaultLibs } from './templates/libs.js'
 import { type Strings, StringsFilePath, genderateStrings } from './templates/strings.xml.js'
+import { resourceSizes } from './utils.js'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -132,6 +133,15 @@ export function prepareResults(): Results {
   // installApkSdk
   if (manifest['app-plus']?.distribute?.android?.installApkSdk !== false) {
     results.libs.add('install-apk-release.aar')
+  }
+
+  // icons
+  const icons = manifest['app-plus']?.distribute?.icons?.android || {}
+  for (const size of resourceSizes) {
+    if (icons[size]) {
+      const iconPath = resolve(AndroidDir, 'app/src/main/res', `drawable-${size}`, `icon${extname(icons[size])}`)
+      results.filesCopy[iconPath] = resolve(App.projectRoot, 'src', icons[size])
+    }
   }
 
   const {
