@@ -164,7 +164,6 @@ export function prepareResults(): Results {
   if (schemes) {
     const schemesArray = schemes.split(',').map((scheme) => scheme.trim())
     for (const scheme of schemesArray) {
-      results.androidManifest.activity['io.dcloud.PandoraEntry'].intentFilter = []
       appendActivity(results.androidManifest, {
         'io.dcloud.PandoraEntry': {
           properties: {},
