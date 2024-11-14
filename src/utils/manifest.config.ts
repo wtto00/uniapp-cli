@@ -478,6 +478,7 @@ export interface AppPlusDistributeSdkConfigs {
           hdpi?: string
           xhdpi?: string
           xxhdpi?: string
+          xxxhdpi?: string
         }
       }
       /** 应用的app id/app key等信息，从开发者后台->unipush->配置管理->应用管理 界面查看 ** 注意：HBuilderX3.1.15之后需要添加GETUI_APPID属性 ** */
