@@ -4,8 +4,6 @@ import { CLI_VERSION } from './utils/const.js'
 import Log from './utils/log.js'
 import { checkIsUniapp } from './utils/package.js'
 
-App.init()
-
 program
   .name('uniapp')
   .version(`uniapp-cli v${CLI_VERSION}`, '-v, --version', 'uniapp-cli 的版本号')
@@ -194,3 +192,5 @@ program
 program.parse(process.argv)
 
 Log.verbose = program.getOptionValue('verbose')
+
+App.init()

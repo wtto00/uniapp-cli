@@ -24,13 +24,16 @@ export const App = {
     App.projectRoot = process.cwd()
     const configPath = resolve(App.projectRoot, 'uniapp-cli.config.json')
     if (existsSync(configPath)) {
-      const config = readJsonFile<Record<string, unknown>>(configPath, true)
-      for (const key in config.env || {}) {
-        if (typeof config[key] === 'object') {
-          process.env[key] = JSON.stringify(config[key])
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      const config = readJsonFile<{ env: Record<string, any> }>(configPath, true)
+      const env = config.env
+      for (const key in env || {}) {
+        if (typeof env[key] === 'object') {
+          process.env[key] = JSON.stringify(env[key])
         } else {
-          process.env[key] = config[key]?.toString()
+          process.env[key] = (env[key] ?? '').toString()
         }
+        Log.debug(`设置环境变量 ${key}="${process.env[key]}"`)
       }
     }
   },
