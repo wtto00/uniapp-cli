@@ -23,7 +23,7 @@ const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
 
 const android: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus'],
+  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
 
   isInstalled() {
     return existsSync(AndroidDir)
@@ -135,18 +135,52 @@ const android: ModuleClass = {
 
     try {
       let over = false
-      for await (const line of execa({
-        stderr: ['inherit', 'pipe'],
-        stdout: ['inherit', 'pipe'],
-        env: { FORCE_COLOR: 'true' },
-      })`${commands.command} ${commands.args}`) {
-        if (!options.open || over) continue
-        const text = stripAnsiColors(line)
-        if (text === 'DONE  Build complete. Watching for changes...') {
+      let markHideError = false
+      function* errTransform(line: string) {
+        const lineText = stripAnsiColors(line)
+        if (markHideError) {
+          if (lineText.startsWith('file: ') || lineText.startsWith('at uni_modules/')) {
+            Log.debug(lineText)
+          } else {
+            markHideError = false
+            yield line
+          }
+          return
+        }
+        if (line === 'HBuilderX is not found') {
+          // UTS插件错误
+          Log.debug(lineText)
+          if (!options.open || over) return
+          over = true
+          watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
+          return
+        }
+        if (
+          lineText ===
+          '[plugin:uni:uts-uni_modules] [uni:uts-uni_modules] 项目使用了uts插件，正在安装 uts Android 运行扩展...'
+        ) {
+          markHideError = true
+          Log.debug(lineText)
+          return
+        }
+        yield line
+      }
+      function* outTransform(line: string) {
+        yield line
+        if (!options.open || over) return
+        const lineText = stripAnsiColors(line)
+        if (lineText === 'DONE  Build complete. Watching for changes...') {
           over = true
           watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
         }
       }
+      execa({
+        // @ts-ignore
+        stderr: [errTransform, 'inherit'],
+        stdout: [outTransform, 'inherit'],
+        env: { FORCE_COLOR: 'true' },
+        buffer: false,
+      })`${commands.command} ${commands.args}`
     } catch (error) {
       if ((error as Error).message.match(/CTRL-C/)) return
       throw error

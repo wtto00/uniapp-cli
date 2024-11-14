@@ -4,7 +4,7 @@ import { HarmonyDir } from '../utils/path.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const harmony: ModuleClass = {
-  modules: ['@dcloudio/uni-app-harmony'],
+  modules: ['@dcloudio/uni-app-harmony', '@dcloudio/uni-uts-v1'],
 
   isInstalled() {
     return existsSync(HarmonyDir)
