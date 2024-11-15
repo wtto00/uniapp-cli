@@ -1,12 +1,10 @@
 import chalk from 'chalk'
+import logSymbols from 'log-symbols'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'success'
 
 const Log = {
   verbose: false,
-
-  successSignal: '✔',
-  failSignal: '✖',
 
   debug(...msgs: string[]) {
     if (!Log.verbose) return
@@ -37,15 +35,15 @@ const Log = {
   },
 
   warn(...msgs: string[]) {
-    console.log(...msgs.map((msg) => Log.warnColor(msg)))
+    console.log(Log.warnColor(logSymbols.warning), '', ...msgs.map((msg) => Log.warnColor(msg)))
   },
 
   error(...msgs: string[]) {
-    console.log(...msgs.map((msg) => Log.errorColor(msg)))
+    console.log(Log.errorColor(logSymbols.error), '', ...msgs.map((msg) => Log.errorColor(msg)))
   },
 
   success(...msgs: string[]) {
-    console.log(...msgs.map((msg) => Log.successColor(msg)))
+    console.log(Log.successColor(logSymbols.success), '', ...msgs.map((msg) => Log.successColor(msg)))
   },
 
   successColor: (text: string) => chalk.green(text),

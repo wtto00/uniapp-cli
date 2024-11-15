@@ -35,19 +35,13 @@ describe('android', () => {
   it('add', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform add android')
 
-    assert.equal(
-      stdout,
-      Log.errorColor(`${Log.failSignal} 平台 android 添加失败: 请在文件manifest.json中配置应用名称: name`),
-    )
+    assert.equal(stdout, Log.errorColor('平台 android 添加失败: 请在文件manifest.json中配置应用名称: name'))
     const manifest = readJsonFile<ManifestConfig>('src/manifest.json', true)
 
     manifest.name = 'Test Project Platform'
     writeFileSync('src/manifest.json', JSON.stringify(manifest, null, 2), 'utf8')
     const { stdout: stdout1 } = await execaUniapp('platform add android')
-    assert.equal(
-      stdout1,
-      Log.errorColor(`${Log.failSignal} 平台 android 添加失败: 请在文件manifest.json中配置应用appid: appid`),
-    )
+    assert.equal(stdout1, Log.errorColor('平台 android 添加失败: 请在文件manifest.json中配置应用appid: appid'))
 
     manifest.appid = '__UNI__1FC8DF9'
     writeFileSync('src/manifest.json', JSON.stringify(manifest, null, 2), 'utf8')
@@ -55,7 +49,7 @@ describe('android', () => {
     assert.equal(
       stdout2,
       Log.errorColor(
-        `${Log.failSignal} 平台 android 添加失败: 请在文件manifest.json中配置应用Appkey: app-plus.distribute.android.dcloud_appkey`,
+        '平台 android 添加失败: 请在文件manifest.json中配置应用Appkey: app-plus.distribute.android.dcloud_appkey',
       ),
     )
 
@@ -66,7 +60,7 @@ describe('android', () => {
     assert.equal(
       stdout3,
       Log.errorColor(
-        `${Log.failSignal} 平台 android 添加失败: 请在文件manifest.json中配置应用包名: app-plus.distribute.android.packagename`,
+        '平台 android 添加失败: 请在文件manifest.json中配置应用包名: app-plus.distribute.android.packagename',
       ),
     )
 
@@ -77,7 +71,7 @@ describe('android', () => {
     assert.equal(
       stdout4,
       Log.errorColor(
-        `${Log.failSignal} 平台 android 添加失败: 请在文件manifest.json中配置应用所支持的CPU类型: app-plus.distribute.android.abiFilters`,
+        '平台 android 添加失败: 请在文件manifest.json中配置应用所支持的CPU类型: app-plus.distribute.android.abiFilters',
       ),
     )
 
@@ -85,7 +79,7 @@ describe('android', () => {
       manifest['app-plus'].distribute.android.abiFilters = [AndroidAbiFilters.x64, AndroidAbiFilters.ARM64]
     writeFileSync('src/manifest.json', JSON.stringify(manifest, null, 2), 'utf8')
     const { stdout: stdout5 } = await execaUniapp('platform add android')
-    assert.equal(stdout5, Log.successColor(`${Log.successSignal} 平台 android 已成功添加。`))
+    assert.equal(stdout5, Log.successColor('平台 android 已成功添加'))
   })
 
   it('remove', { timeout: 60000, todo: true })

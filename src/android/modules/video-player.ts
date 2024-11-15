@@ -1,5 +1,5 @@
 import { App } from '../../utils/app.js'
-import { appendSet } from '../../utils/util.js'
+import { appendSet } from '../../utils/xml.js'
 import type { Results } from '../prepare.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
 

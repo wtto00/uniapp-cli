@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { App } from '../../utils/app.js'
 import { AndroidDir } from '../../utils/path.js'
-import { appendSet } from '../../utils/util.js'
+import { appendSet } from '../../utils/xml.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'

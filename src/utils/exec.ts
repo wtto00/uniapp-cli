@@ -13,8 +13,8 @@ export function stripAnsiColors(text: string) {
   return text.replace(/\x1B\[[0-?9;]*[mG]/g, '')
 }
 
-export function getErrorMessage(error: unknown) {
-  return (error as { stderr: string }).stderr || (error as { message: string }).message
+export function parseExecaError(error: unknown) {
+  return Error((error as { stderr: string }).stderr || (error as { message: string }).message)
 }
 
 /**
@@ -51,10 +51,10 @@ export async function installPackages(packages: string[]) {
   const spinner = ora(`正在安装依赖 ${packages.join(', ')}`).start()
   const { stderr } = await execa`${commands.command} ${commands.args}`
   if (stderr) {
-    spinner.fail(`安装依赖 ${packages.join(', ')} 失败了。`)
+    spinner.fail(`安装依赖 ${packages.join(', ')} 失败了`)
     throw Error
   }
-  spinner.succeed(`依赖 ${packages.join(', ')} 安装成功。`)
+  spinner.succeed(`依赖 ${packages.join(', ')} 安装成功`)
 }
 
 export async function uninstallPackages(packages: string[]) {
@@ -65,8 +65,8 @@ export async function uninstallPackages(packages: string[]) {
   const spinner = ora(`正在卸载依赖 ${packages.join(', ')}`).start()
   const { stderr } = await execa`${commands.command} ${commands.args}`
   if (stderr) {
-    spinner.fail(`卸载依赖 ${packages.join(', ')} 失败了。`)
+    spinner.fail(`卸载依赖 ${packages.join(', ')} 失败了`)
     throw Error
   }
-  spinner.succeed(`依赖 ${packages.join(', ')} 卸载成功。`)
+  spinner.succeed(`依赖 ${packages.join(', ')} 卸载成功`)
 }

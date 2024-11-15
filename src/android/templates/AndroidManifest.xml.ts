@@ -1,6 +1,5 @@
 import { generateSpace } from '../../utils/space.js'
-import { deepMerge } from '../../utils/util.js'
-import { parseXMLProperties } from '../../utils/xml.js'
+import { deepMerge, parseXMLProperties } from '../../utils/xml.js'
 
 export const AndroidManifestFilePath = 'app/src/main/AndroidManifest.xml'
 

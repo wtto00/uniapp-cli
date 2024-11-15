@@ -1,7 +1,6 @@
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { installPackages, uninstallPackages } from '../utils/exec.js'
-import Log from '../utils/log.js'
 import type { ManifestConfig } from '../utils/manifest.config.js'
 import { isInstalled } from '../utils/package.js'
 
@@ -77,8 +76,7 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
     case PLATFORM.MP_QUICKAPP_HUAWEI:
       return (await import('./quickapp-huawei.js')).default
     default:
-      Log.error(`Unknown platform: ${platform}.`)
-      process.exit(1)
+      throw Error(`未知的平台: ${platform}`)
   }
 }
 

@@ -1,5 +1,5 @@
 import { generateSpace } from '../../utils/space.js'
-import { appendSet } from '../../utils/util.js'
+import { appendSet } from '../../utils/xml.js'
 
 export const AppBuildGradleFilePath = 'app/build.gradle'
 

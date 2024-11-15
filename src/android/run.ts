@@ -54,11 +54,11 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
       cwd: AndroidDir,
     })`${gradleExePath} ${argv}`
     if (stderr) {
-      Log.error(`${Log.failSignal} Android打包出错了: ${stderr}`)
+      Log.error(`Android打包出错了: ${stderr}`)
       return
     }
   } catch {
-    Log.error(`${Log.failSignal} Android打包出错了`)
+    Log.error('Android打包出错了')
     return
   }
   let apkPath = `${AndroidPath}/app/build/outputs`
@@ -71,7 +71,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   } else {
     apkPath += '/apk/debug/app-debug.apk'
   }
-  Log.success(`${Log.successSignal} Android打包成功: ${apkPath}`)
+  Log.success(`Android打包成功: ${apkPath}`)
 
   try {
     const android = new Android()
@@ -116,7 +116,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
       reject: false,
     })`${android.adbBin} logcat console:D *:S -v raw -v color -v time`
   } catch (error) {
-    Log.error(`${Log.failSignal} 出错了: ${(error as Error).message}`)
+    Log.error(`出错了: ${(error as Error).message}`)
     killLogcat()
   }
 }

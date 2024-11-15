@@ -1,5 +1,5 @@
 import { generateSpace } from '../../utils/space.js'
-import { deepMerge, mergeSet } from '../../utils/util.js'
+import { deepMerge, mergeSet } from '../../utils/xml.js'
 
 export const BuildGradleFilePath = 'build.gradle'
 

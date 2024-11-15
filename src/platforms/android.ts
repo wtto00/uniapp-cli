@@ -39,24 +39,24 @@ const android: ModuleClass = {
         if (raw.includes(' version ')) {
           const version = (stdout || stderr).match(/build ([\d\.]+)/)?.[1]
           if (version?.startsWith('1.8')) {
-            Log.success(`${Log.successSignal} ${raw}`)
+            Log.success(`${raw}`)
           } else {
-            Log.warn(`${Log.failSignal} java@${version} 可能不支持，请下载 java@1.8`)
+            Log.warn(`java@${version} 可能不支持，请下载 java@1.8`)
           }
         } else {
-          Log.warn(`${Log.failSignal} 检测 Java 版本失败了。`)
+          Log.warn('检测 Java 版本失败了')
         }
       } else {
-        Log.warn(`${Log.failSignal} Java 可执行文件不存在: ${javaBinPath}。`)
+        Log.warn(`Java 可执行文件不存在: ${javaBinPath}`)
       }
     } else {
-      Log.warn(`${Log.failSignal} 没有设置环境变量: \`JAVA_HOME\` 。`)
+      Log.warn('没有设置环境变量: `JAVA_HOME` ')
     }
     // ANDROID_HOME
     if (process.env.ANDROID_HOME) {
-      Log.success(`${Log.successSignal} ANDROID_HOME=${process.env.ANDROID_HOME}`)
+      Log.success(`ANDROID_HOME=${process.env.ANDROID_HOME}`)
     } else {
-      Log.warn(`${Log.failSignal} 没有设置环境变量: \`ANDROID_HOME\` 。`)
+      Log.warn('没有设置环境变量: `ANDROID_HOME` ')
     }
   },
 
@@ -84,7 +84,7 @@ const android: ModuleClass = {
         if (!sdkFiles) throw Error()
       } catch (error) {
         spinner.fail((error as Error).message)
-        throw Error(`请求UniApp Android SDK@${version} 文件列表失败: ${url}\n网络问题或者暂不支持版本${version}。`)
+        throw Error(`请求UniApp Android SDK@${version} 文件列表失败: ${url}\n网络问题或者暂不支持版本${version}`)
       }
       const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${version}-tmp`)
       if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true })

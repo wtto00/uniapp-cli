@@ -1,5 +1,5 @@
 import { App } from '../../utils/app.js'
-import { appendSet } from '../../utils/util.js'
+import { appendSet } from '../../utils/xml.js'
 import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies } from '../templates/app-build.gradle.js'

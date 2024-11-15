@@ -1,6 +1,6 @@
 import { App } from '../../utils/app.js'
 import { AppPlusOS } from '../../utils/manifest.config.js'
-import { appendSet } from '../../utils/util.js'
+import { appendSet } from '../../utils/xml.js'
 import type { Results } from '../prepare.js'
 import { appendMetaData, appendPermissions, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'

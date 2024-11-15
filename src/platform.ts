@@ -19,9 +19,9 @@ export async function add(platforms: PLATFORM[]) {
 
     try {
       await module.platformAdd({ version: uniVersoin })
-      Log.success(`${Log.successSignal} 平台 ${pfm} 已成功添加。`)
+      Log.success(`平台 ${pfm} 已成功添加`)
     } catch (error) {
-      Log.error(`${Log.failSignal} 平台 ${pfm} 添加失败: ${(error as Error).message}`)
+      Log.error(`平台 ${pfm} 添加失败: ${(error as Error).message}`)
       module.platformRemove()
     }
   }
@@ -40,9 +40,9 @@ export async function remove(platforms: PLATFORM[]) {
     const module = await importPlatform(pfm)
     try {
       await module.platformRemove()
-      Log.success(`${Log.successSignal} 平台 ${pfm} 已成功移除。`)
+      Log.success(`平台 ${pfm} 已成功移除`)
     } catch (error) {
-      Log.error(`${Log.failSignal} 平台 ${pfm} 移除失败: ${(error as Error).message}`)
+      Log.error(`平台 ${pfm} 移除失败: ${(error as Error).message}`)
     }
   }
 }
@@ -60,9 +60,7 @@ export async function list() {
       module.modules.every((module) => isInstalled(module)) && (module.isInstalled?.() ?? true)
     Log.info([
       { msg: `${platform}:${space}` },
-      isPlatformModulesInstalled
-        ? { msg: `${Log.successSignal} 已安装`, type: 'success' }
-        : { msg: `${Log.failSignal} 未安装`, type: 'warn' },
+      isPlatformModulesInstalled ? { msg: '已安装', type: 'success' } : { msg: '未安装', type: 'warn' },
     ])
   }
 }

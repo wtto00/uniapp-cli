@@ -1,5 +1,5 @@
 import { App } from '../../utils/app.js'
-import { appendMerge } from '../../utils/util.js'
+import { appendMerge } from '../../utils/xml.js'
 import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendPermissions } from '../templates/AndroidManifest.xml.js'
 import { generateWXEntryActivity, getWXEntryActivityFilePath } from '../templates/WXEntryActivity.java.js'

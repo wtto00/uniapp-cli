@@ -1,6 +1,7 @@
 import { program } from 'commander'
 import { App } from './utils/app.js'
 import { CLI_VERSION } from './utils/const.js'
+import { error2exit } from './utils/error.js'
 import Log from './utils/log.js'
 import { checkIsUniapp } from './utils/package.js'
 
@@ -37,15 +38,14 @@ program
       const { create } = await import('./create.js')
       await create(projectName, options)
     } catch (error) {
-      Log.error((error as Error).message || '创建新项目出错了。')
-      process.exit(1)
+      error2exit(error, '创建新项目出错了')
     }
   })
 
 program
   .command('requirements')
   .alias('requirement')
-  .usage('<platform ...>')
+  .usage('<platform...>')
   .summary('检查给定平台的环境要求')
   .description('检查给定平台的环境要求')
   .argument('<platform...>', '想要检查的平台: android,ios,h5,mp-weixin...')
@@ -56,8 +56,7 @@ program
       const { requirements } = await import('./requirements.js')
       await requirements(platforms)
     } catch (error) {
-      Log.error((error as Error).message || '检查平台环境要求出错了。')
-      process.exit(1)
+      error2exit(error, '检查平台环境要求出错了')
     }
   })
 
@@ -78,8 +77,7 @@ program
       const { transform } = await import('./transform.js')
       await transform(source, target, options)
     } catch (error) {
-      Log.error((error as Error).message || '转换项目出错了')
-      process.exit(1)
+      error2exit(error, '转换项目出错了')
     }
   })
 
@@ -101,8 +99,7 @@ platform
       const { add } = await import('./platform.js')
       await add(platforms)
     } catch (error) {
-      Log.error((error as Error).message || '添加安装平台出错了。')
-      process.exit(1)
+      error2exit(error, '添加安装平台出错了')
     }
   })
 platform
@@ -118,8 +115,7 @@ platform
       const { remove } = await import('./platform.js')
       await remove(platforms)
     } catch (error) {
-      Log.error((error as Error).message || '移除卸载平台出错了。')
-      process.exit(1)
+      error2exit(error, '移除卸载平台出错了')
     }
   })
 platform
@@ -133,8 +129,7 @@ platform
       const { list } = await import('./platform.js')
       await list()
     } catch (error) {
-      Log.error((error as Error).message || '列举平台出错了。')
-      process.exit(1)
+      error2exit(error, '列举平台出错了')
     }
   })
 
@@ -158,8 +153,7 @@ program
       const { run } = await import('./run.js')
       await run(platform, options)
     } catch (error) {
-      Log.error((error as Error).message || `运行平台 \`${platform}\` 出错了。`)
-      process.exit(1)
+      error2exit(error, `运行平台 \`${platform}\` 出错了`)
     }
   })
 
@@ -184,8 +178,7 @@ program
       const { build } = await import('./build.js')
       await build(platform, options)
     } catch (error) {
-      Log.error((error as Error).message || `打包平台 \`${platform}\` 出错了。`)
-      process.exit(1)
+      error2exit(error, `打包平台 \`${platform}\` 出错了`)
     }
   })
 

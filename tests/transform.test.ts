@@ -36,11 +36,11 @@ describe('transform', () => {
   })
 
   it('source not exist', { timeout: 10000 }, async () => {
-    assert.rejects(() => execaUniapp('transform aaa'), '应用 aaa 不存在')
+    await assert.rejects(() => execaUniapp('transform aaa'), '应用 aaa 不存在')
   })
 
   it('no target', { timeout: 10000 }, async () => {
-    assert.rejects(() => execaUniapp('transform templates'), {
+    await assert.rejects(() => execaUniapp('transform templates'), {
       exitCode: 1,
       stdout: Log.errorColor('转换后的目录与原目录相同，请使用 `--force` 参数强制修改原项目'),
     })
@@ -51,7 +51,7 @@ describe('transform', () => {
   })
 
   it('target not empty', { timeout: 10000 }, async () => {
-    assert.rejects(() => execaUniapp('transform templates tests'), {
+    await assert.rejects(() => execaUniapp('transform templates tests'), {
       exitCode: 1,
       stdout: Log.errorColor('目录 tests 非空，使用 `--force` 强制覆盖'),
     })

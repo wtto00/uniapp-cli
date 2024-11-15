@@ -53,9 +53,6 @@ Options:
 - [vitesse](https://github.com/uni-helper/vitesse-uni-app): 背靠 `Uni Helper` 团队，告别 `HBuilderX` ，拥抱现代前端开发
 - [vue3-ts](https://github.com/dcloudio/uni-preset-vue/tree/vite-ts): `DCloud` 官方的 `vue3` + `typescript` 模板
 - [vue3](https://github.com/dcloudio/uni-preset-vue/tree/vite): `DCloud` 官方的 `vue3` 模板
-- [vue2](https://github.com/dcloudio/uni-preset-vue/tree/master): `DCloud` 官方的 `vue2` 模板
-- [vue3-alpha](https://github.com/dcloudio/uni-preset-vue/tree/vite-alpha): `DCloud` 官方的 `vue3` 模板，使用 `alpha` 版本 `uniapp` 依赖。
-- [vue2-alpha](https://github.com/dcloudio/uni-preset-vue/tree/alpha): `DCloud` 官方的 `vue2` 模板，使用 `alpha` 版本 `uniapp` 依赖。
 
 ### 使用 `-t` 或者 ` --template` 参数，可以自定义模板
 

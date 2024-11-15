@@ -84,28 +84,28 @@ describe('platform', () => {
     const { stdout } = await execaUniapp('platform ls')
     assert.equal(
       stdout,
-      `android:              ${Log.warnColor(`${Log.failSignal} 未安装`)}
-ios:                  ${Log.warnColor(`${Log.failSignal} 未安装`)}
-harmony:              ${Log.warnColor(`${Log.failSignal} 未安装`)}
-h5:                   ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-weixin:            ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-alipay:            ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-baidu:             ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-toutiao:           ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-lark:              ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-qq:                ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-kuaishou:          ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-jd:                ${Log.successColor(`${Log.successSignal} 已安装`)}
-mp-360:               ${Log.warnColor(`${Log.failSignal} 未安装`)}
-mp-xhs:               ${Log.successColor(`${Log.successSignal} 已安装`)}
-quickapp-union:       ${Log.successColor(`${Log.successSignal} 已安装`)}
-quickapp-huawei:      ${Log.successColor(`${Log.successSignal} 已安装`)}`,
+      `android:              ${Log.warnColor('未安装')}
+ios:                  ${Log.warnColor('未安装')}
+harmony:              ${Log.warnColor('未安装')}
+h5:                   ${Log.successColor('已安装')}
+mp-weixin:            ${Log.successColor('已安装')}
+mp-alipay:            ${Log.successColor('已安装')}
+mp-baidu:             ${Log.successColor('已安装')}
+mp-toutiao:           ${Log.successColor('已安装')}
+mp-lark:              ${Log.successColor('已安装')}
+mp-qq:                ${Log.successColor('已安装')}
+mp-kuaishou:          ${Log.successColor('已安装')}
+mp-jd:                ${Log.successColor('已安装')}
+mp-360:               ${Log.warnColor('未安装')}
+mp-xhs:               ${Log.successColor('已安装')}
+quickapp-union:       ${Log.successColor('已安装')}
+quickapp-huawei:      ${Log.successColor('已安装')}`,
     )
   })
 
   it('rm mp-xhs', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform rm mp-xhs')
-    assert.equal(stdout, Log.successColor(`${Log.successSignal} 平台 mp-xhs 已成功移除。`))
+    assert.equal(stdout, Log.successColor('平台 mp-xhs 已成功移除'))
   })
 
   it('rm invalid platform', { timeout: 10000 }, async () => {
@@ -120,6 +120,6 @@ quickapp-huawei:      ${Log.successColor(`${Log.successSignal} 已安装`)}`,
 
   it('add mp-xhs', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform add mp-xhs')
-    assert.equal(stdout, Log.successColor(`${Log.successSignal} 平台 mp-xhs 已成功添加。`))
+    assert.equal(stdout, Log.successColor('平台 mp-xhs 已成功添加'))
   })
 })

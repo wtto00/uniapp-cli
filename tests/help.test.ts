@@ -29,13 +29,13 @@ describe('help', async () => {
     assert.strictEqual(stdout, HELP_TEXT)
   })
 
-  it('None arguments', { timeout: 10000 }, () => {
-    assert.rejects(() => execaUniapp(''), HELP_TEXT)
+  it('None arguments', { timeout: 10000 }, async () => {
+    await assert.rejects(() => execaUniapp(''), HELP_TEXT)
   })
 })
 
 describe('error', () => {
-  it('Unknown command', { timeout: 10000 }, () => {
-    assert.rejects(() => execaUniapp('xxx'), `error: unknown command 'xxx'\n\n${HELP_TEXT}`)
+  it('Unknown command', { timeout: 10000 }, async () => {
+    await assert.rejects(() => execaUniapp('xxx'), `error: unknown command 'xxx'\n\n${HELP_TEXT}`)
   })
 })
