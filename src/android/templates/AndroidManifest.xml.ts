@@ -71,6 +71,7 @@ export const defaultAndroidManifest: AndroidManifest = {
         'android:theme': '@style/TranslucentTheme',
         'android:screenOrientation': 'user',
         'android:windowSoftInputMode': 'adjustResize',
+        'android:exported': 'true',
       },
       intentFilter: [
         {
@@ -89,6 +90,7 @@ export const defaultAndroidManifest: AndroidManifest = {
         'android:screenOrientation': 'user',
         'android:theme': '@style/DCloudTheme',
         'android:windowSoftInputMode': 'adjustResize',
+        'android:exported': 'false',
       },
     },
   },

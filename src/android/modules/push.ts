@@ -7,6 +7,7 @@ import type { Results } from '../prepare.js'
 import { appendActivity, appendMetaData, appendService } from '../templates/AndroidManifest.xml.js'
 import { appendDependencies, appendPlugin } from '../templates/app-build.gradle.js'
 import { appendFeature } from '../templates/dcloud_properties.xml.js'
+import { resourceSizes } from '../utils.js'
 
 export function appendPush(results: Results) {
   const manifest = App.getManifestJson()
@@ -71,8 +72,7 @@ export function appendPush(results: Results) {
   })
 
   if (icons?.small) {
-    const allSize = ['ldpi', 'mdpi', 'hdpi', 'xhdpi', 'xxhdpi'] as const
-    for (const size of allSize) {
+    for (const size of resourceSizes) {
       if (icons.small?.[size]) {
         const iconPath = resolve(
           AndroidDir,

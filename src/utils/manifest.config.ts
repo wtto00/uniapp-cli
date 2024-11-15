@@ -391,7 +391,7 @@ export interface AppPlusDistributeSdkConfigs {
     huawei?: object
   }
   ad?: {
-    config: {
+    config?: {
       /** 开屏广告 */
       splash?: boolean
       adid?: string
@@ -478,6 +478,7 @@ export interface AppPlusDistributeSdkConfigs {
           hdpi?: string
           xhdpi?: string
           xxhdpi?: string
+          xxxhdpi?: string
         }
       }
       /** 应用的app id/app key等信息，从开发者后台->unipush->配置管理->应用管理 界面查看 ** 注意：HBuilderX3.1.15之后需要添加GETUI_APPID属性 ** */
@@ -651,8 +652,8 @@ export interface AppPlusDistributeIOS {
   idfa?: boolean
   /** 应用的能力配置（Capabilities） */
   capabilities?: {
-    entitlements: object
-    plists: object
+    entitlements?: object
+    plists?: object
   }
   /** 应用的CFBundleName名称，默认值为HBuilder */
   CFBundleName?: string
@@ -1291,7 +1292,7 @@ export interface ManifestConfig {
   uniStatistics?: UniStatistics
   /** APP 特有配置 */
   'app-plus'?: AppPlus
-  channel_list?: { id: string; name?: string }[]
+  channel_list?: { id?: string; name?: string }[]
   /** H5 特有配置 */
   h5?: H5
   /** 快应用特有配置 */
