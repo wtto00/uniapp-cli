@@ -6,6 +6,7 @@ import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
+import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { cleanAndroid } from './clean.js'
@@ -116,7 +117,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
       reject: false,
     })`${android.adbBin} logcat console:D *:S -v raw -v color -v time`
   } catch (error) {
-    Log.error(`出错了: ${(error as Error).message}`)
+    Log.error(`出错了: ${errorMessage(error)}`)
     killLogcat()
   }
 }

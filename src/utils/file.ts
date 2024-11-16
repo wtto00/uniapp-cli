@@ -3,6 +3,7 @@ import { createReadStream, existsSync, readFileSync, readdirSync, statSync, watc
 import { resolve } from 'node:path'
 import JSON5 from 'json5'
 import { App } from './app.js'
+import { errorMessage } from './error.js'
 import Log from './log.js'
 
 export function readJsonFile<T extends object>(jsonPath: string, isJson5?: boolean) {
@@ -52,7 +53,7 @@ async function hasChanged(dirPath: string): Promise<boolean> {
         changed = true
         md5cahces[filePath] = fileMD5
       } catch (error) {
-        Log.error((error as Error).message)
+        Log.error(errorMessage(error))
       }
     }
   }

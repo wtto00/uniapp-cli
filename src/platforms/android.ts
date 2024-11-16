@@ -10,6 +10,7 @@ import { devDistPath } from '../android/www.js'
 import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
+import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import { watchFiles } from '../utils/file.js'
 import { gitIgnorePath } from '../utils/git.js'
@@ -83,7 +84,7 @@ const android: ModuleClass = {
         sdkFiles = await fetchResult.json()
         if (!sdkFiles) throw Error()
       } catch (error) {
-        spinner.fail((error as Error).message)
+        spinner.fail(errorMessage(error))
         throw Error(`请求UniApp Android SDK@${version} 文件列表失败: ${url}\n网络问题或者暂不支持版本${version}`)
       }
       const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${version}-tmp`)
@@ -101,7 +102,7 @@ const android: ModuleClass = {
         spinner.succeed('Android SDK Lib文件已下载完成')
         renameSync(targetDir, getLibSDKDir(version))
       } catch (error) {
-        spinner.fail((error as Error).message)
+        spinner.fail(errorMessage(error))
         throw Error('下载Android SDK Lib文件失败了，请重试')
       }
     }
@@ -182,7 +183,7 @@ const android: ModuleClass = {
         buffer: false,
       })`${commands.command} ${commands.args}`
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },
@@ -210,7 +211,7 @@ const android: ModuleClass = {
 
       if (stderr) throw Error(stderr)
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },

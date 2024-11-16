@@ -1,5 +1,6 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 import { App } from './utils/app.js'
+import { errorMessage } from './utils/error.js'
 import Log from './utils/log.js'
 import { isInstalled } from './utils/package.js'
 
@@ -21,7 +22,7 @@ export async function add(platforms: PLATFORM[]) {
       await module.platformAdd({ version: uniVersoin })
       Log.success(`平台 ${pfm} 已成功添加`)
     } catch (error) {
-      Log.error(`平台 ${pfm} 添加失败: ${(error as Error).message}`)
+      Log.error(`平台 ${pfm} 添加失败: ${errorMessage(error)}`)
       module.platformRemove()
     }
   }
@@ -42,7 +43,7 @@ export async function remove(platforms: PLATFORM[]) {
       await module.platformRemove()
       Log.success(`平台 ${pfm} 已成功移除`)
     } catch (error) {
-      Log.error(`平台 ${pfm} 移除失败: ${(error as Error).message}`)
+      Log.error(`平台 ${pfm} 移除失败: ${errorMessage(error)}`)
     }
   }
 }

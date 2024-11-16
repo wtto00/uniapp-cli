@@ -4,6 +4,7 @@ import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from '../utils/app.js'
+import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import Log from '../utils/log.js'
 import { isWindows } from '../utils/util.js'
@@ -93,7 +94,7 @@ const mpWeixin: ModuleClass = {
         }
       }
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },
@@ -121,7 +122,7 @@ const mpWeixin: ModuleClass = {
         throw Error(stderr)
       }
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },

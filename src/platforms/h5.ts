@@ -3,6 +3,7 @@ import open from 'open'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from '../utils/app.js'
+import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
@@ -56,7 +57,7 @@ const h5: ModuleClass = {
         }
       }
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },
@@ -73,7 +74,7 @@ const h5: ModuleClass = {
     try {
       await execa({ stdio: 'inherit', env: { FORCE_COLOR: 'true' } })`${commands.command} ${commands.args}`
     } catch (error) {
-      if ((error as Error).message.match(/CTRL-C/)) return
+      if (errorMessage(error).match(/CTRL-C/)) return
       throw error
     }
   },
