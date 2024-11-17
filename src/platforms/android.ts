@@ -42,7 +42,7 @@ const android: ModuleClass = {
           if (version?.startsWith('1.8')) {
             Log.success(`${raw}`)
           } else {
-            Log.warn(`java@${version} 可能不支持，请下载 java@1.8`)
+            Log.warn(`java@${version} 不支持，请下载 java@1.8`)
           }
         } else {
           Log.warn('检测 Java 版本失败了')

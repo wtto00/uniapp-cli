@@ -45,7 +45,7 @@ const mpWeixin: ModuleClass = {
 
   async requirement() {
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
-      Log.error(`微信开发者平台不支持平台: ${process.platform}`)
+      Log.error(`微信开发者工具不支持系统: ${process.platform}`)
       return
     }
 
@@ -56,9 +56,8 @@ const mpWeixin: ModuleClass = {
       return
     }
 
-    Log.warn('微信开发者工具没有安装')
-    Log.info(
-      `  如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`,
+    Log.warn(
+      `没有检测到微信开发者工具。如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`,
     )
   },
 

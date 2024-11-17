@@ -9,7 +9,7 @@ uniapp help requirement
 ```
 
 ```
-Usage: uniapp requirements|requirement <platform ...>
+Usage: uniapp requirements|requirement <platform...>
 
 检查给定平台的环境要求
 

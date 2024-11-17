@@ -2,11 +2,12 @@ import assert from 'node:assert'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { after, before, describe, it } from 'node:test'
+import chalk from 'chalk'
 import Log from '../src/utils/log.js'
 import { isWindows } from '../src/utils/util.js'
 import { execaUniapp } from './helper'
 
-const HELP_TEXT = `Usage: uniapp requirements|requirement <platform ...>
+const HELP_TEXT = `Usage: uniapp requirements|requirement <platform...>
 
 检查给定平台的环境要求
 
@@ -52,13 +53,24 @@ describe('requirement', () => {
   })
 
   it('invalid platform', { timeout: 10000 }, async () => {
-    const { stdout } = await execaUniapp('requirement xxx')
-    assert.equal(stdout, Log.warnColor('无效的平台: xxx'))
+    const { stdout } = await execaUniapp('requirement h5 xxx aaa android')
+    assert.equal(
+      stdout,
+      `${Log.warnMessage('无效的平台: xxx')}
+${Log.warnMessage('无效的平台: aaa')}
+
+${chalk.cyan('h5:')}
+${Log.successMessage('平台 h5 已安装')}
+
+${chalk.cyan('android:')}
+${Log.warnMessage('平台 android 还没有安装。请运行 `uniapp platform add android` 添加安装')}
+`,
+    )
   })
 
   it('h5', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('requirement h5')
-    assert.equal(stdout, `h5: \n${Log.successColor('平台 `h5` 已安装')}\n`)
+    assert.equal(stdout, `${chalk.cyan('h5:')}\n${Log.successMessage('平台 h5 已安装')}\n`)
   })
 
   it('mp-weixin', { timeout: 10000 }, async () => {
@@ -66,9 +78,9 @@ describe('requirement', () => {
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
       assert.equal(
         stdout,
-        `mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.errorColor(`微信开发者平台不支持平台: ${process.platform}`)}
+        `${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.errorMessage(`微信开发者工具不支持系统: ${process.platform}`)}
 `,
       )
       return
@@ -80,18 +92,17 @@ ${Log.errorColor(`微信开发者平台不支持平台: ${process.platform}`)}
     if (isInstall) {
       assert.equal(
         stdout,
-        `mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.successColor(`微信开发者工具已安装 (${defaultPath})`)}
+        `${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.successMessage(`微信开发者工具已安装 (${defaultPath})`)}
 `,
       )
     } else {
       assert.equal(
         stdout,
-        `mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.warnColor('微信开发者工具没有安装')}
-  如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
+        `${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.warnMessage(`没有检测到微信开发者工具。如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`)}
 `,
       )
     }
@@ -106,18 +117,18 @@ ${Log.warnColor('微信开发者工具没有安装')}
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
       assert.equal(
         stdout,
-        `mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.errorColor(`微信开发者平台不支持平台: ${process.platform}`)}
+        `${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.errorMessage(`微信开发者工具不支持系统: ${process.platform}`)}
 `,
       )
       return
     }
     assert.equal(
       stdout,
-      `mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.successColor(`微信开发者工具已安装 (${cliPath})`)}
+      `${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.successMessage(`微信开发者工具已安装 (${cliPath})`)}
 `,
     )
     process.env.WEIXIN_DEV_TOOL = undefined
@@ -133,28 +144,27 @@ ${Log.successColor(`微信开发者工具已安装 (${cliPath})`)}
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
       assert.equal(
         stdout,
-        `h5: 
-${Log.successColor('平台 `h5` 已安装')}
+        `${chalk.cyan('h5:')}
+${Log.successMessage('平台 h5 已安装')}
 
-mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
-${Log.errorColor(`微信开发者平台不支持平台: ${process.platform}`)}
+${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
+${Log.errorMessage(`微信开发者工具不支持系统: ${process.platform}`)}
 `,
       )
       return
     }
     assert.equal(
       stdout,
-      `h5: 
-${Log.successColor('平台 `h5` 已安装')}
+      `${chalk.cyan('h5:')}
+${Log.successMessage('平台 h5 已安装')}
 
-mp-weixin: 
-${Log.successColor('平台 `mp-weixin` 已安装')}
+${chalk.cyan('mp-weixin:')}
+${Log.successMessage('平台 mp-weixin 已安装')}
 ${
   isInstall
-    ? `${Log.successColor(`微信开发者工具已安装 (${defaultPath})`)}\n`
-    : `${Log.warnColor('微信开发者工具没有安装')}
-  如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置
+    ? `${Log.successMessage(`微信开发者工具已安装 (${defaultPath})`)}\n`
+    : `${Log.warnMessage(`没有检测到微信开发者工具。如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`)}
 `
 }`,
     )
