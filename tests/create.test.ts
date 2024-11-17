@@ -1,8 +1,7 @@
 import assert from 'node:assert'
-import { existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { after, describe, it } from 'node:test'
 import type { SyncResult } from 'execa'
-import logSymbols from 'log-symbols'
 import Log from '../src/utils/log.js'
 import { execaUniapp, execaUniappSync } from './helper.js'
 
@@ -55,8 +54,7 @@ describe('create', () => {
       (err: SyncResult) => {
         assert.equal(
           err.stdout,
-          `${Log.errorColor(logSymbols.error)}  ${Log.errorColor('无效的项目名称: 你好')}
-${Log.errorColor('Error: name can only contain URL-friendly characters')}`,
+          `${Log.errorMessage('无效的项目名称: 你好\nError: name can only contain URL-friendly characters')}`,
         )
         return true
       },
@@ -86,7 +84,7 @@ ${Log.errorColor('Error: name can only contain URL-friendly characters')}`,
     const { stdout } = await execaUniapp('create test-project-branch --template dcloudio/uni-preset-vue#vite-ts')
     assert.equal(
       stdout,
-      `${Log.warnColor(logSymbols.warning)}  ${Log.warnColor('正在使用自定义模板 dcloudio/uni-preset-vue#vite-ts，请确保拥有模板仓库的访问权限')}
+      `${Log.warnMessage('正在使用自定义模板 dcloudio/uni-preset-vue#vite-ts，请确保拥有模板仓库的访问权限')}
 
 运行以下命令开始吧:
   cd test-project-branch
@@ -102,7 +100,7 @@ ${Log.errorColor('Error: name can only contain URL-friendly characters')}`,
     )
     assert.equal(
       stdout,
-      `${Log.warnColor(logSymbols.warning)}  ${Log.warnColor('正在使用自定义模板 dcloudio/uni-preset-vue#3.0.0-4020920240930001，请确保拥有模板仓库的访问权限')}
+      `${Log.warnMessage('正在使用自定义模板 dcloudio/uni-preset-vue#3.0.0-4020920240930001，请确保拥有模板仓库的访问权限')}
 
 运行以下命令开始吧:
   cd test-project-tag
@@ -117,17 +115,29 @@ ${Log.errorColor('Error: name can only contain URL-friendly characters')}`,
     await assert.rejects(
       () => execaUniapp('create test-project-no-force --template dcloudio/uni-preset-vue'),
       (err: SyncResult) => {
-        console.log('err', err)
-        assert.equal(
-          err.stdout,
-          `${Log.errorColor(logSymbols.error)}  ${Log.errorColor('test-project-no-force 已存在, 使用 `--force` 强制覆盖')}`,
-        )
+        assert.equal(err.stdout, `${Log.errorMessage('test-project-no-force 已存在, 使用 `--force` 强制覆盖')}`)
         return true
       },
     )
   })
 
-  it('--force --verbose .git', { timeout: 30000, skip: true })
+  it('--force --verbose .git', { timeout: 30000 }, async () => {
+    if (!existsSync('test-project-force')) mkdirSync('test-project-force')
+    const { stdout } = await execaUniapp('create test-project-force --template dcloudio/uni-preset-vue --force')
+    assert(
+      stdout,
+      `${Log.warnMessage('正在使用自定义模板 dcloudio/uni-preset-vue，请确保拥有模板仓库的访问权限')}
+
+运行以下命令开始吧:
+  cd test-project-force
+  pnpm install
+  uniapp run h5
+`,
+    )
+    assert.equal(existsSync('test-project-force/.git'), false)
+    const content = readFileSync('test-project-force/package.json', 'utf8')
+    assert.equal(JSON.parse(content).name, 'test-project-force')
+  })
 
   it('-t https -d', { timeout: 30000 }, async () => {
     const { stdout } = await execaUniapp(

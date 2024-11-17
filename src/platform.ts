@@ -60,8 +60,8 @@ export async function list() {
     const isPlatformModulesInstalled =
       module.modules.every((module) => isInstalled(module)) && (module.isInstalled?.() ?? true)
     Log.info([
-      { msg: `${platform}:${space}` },
-      isPlatformModulesInstalled ? { msg: '已安装', type: 'success' } : { msg: '未安装', type: 'warn' },
+      { message: `${platform}:${space}` },
+      isPlatformModulesInstalled ? { message: '已安装', type: 'success' } : { message: '未安装', type: 'warn' },
     ])
   }
 }

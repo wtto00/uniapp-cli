@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import chalk, { type ChalkInstance } from 'chalk'
 import logSymbols from 'log-symbols'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'success'
@@ -6,45 +6,55 @@ export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'success'
 const Log = {
   verbose: false,
 
-  debug(...msgs: string[]) {
+  debug(message: string) {
     if (!Log.verbose) return
-    console.log(...msgs.map((msg) => Log.debugColor(msg)))
+    console.log(Log.debugColor(message))
   },
 
-  info(...msgs: string[] | [{ msg: string; type?: LogLevel }[]]) {
-    if (!Array.isArray(msgs[0])) {
-      console.log(...msgs)
+  info(message: string | { message: string; type?: LogLevel | ChalkInstance }[] = '') {
+    if (!Array.isArray(message)) {
+      console.log(message)
     } else {
       console.log(
-        ...msgs[0].map((item) => {
-          switch (item.type) {
-            case 'debug':
-              return Log.debugColor(item.msg)
-            case 'warn':
-              return Log.warnColor(item.msg)
-            case 'error':
-              return Log.errorColor(item.msg)
-            case 'success':
-              return Log.successColor(item.msg)
-            default:
-              return item.msg
-          }
-        }),
+        message
+          .map((item) => {
+            if (!item.type) return item.message
+            if (typeof item.type === 'string') {
+              switch (item.type) {
+                case 'debug':
+                  return Log.debugColor(item.message)
+                case 'warn':
+                  return Log.warnColor(item.message)
+                case 'error':
+                  return Log.errorColor(item.message)
+                case 'success':
+                  return Log.successColor(item.message)
+                default:
+                  return item.message
+              }
+            }
+            return item.type(item.message)
+          })
+          .join(''),
       )
     }
   },
 
-  warn(...msgs: string[]) {
-    console.log(Log.warnColor(logSymbols.warning), '', ...msgs.map((msg) => Log.warnColor(msg)))
+  warn(message: string) {
+    console.log(Log.warnMessage(message))
   },
 
-  error(...msgs: string[]) {
-    console.log(Log.errorColor(logSymbols.error), '', ...msgs.map((msg) => Log.errorColor(msg)))
+  error(message: string) {
+    console.log(Log.errorMessage(message))
   },
 
-  success(...msgs: string[]) {
-    console.log(Log.successColor(logSymbols.success), '', ...msgs.map((msg) => Log.successColor(msg)))
+  success(message: string) {
+    console.log(Log.successMessage(message))
   },
+
+  successMessage: (text: string) => Log.successColor(`${logSymbols.success} ${text}`),
+  errorMessage: (text: string) => Log.errorColor(`${logSymbols.error} ${text}`),
+  warnMessage: (text: string) => Log.warnColor(`${logSymbols.warning} ${text}`),
 
   successColor: (text: string) => chalk.green(text),
   errorColor: (text: string) => chalk.red(text),
