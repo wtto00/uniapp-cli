@@ -13,8 +13,8 @@ import { showSpinner } from './utils/spinner.js'
 
 const TEMPLATES = [
   { name: 'vitesse', value: 'uni-helper/vitesse-uni-app' },
-  { name: 'vue3-ts', value: 'dcloudio/uni-preset-vue#vite-ts' },
-  { name: 'vue3', value: 'dcloudio/uni-preset-vue#vite' },
+  { name: 'vue3-ts', value: 'https://gitee.com/dcloud/uni-preset-vue#vite-ts' },
+  { name: 'vue3', value: 'https://gitee.com/dcloud/uni-preset-vue#vite' },
 ]
 
 export interface CreateOptoins {

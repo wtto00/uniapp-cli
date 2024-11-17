@@ -51,8 +51,8 @@ Options:
 `uniapp-cli` 内置了几种模板:
 
 - [vitesse](https://github.com/uni-helper/vitesse-uni-app): 背靠 `Uni Helper` 团队，告别 `HBuilderX` ，拥抱现代前端开发
-- [vue3-ts](https://github.com/dcloudio/uni-preset-vue/tree/vite-ts): `DCloud` 官方的 `vue3` + `typescript` 模板
-- [vue3](https://github.com/dcloudio/uni-preset-vue/tree/vite): `DCloud` 官方的 `vue3` 模板
+- [vue3-ts](https://gitee.com/dcloud/uni-preset-vue/tree/vite-ts): `DCloud` 官方的 `vue3` + `typescript` 模板
+- [vue3](https://gitee.com/dcloud/uni-preset-vue/tree/vite): `DCloud` 官方的 `vue3` 模板
 
 ### 使用 `-t` 或者 ` --template` 参数，可以自定义模板
 
