@@ -6,12 +6,7 @@ import { readJsonFile } from './file.js'
 
 export function isInstalled(module: string): boolean {
   const packages = App.getPackageJson()
-  return !!(
-    packages.dependencies?.[module] ||
-    packages.devDependencies?.[module] ||
-    packages.optionalDependencies?.[module] ||
-    packages.peerDependencies?.[module]
-  )
+  return !!getPackageDependencies(packages)[module]
 }
 export function getModuleVersion(module: string) {
   if (!isInstalled(module)) return ''
@@ -25,5 +20,14 @@ export function getModuleVersion(module: string) {
 export function checkIsUniapp() {
   if (!isInstalled('@dcloudio/uni-app')) {
     throw Error('当前目录不是一个uniapp应用。')
+  }
+}
+
+export function getPackageDependencies(packageJson: PackageJson) {
+  return {
+    ...packageJson.dependencies,
+    ...packageJson.devDependencies,
+    ...packageJson.optionalDependencies,
+    ...packageJson.peerDependencies,
   }
 }

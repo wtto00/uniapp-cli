@@ -22,10 +22,10 @@ export interface ModuleClass {
 }
 
 export enum PLATFORM {
+  H5 = 'h5',
   ANDROID = 'android',
   IOS = 'ios',
   HARMONY = 'harmony',
-  H5 = 'h5',
   MP_WEIXIN = 'mp-weixin',
   MP_ALIPAY = 'mp-alipay',
   MP_BAIDU = 'mp-baidu',

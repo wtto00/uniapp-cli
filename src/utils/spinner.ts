@@ -13,8 +13,8 @@ export async function showSpinner(
   } catch (error) {
     if (messages.fail) spinner.fail(messages.fail)
     const err = options?.parseError?.(error) ?? (error as Error)
-    if (options?.throw) throw err
     if (options?.fail) spinner.fail(err.message)
     if (options?.debug !== false) Log.debug(err.message)
+    if (options?.throw) throw err
   }
 }

@@ -17,7 +17,7 @@ Usage: uniapp transform <source> [target]
 
 Arguments:
   source       HBuilderX项目所在的目录位置
-  target       转换后的CLI项目所在的目录位置。默认为当前目录+原项目目录名
+  target       转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称
 
 Options:
   -f, --force  如果目录已存在，强制覆盖
@@ -36,7 +36,7 @@ Options:
 
 转换后的 `CLI` 项目的位置，相对于当前目录的位置。
 
-可以省略，默认为 `当前目录` + `原项目目录名`
+可以省略，默认为 `当前目录` + `原项目名称`
 
 ## --force
 

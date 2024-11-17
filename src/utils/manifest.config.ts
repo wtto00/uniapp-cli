@@ -1315,5 +1315,6 @@ export interface ManifestConfig {
   'mp-qq'?: MpQq
   /** 快手小程序特有配置 */
   'mp-kuaishou'?: MpKuaishou
+  vueVersion?: '2' | '3'
   [x: string]: unknown
 }

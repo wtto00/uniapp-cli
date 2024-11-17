@@ -66,7 +66,7 @@ program
   .summary('转换HBuilderX项目到CLI项目')
   .description('把一个HBuilderX创建的项目，转换为CLI创建的项目')
   .argument('<source>', 'HBuilderX项目所在的目录位置')
-  .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目目录名')
+  .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称')
   .option('-f, --force', '如果目录已存在，强制覆盖')
   .addHelpText(
     'after',
