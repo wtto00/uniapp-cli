@@ -62,15 +62,15 @@ describe('create', () => {
   })
 
   it('no template', { timeout: 10000 }, () => {
-    assert.throws(
-      () => execaUniappSync('create test-project'),
-      `\x1B[34m?\x1B[39m \x1B[1m请选择新建项目的模板\x1B[22m \x1B[2m(Use arrow keys)\x1B[22m\n\x1B[36m❯ vitesse\x1B[39m
+    assert.throws(() => execaUniappSync('create test-project'), {
+      stdout: `\x1B[34m?\x1B[39m \x1B[1m请选择新建项目的模板\x1B[22m \x1B[2m(Use arrow keys)\x1B[22m
+\x1B[36m❯ vitesse\x1B[39m
   vue3-ts
   vue3
-  vue2
-  vue3-alpha
-  vue2-alpha\x1B[?25l\x1B[13G\n\x1B[?25h\x1B[31mUser force closed the prompt with 0 null\x1B[39m`,
-    )
+  vue2-ts
+  vue2\x1B[?25l\x1B[7G
+\x1B[?25h${Log.errorMessage('User force closed the prompt with 0 null')}`,
+    })
   })
 
   it('--template invalid repository', { timeout: 10000 }, async () => {

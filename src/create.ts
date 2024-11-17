@@ -15,6 +15,8 @@ const TEMPLATES = [
   { name: 'vitesse', value: 'uni-helper/vitesse-uni-app' },
   { name: 'vue3-ts', value: 'https://gitee.com/dcloud/uni-preset-vue#vite-ts' },
   { name: 'vue3', value: 'https://gitee.com/dcloud/uni-preset-vue#vite' },
+  { name: 'vue2-ts', value: 'https://gitee.com/wtto00/uniapp-template#ts' },
+  { name: 'vue2', value: 'https://gitee.com/wtto00/uniapp-template' },
 ]
 
 export interface CreateOptoins {

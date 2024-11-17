@@ -53,16 +53,20 @@ Options:
 - [vitesse](https://github.com/uni-helper/vitesse-uni-app): 背靠 `Uni Helper` 团队，告别 `HBuilderX` ，拥抱现代前端开发
 - [vue3-ts](https://gitee.com/dcloud/uni-preset-vue/tree/vite-ts): `DCloud` 官方的 `vue3` + `typescript` 模板
 - [vue3](https://gitee.com/dcloud/uni-preset-vue/tree/vite): `DCloud` 官方的 `vue3` 模板
+- [vue2-ts](https://gitee.com/wtto00/uniapp-template#ts): `DCloud` 官方的 `vue2` + `typescript` 模板
+- [vue2](https://gitee.com/wtto00/uniapp-template): `DCloud` 官方的 `vue2` 模板
 
 ### 使用 `-t` 或者 ` --template` 参数，可以自定义模板
 
 - 如果是 `Github` 的仓库模板，可以直接使用 `<username>/<repository-name>` 简写，而不需要完整的 `Git` 地址。
-- 支持使用 `http` 协议的模板仓库地址。
+- 支持使用 `http/https` 协议的模板仓库地址。
 - 支持使用 `git` 协议的仓库地址。
 - 支持使用 `ssh` 协议的仓库地址。
 - 支持任何 `git clone` 所支持的仓库模板地址。
 - 私有的模板仓库，需要保证 `Git` 有访问权限。
 - 某些仓库需要先登录，才能克隆，例如 `Gitee` 。如果报错，请配置 `ssh-key` 或在 `Git` 中登录。
+
+**推荐使用 `http/https` 协议的模板仓库地址。**
 
 ### 使用 `-f` 或者 `--force` 参数，强制覆盖已存在的相同目录
 
