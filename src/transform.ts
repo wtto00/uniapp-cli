@@ -18,7 +18,7 @@ const vue2IgnorePath = ['index.html']
 
 const keepDirs = ['.git', '.vscode', 'public']
 
-const keepFiles = [
+const srcFiles = [
   'androidPrivacy.json',
   'AndroidManifest.xml',
   'App.vue',
@@ -28,13 +28,18 @@ const keepFiles = [
   'uni.promisify.adaptor.js',
 ]
 
-const keepExtNames = ['scss', 'css', 'less']
+const srcExtNames = ['scss', 'css', 'less']
 
 const vue3template = 'https://gitee.com/dcloud/uni-preset-vue/raw/vite'
 const vue2template = 'https://gitee.com/wtto00/uniapp-template/raw/main'
 
+const hbuilderxModules = ['sass', 'pinia', 'i18n', 'vuex', 'router'] as const
+
+type HBuilderXModule = (typeof hbuilderxModules)[number]
+
 export interface TransformOptions {
   force?: boolean
+  module?: string[] | true
 }
 
 export async function transform(source: string, target?: string, options?: TransformOptions) {
@@ -79,10 +84,24 @@ export async function transform(source: string, target?: string, options?: Trans
     }
   }
 
-  const optionalDependencies = await checkbox<string>({
-    message: '是否使用以下所列举的服务?',
-    choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
-  })
+  let builtInModules = options?.module
+  if (!builtInModules) {
+    builtInModules = await checkbox<string>({
+      message: '是否使用以下所列举的服务?',
+      choices: hbuilderxModules,
+    })
+  } else {
+    if (builtInModules === true) {
+      builtInModules = []
+    } else {
+      builtInModules = builtInModules.filter((module) => hbuilderxModules.includes(module as HBuilderXModule))
+    }
+    if (builtInModules.length) {
+      Log.info(`包含HBuilderX内置模块: ${builtInModules.join(', ')}`)
+    } else {
+      Log.info('不包含HBuilderX内置模块依赖')
+    }
+  }
 
   const manifest = readJsonFile<ManifestConfig>(resolve(sourceDir, 'manifest.json'), true)
   const vue3 = manifest.vueVersion === '3'
@@ -105,8 +124,8 @@ export async function transform(source: string, target?: string, options?: Trans
       }
 
       if (
-        keepFiles.includes(file) ||
-        keepExtNames.includes(extname(file).substring(1)) ||
+        srcFiles.includes(file) ||
+        srcExtNames.includes(extname(file).substring(1)) ||
         statSync(filePath).isDirectory()
       ) {
         if (isSameDir) {
@@ -165,25 +184,35 @@ export async function transform(source: string, target?: string, options?: Trans
     packageJson.scripts ||= {}
     packageJson.scripts.uniapp = 'uniapp'
 
-    const modules = getPackageDependencies(packageJson)
-    const uniVersion = modules['@dcloudio/uni-app']
+    const allDependencies = getPackageDependencies(packageJson)
+    const uniVersion = allDependencies['@dcloudio/uni-app']
 
     packageJson.dependencies ||= {}
     packageJson.devDependencies ||= {}
-    for (const dep of optionalDependencies) {
-      if (modules[dep]) continue
-      if (!vue3) {
-        if (dep === 'vue-i18n') {
-          if (!modules['@dcloudio/uni-i18n']) packageJson.dependencies['@dcloudio/uni-i18n'] = uniVersion
-          if (!modules['@dcloudio/uni-cli-i18n']) packageJson.devDependencies['@dcloudio/uni-cli-i18n'] = uniVersion
-          continue
-        }
-        if (dep === 'vuex') {
-          packageJson.dependencies[dep] = '^3.2.0'
-          continue
-        }
+    for (const module of builtInModules) {
+      switch (module as HBuilderXModule) {
+        case 'i18n':
+          if (vue3) {
+            if (!allDependencies['vue-i18n']) packageJson.dependencies['vue-i18n'] = '*'
+          } else {
+            if (!allDependencies['@dcloudio/uni-i18n']) packageJson.dependencies['@dcloudio/uni-i18n'] = uniVersion
+            if (!allDependencies['@dcloudio/uni-cli-i18n'])
+              packageJson.devDependencies['@dcloudio/uni-cli-i18n'] = uniVersion
+          }
+          break
+        case 'vuex':
+          if (allDependencies.vuex) continue
+          packageJson.dependencies.vuex = vue3 ? '*' : '^3.2.0'
+          break
+        case 'router':
+          if (allDependencies['vue-router']) continue
+          packageJson.dependencies['vue-router'] = '*'
+          break
+        default:
+          if (allDependencies[module]) continue
+          packageJson.dependencies[module] = '*'
+          break
       }
-      packageJson.dependencies[dep] = '*'
     }
     await writeFile(resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2), 'utf8')
 
@@ -194,43 +223,42 @@ export async function transform(source: string, target?: string, options?: Trans
       let jsconfig = {} as { compilerOptions?: ts.CompilerOptions; include?: string[]; exclude?: string[] }
       try {
         jsconfig = JSON.parse(jsconfigContent)
-        for (const key of ['include', 'exclude'] as const) {
+        function transformPath(paths: string[]) {
           const value = [] as string[]
-          for (const path of jsconfig[key] as string[]) {
-            const match = path.match(/(\.\/|\/)?([\s\S]+)/)?.[2]
+          for (const path of paths) {
+            const matches = path.match(/(\.\/|\/)?([\s\S]+)/)
+            const match = matches?.[2] ?? ''
             if (
               match &&
               !keepDirs.some((item) => match.startsWith(item)) &&
               !ignorePath.some((item) => match.startsWith(item))
             ) {
-              value.push(`src/${match}`)
+              const index = match.indexOf('/')
+              if (index < 0 && !existsSync(resolve(targetDir, 'src', match))) {
+                value.push(path)
+              } else {
+                value.push(`${matches?.[1] ?? ''}src/${match}`)
+              }
+            } else {
+              value.push(path)
             }
           }
-          jsconfig[key] = value
+          return value
+        }
+        for (const key of ['include', 'exclude'] as const) {
+          jsconfig[key] = transformPath(jsconfig[key] as string[])
         }
         jsconfig.compilerOptions ||= {}
         jsconfig.compilerOptions.paths ||= {}
+        for (const name in jsconfig.compilerOptions.paths as Record<string, string[]>) {
+          jsconfig.compilerOptions.paths[name] = transformPath(jsconfig.compilerOptions.paths[name] ?? [])
+        }
         if (
           !jsconfig.compilerOptions.paths['@'] &&
           !jsconfig.compilerOptions.paths['@/'] &&
           !jsconfig.compilerOptions.paths['@/*']
         ) {
-          jsconfig.compilerOptions.paths['@'] = ['.']
-        }
-        for (const name in jsconfig.compilerOptions.paths as Record<string, string[]>) {
-          const alias = jsconfig.compilerOptions.paths[name] ?? []
-          const value = [] as string[]
-          for (const path of alias) {
-            const match = path.match(/(\.\/|\/)?([\s\S]+)/)?.[2]
-            if (
-              match &&
-              !keepDirs.some((item) => match.startsWith(item)) &&
-              !ignorePath.some((item) => match.startsWith(item))
-            ) {
-              value.push(`./src/${match}`)
-            }
-          }
-          jsconfig.compilerOptions.paths[name] = value
+          jsconfig.compilerOptions.paths['@'] = ['./src']
         }
       } catch {}
       await writeFile(jsconfigPath, JSON.stringify(jsconfig, null, 2), 'utf8')

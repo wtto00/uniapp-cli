@@ -18,16 +18,17 @@ Usage: uniapp transform <source> [target]
 把一个HBuilderX创建的项目，转换为CLI创建的项目
 
 Arguments:
-  source       HBuilderX项目所在的目录位置
-  target       转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称
+  source                HBuilderX项目所在的目录位置
+  target                转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称
 
 Options:
-  -f, --force  如果目录已存在，强制覆盖
-  -h, --help   帮助信息
+  -f, --force           如果目录已存在，强制覆盖
+  --module [module...]  使用了哪些HBuilderX内置的模块: sass,pinia,i18n,vuex,router
+  -h, --help            帮助信息
 
 示例:
   uniapp transform project-by-hbuilderx project-by-cli
-  uniapp transform project-by-hbuilderx
+  uniapp transform project-by-hbuilderx -f --module sass pinia
 ```
 
 ## source
@@ -46,3 +47,15 @@ Options:
 
 - 如果原项目位置和设定的转换后的项目位置相同，则需要使用此参数来强制修改原项目。
 - 如果转换后的项目目录非空，则需要此参数来强制覆盖已存在的目录。
+
+## --module
+
+使用 `--module` 来告知项目中使用了哪些 `HBuilderX` 内置的依赖模块。
+
+可选的模块有: `sass`, `pinia`, `i18n`, `vuex`, `router`。
+
+如果没有此参数，则会在转换开始之前主动提示选择。
+
+可以传入此参数为空值，则表示没有使用 `HBuilderX` 内置的依赖模块，也不会主动提示选择。
+
+多个模块，使用空格分隔。

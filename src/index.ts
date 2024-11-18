@@ -68,9 +68,13 @@ program
   .argument('<source>', 'HBuilderX项目所在的目录位置')
   .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称')
   .option('-f, --force', '如果目录已存在，强制覆盖')
+  .option('--module [module...]', '使用了哪些HBuilderX内置的模块: sass,pinia,i18n,vuex,router')
   .addHelpText(
     'after',
-    '\n示例:\n  uniapp transform project-by-hbuilderx project-by-cli\n  uniapp transform project-by-hbuilderx',
+    `
+示例:
+  uniapp transform project-by-hbuilderx project-by-cli
+  uniapp transform project-by-hbuilderx -f --module sass pinia`,
   )
   .action(async (source, target, options) => {
     try {
