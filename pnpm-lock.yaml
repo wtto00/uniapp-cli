@@ -48,9 +48,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@inquirer/testing':
-        specifier: ^2.1.37
-        version: 2.1.37(@types/node@22.7.7)
       '@types/node':
         specifier: ^22.7.7
         version: 22.7.7
@@ -1517,12 +1514,6 @@ packages:
 
   '@inquirer/select@4.0.2':
     resolution: {integrity: sha512-uSWUzaSYAEj0hlzxa1mUB6VqrKaYx0QxGBLZzU4xWFxaSyGaXxsSE4OSOwdU24j0xl8OajgayqFXW0l2bkl2kg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-
-  '@inquirer/testing@2.1.37':
-    resolution: {integrity: sha512-6QU4Xt8jM9kWEky6/JwjNJ/HvM2VfNB+G6GU8J8UJtRD+sQDGmNR4geX3iu3lYhFAaHH8XtSvBc1aG//58eUKg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/node': '>=18'
@@ -6657,14 +6648,6 @@ snapshots:
       '@types/node': 22.7.7
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
-
-  '@inquirer/testing@2.1.37(@types/node@22.7.7)':
-    dependencies:
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
-      ansi-escapes: 4.3.2
-      mute-stream: 2.0.0
-      strip-ansi: 6.0.1
 
   '@inquirer/type@3.0.1(@types/node@22.7.7)':
     dependencies:

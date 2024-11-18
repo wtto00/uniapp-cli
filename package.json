@@ -51,7 +51,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@inquirer/testing": "^2.1.37",
     "@types/node": "^22.7.7",
     "@types/validate-npm-package-name": "^4.0.2",
     "@wtto00/biome-config": "^0.0.1",

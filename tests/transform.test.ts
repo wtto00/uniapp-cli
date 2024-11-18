@@ -1,8 +1,6 @@
 import assert from 'node:assert'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { after, before, describe, it } from 'node:test'
-import { checkbox } from '@inquirer/prompts'
-import { render } from '@inquirer/testing'
 import Log from '../src/utils/log.js'
 import { execaUniapp, execaUniappSync } from './helper.js'
 
@@ -21,6 +19,15 @@ Options:
 示例:
   uniapp transform project-by-hbuilderx project-by-cli
   uniapp transform project-by-hbuilderx`
+
+const PROMPT_TEXT = `\x1B[34m?\x1B[39m \x1B[1m是否使用以下所列举的服务?\x1B[22m (Press \x1B[36m\x1B[1m<space>\x1B[22m\x1B[39m to select, \x1B[36m\x1B[1m<a>\x1B[22m\x1B[39m to toggle all, \x1B[36m\x1B[1m<i>\x1B[22m\x1B[39m to
+invert selection, and \x1B[36m\x1B[1m<enter>\x1B[22m\x1B[39m to proceed)
+\x1B[36m❯◯ sass\x1B[39m
+ ◯ pinia
+ ◯ vue-i18n
+ ◯ vue-router
+ ◯ vuex\x1B[?25l\x1B[8G
+\x1B[?25h`
 
 const projectPath = 'test-project-transform'
 
@@ -72,14 +79,9 @@ ${Log.errorMessage(`目录 ${projectPath} 非空，请使用 \`--force\` 强制�
   })
 
   it('no target --force', { timeout: 30000 }, async () => {
-    const { events, getFullOutput } = await render(checkbox, {
-      message: '是否使用以下所列举的服务?',
-      choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
-    })
     assert.throws(() => execaUniappSync(`transform ${projectPath} -f`), {
-      stdout: `没有设定CLI项目位置，默认选择目录 test-project-transform\n${getFullOutput()}\n\x1B[?25h`,
+      stdout: `没有设定CLI项目位置，默认选择目录 test-project-transform\n${PROMPT_TEXT}`,
     })
-    events.keypress('enter')
   })
 
   const targetDir = 'test-project-transform-target'
@@ -94,14 +96,9 @@ ${Log.errorMessage(`目录 ${projectPath} 非空，请使用 \`--force\` 强制�
   })
 
   it('--force', { timeout: 10000 }, async () => {
-    const { events, getFullOutput } = await render(checkbox, {
-      message: '是否使用以下所列举的服务?',
-      choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
-    })
     assert.throws(() => execaUniappSync(`transform ${projectPath} ${targetDir} -f`), {
-      stdout: `${getFullOutput()}\n\x1B[?25h`,
+      stdout: PROMPT_TEXT,
     })
-    events.keypress('enter')
   })
 
   it('jsconfig', { timeout: 10000, todo: true }, async () => {
