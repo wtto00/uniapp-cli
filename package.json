@@ -4,9 +4,9 @@
   "description": "CLI for uniapp.",
   "type": "module",
   "bin": {
-    "uniapp": "./bin/uniapp.mjs"
+    "uniapp": "./dist/index.js"
   },
-  "files": ["bin", "templates", "dist"],
+  "files": ["templates", "dist"],
   "scripts": {
     "dev": "tsc -p tsconfig.build.json --pretty --declaration --sourceMap --watch",
     "uniapp": "tsx src/index.ts",
@@ -15,7 +15,7 @@
     "build:type": "tsc -p tsconfig.build.json --pretty --declaration --emitDeclarationOnly",
     "test": "globstar -- node --import tsx --test tests/**/*.test.ts",
     "dev:docs": "pnpm -C docs docs:dev",
-    "type:check": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "check": "biome check --write .",
     "prebuild": "node scripts/prebuild.mjs",
     "preinstall": "npx -y only-allow pnpm",
@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@inquirer/testing": "^2.1.37",
     "@types/node": "^22.7.7",
     "@types/validate-npm-package-name": "^4.0.2",
     "@wtto00/biome-config": "^0.0.1",
