@@ -1,7 +1,10 @@
 import Log from './log.js'
 
 export function error2exit(error: unknown, defaultMessage: string, code = 1) {
-  Log.error(errorMessage(error) || defaultMessage)
+  const message = errorMessage(error)
+  if (message !== 'User force closed the prompt with 0 null') {
+    Log.error(message || defaultMessage)
+  }
   process.exit(code)
 }
 
