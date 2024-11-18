@@ -1,7 +1,10 @@
 import assert from 'node:assert'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { after, describe, it } from 'node:test'
+import { select } from '@inquirer/prompts'
+import { render } from '@inquirer/testing'
 import type { SyncResult } from 'execa'
+import { TEMPLATES } from '../src/create.js'
 import Log from '../src/utils/log.js'
 import { execaUniapp, execaUniappSync } from './helper.js'
 
@@ -61,16 +64,16 @@ describe('create', () => {
     )
   })
 
-  it('no template', { timeout: 10000 }, () => {
-    assert.throws(() => execaUniappSync('create test-project'), {
-      stdout: `\x1B[34m?\x1B[39m \x1B[1m请选择新建项目的模板\x1B[22m \x1B[2m(Use arrow keys)\x1B[22m
-\x1B[36m❯ vitesse\x1B[39m
-  vue3-ts
-  vue3
-  vue2-ts
-  vue2\x1B[?25l\x1B[7G
-\x1B[?25h${Log.errorMessage('User force closed the prompt with 0 null')}`,
+  it('no template', { timeout: 10000 }, async () => {
+    const { events, getFullOutput } = await render(select, {
+      message: '请选择新建项目的模板',
+      choices: TEMPLATES,
+      default: 0,
     })
+    assert.throws(() => execaUniappSync('create test-project'), {
+      stdout: `${getFullOutput()}\n\x1B[?25h`,
+    })
+    events.keypress('enter')
   })
 
   it('--template invalid repository', { timeout: 10000 }, async () => {

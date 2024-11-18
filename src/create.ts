@@ -11,7 +11,7 @@ import { getTemplateRepositoryUrl } from './utils/git.js'
 import Log from './utils/log.js'
 import { showSpinner } from './utils/spinner.js'
 
-const TEMPLATES = [
+export const TEMPLATES = [
   { name: 'vitesse', value: 'uni-helper/vitesse-uni-app' },
   { name: 'vue3-ts', value: 'https://gitee.com/dcloud/uni-preset-vue#vite-ts' },
   { name: 'vue3', value: 'https://gitee.com/dcloud/uni-preset-vue#vite' },
