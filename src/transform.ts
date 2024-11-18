@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, extname, resolve } from 'node:path'
-import inquirer from 'inquirer'
+import { checkbox } from '@inquirer/prompts'
 import ora from 'ora'
 import { type PackageJson, readPackageJSON } from 'pkg-types'
 import type ts from 'typescript'
@@ -79,17 +79,10 @@ export async function transform(source: string, target?: string, options?: Trans
     }
   }
 
-  const { optionalDependencies } = await inquirer.prompt<{
-    optionalDependencies: string[]
-  }>([
-    {
-      type: 'checkbox',
-      name: 'optionalDependencies',
-      message: '是否使用以下所列举的服务?',
-      choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
-      default: [],
-    },
-  ])
+  const optionalDependencies = await checkbox<string>({
+    message: '是否使用以下所列举的服务?',
+    choices: ['sass', 'pinia', 'vue-i18n', 'vue-router', 'vuex'],
+  })
 
   const manifest = readJsonFile<ManifestConfig>(resolve(sourceDir, 'manifest.json'), true)
   const vue3 = manifest.vueVersion === '3'
@@ -215,8 +208,17 @@ export async function transform(source: string, target?: string, options?: Trans
           }
           jsconfig[key] = value
         }
-        for (const name in jsconfig.compilerOptions?.paths as Record<string, string[]>) {
-          const alias = jsconfig.compilerOptions?.paths?.[name] ?? []
+        jsconfig.compilerOptions ||= {}
+        jsconfig.compilerOptions.paths ||= {}
+        if (
+          !jsconfig.compilerOptions.paths['@'] &&
+          !jsconfig.compilerOptions.paths['@/'] &&
+          !jsconfig.compilerOptions.paths['@/*']
+        ) {
+          jsconfig.compilerOptions.paths['@'] = ['.']
+        }
+        for (const name in jsconfig.compilerOptions.paths as Record<string, string[]>) {
+          const alias = jsconfig.compilerOptions.paths[name] ?? []
           const value = [] as string[]
           for (const path of alias) {
             const match = path.match(/(\.\/|\/)?([\s\S]+)/)?.[2]
@@ -228,7 +230,7 @@ export async function transform(source: string, target?: string, options?: Trans
               value.push(`./src/${match}`)
             }
           }
-          if (jsconfig.compilerOptions?.paths?.[name]) jsconfig.compilerOptions.paths[name] = value
+          jsconfig.compilerOptions.paths[name] = value
         }
       } catch {}
       await writeFile(jsconfigPath, JSON.stringify(jsconfig, null, 2), 'utf8')

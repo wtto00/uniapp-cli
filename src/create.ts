@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { select } from '@inquirer/prompts'
 import { execa } from 'execa'
-import inquirer from 'inquirer'
 import { readPackageJSON, writePackageJSON } from 'pkg-types'
 import validateProjectName from 'validate-npm-package-name'
 import { App } from './utils/app.js'
@@ -63,15 +63,11 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   let template = options.template ?? ''
   if (!template) {
-    const { templateKey } = await inquirer.prompt<{ templateKey: string }>([
-      {
-        type: 'list',
-        name: 'templateKey',
-        message: '请选择新建项目的模板',
-        choices: TEMPLATES,
-        default: 0,
-      },
-    ])
+    const templateKey = await select<string>({
+      message: '请选择新建项目的模板',
+      choices: TEMPLATES,
+      default: 0,
+    })
     template = templateKey ?? TEMPLATES[0].value
   } else {
     Log.warn(`正在使用自定义模板 ${template}，请确保拥有模板仓库的访问权限`)
