@@ -1,13 +1,12 @@
-import { cpSync, existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
+import { rename, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
-import { prepare } from '../android/prepare.js'
 import runAndroid from '../android/run.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { devDistPath } from '../android/www.js'
-import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
@@ -15,16 +14,16 @@ import { stripAnsiColors } from '../utils/exec.js'
 import { watchFiles } from '../utils/file.js'
 import { gitIgnorePath } from '../utils/git.js'
 import Log from '../utils/log.js'
-import { AppPlusOS } from '../utils/manifest.config.js'
-import { AndroidDir, AndroidPath, IOSDir, UNIAPP_SDK_HOME } from '../utils/path.js'
+import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
+import { showSpinner } from '../utils/spinner.js'
 import { trimEnd } from '../utils/util.js'
-import { type ModuleClass, type PlatformAddOptions, installModules, uninstallModules } from './index.js'
+import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
 
 const android: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
+  modules: ['@dcloudio/uni-app-plus'],
 
   isInstalled() {
     return existsSync(AndroidDir)
@@ -61,34 +60,31 @@ const android: ModuleClass = {
     }
   },
 
-  async platformAdd({ version }: PlatformAddOptions) {
-    const manifest = App.getManifestJson()
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
 
-    if (!manifest) throw Error('文件 manifest.json 解析失败')
+    await installModules(android.modules, uniVersion)
 
-    checkConfig(manifest, AppPlusOS.Android)
-
-    await installModules(android.modules, version)
-
-    const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', version)
+    const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', uniVersion)
     if (!existsSync(sdkDir)) {
       // download sdk libs
       const spinner = ora('正在下载Android SDK Lib文件: ').start()
-      const url = `${UNIAPP_ANDROID_SDK_URL}/libs/${version}/index.json`
+      const url = `${UNIAPP_ANDROID_SDK_URL}/libs/${uniVersion}/index.json`
       let sdkFiles: Record<string, string> = {}
       try {
         const fetchResult = await fetch(url)
         if (fetchResult.status === 404) {
-          throw Error(`Android 平台暂不支持版本 ${version}`)
+          throw Error(`Android 平台暂不支持版本 ${uniVersion}`)
         }
         sdkFiles = await fetchResult.json()
         if (!sdkFiles) throw Error()
       } catch (error) {
         spinner.fail(errorMessage(error))
-        throw Error(`请求UniApp Android SDK@${version} 文件列表失败: ${url}\n网络问题或者暂不支持版本${version}`)
+        throw Error(`请求UniApp Android SDK@${uniVersion} 文件列表失败: ${url}`)
       }
-      const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${version}-tmp`)
+      const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${uniVersion}-tmp`)
       if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true })
+      const libSDKDir = getLibSDKDir(uniVersion)
       try {
         for (const lib in sdkFiles) {
           spinner.text = `正在下载Android SDK Lib文件: ${lib}`
@@ -97,10 +93,10 @@ const android: ModuleClass = {
           const libUrl = `${UNIAPP_ANDROID_SDK_URL}/libs/${sdkFiles[lib]}`
           const libFetchRes = await fetch(libUrl)
           const libContent = await libFetchRes.arrayBuffer()
-          writeFileSync(libPath, new Uint8Array(libContent))
+          await writeFile(libPath, new Uint8Array(libContent))
         }
         spinner.succeed('Android SDK Lib文件已下载完成')
-        renameSync(targetDir, getLibSDKDir(version))
+        await rename(targetDir, libSDKDir)
       } catch (error) {
         spinner.fail(errorMessage(error))
         throw Error('下载Android SDK Lib文件失败了，请重试')
@@ -108,8 +104,7 @@ const android: ModuleClass = {
     }
 
     try {
-      cpSync(resolve(import.meta.dirname, '../../templates/android'), AndroidDir, { recursive: true })
-      prepare()
+      cpSync(resolve(TemplateDir, 'android'), AndroidDir, { recursive: true })
     } catch (error) {
       rmSync(AndroidDir, { recursive: true, force: true })
       throw error
@@ -122,7 +117,11 @@ const android: ModuleClass = {
     if (!existsSync(IOSDir)) {
       await uninstallModules(android.modules)
     }
-    rmSync(AndroidDir, { recursive: true, force: true })
+    showSpinner(() => rm(AndroidDir, { recursive: true, force: true }), {
+      start: `正在删除 ${AndroidPath}`,
+      succeed: `${AndroidPath} 已删除`,
+      fail: `${AndroidPath} 删除失败`,
+    })
   },
 
   async run(options: BuildOptions) {

@@ -12,8 +12,9 @@ const h5: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(h5.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(h5.modules, uniVersion)
   },
 
   async platformRemove() {

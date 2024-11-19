@@ -1,21 +1,14 @@
 import type { BuildOptions } from '../build.js'
-import { App } from '../utils/app.js'
 import { installPackages, uninstallPackages } from '../utils/exec.js'
-import type { ManifestConfig } from '../utils/manifest.config.js'
 import { isInstalled } from '../utils/package.js'
 
 type MaybePromise<T> = T | Promise<T>
 
-export interface PlatformAddOptions {
-  /** Current project UniApp version  */
-  version: string
-  manifest?: ManifestConfig
-}
 export interface ModuleClass {
   modules: string[]
   isInstalled?: () => boolean
   requirement: () => MaybePromise<void>
-  platformAdd: (options: PlatformAddOptions) => MaybePromise<void>
+  platformAdd: () => MaybePromise<void>
   platformRemove: () => MaybePromise<void>
   run: (options: BuildOptions) => MaybePromise<void>
   build: (options: BuildOptions) => MaybePromise<void>
@@ -77,13 +70,6 @@ export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
       return (await import('./quickapp-huawei.js')).default
     default:
       throw Error(`未知的平台: ${platform}`)
-  }
-}
-
-export async function requireVue2(platform: PLATFORM) {
-  const vueVersion = App.getVueVersion()
-  if (!vueVersion.startsWith('2.')) {
-    throw Error(`平台 ${platform} 只支持 vue@2，发现已安装版本 vue@${vueVersion}`)
   }
 }
 

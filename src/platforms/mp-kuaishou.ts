@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpKuaishou: ModuleClass = {
@@ -5,8 +6,9 @@ const mpKuaishou: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(mpKuaishou.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mpKuaishou.modules, uniVersion)
   },
 
   async platformRemove() {

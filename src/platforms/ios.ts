@@ -1,9 +1,10 @@
 import { existsSync } from 'node:fs'
+import { App } from '../utils/app.js'
 import { AndroidDir, IOSDir } from '../utils/path.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const ios: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
+  modules: ['@dcloudio/uni-app-plus'],
 
   isInstalled() {
     return existsSync(IOSDir)
@@ -11,8 +12,9 @@ const ios: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(ios.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(ios.modules, uniVersion)
   },
 
   async platformRemove() {

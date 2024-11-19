@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { isInstalled } from '../utils/package.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 import quickAppHuawei from './quickapp-huawei.js'
@@ -7,8 +8,9 @@ const quickAppUnion: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(quickAppUnion.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(quickAppUnion.modules, uniVersion)
   },
 
   async platformRemove() {

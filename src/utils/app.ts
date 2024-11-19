@@ -18,8 +18,6 @@ export const App = {
 
   uniVersoin: '',
 
-  vueVersion: '',
-
   init() {
     App.projectRoot = process.cwd()
     const configPath = resolve(App.projectRoot, 'uniapp-cli.config.json')
@@ -68,13 +66,5 @@ export const App = {
       if (!App.uniVersoin) throw Error('获取 @dcloudio/uni-app 版本号失败')
     }
     return App.uniVersoin
-  },
-
-  getVueVersion(): string {
-    if (!App.vueVersion) {
-      App.vueVersion = getModuleVersion('vue')
-      if (!App.vueVersion) throw Error('获取 vue 版本号失败')
-    }
-    return App.vueVersion
   },
 }

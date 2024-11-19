@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpLark: ModuleClass = {
@@ -5,8 +6,9 @@ const mpLark: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(mpLark.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mpLark.modules, uniVersion)
   },
 
   async platformRemove() {

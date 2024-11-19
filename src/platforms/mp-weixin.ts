@@ -61,8 +61,9 @@ const mpWeixin: ModuleClass = {
     )
   },
 
-  async platformAdd({ version }) {
-    await installModules(mpWeixin.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mpWeixin.modules, uniVersion)
   },
 
   async platformRemove() {

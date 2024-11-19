@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mp360: ModuleClass = {
@@ -5,8 +6,9 @@ const mp360: ModuleClass = {
 
   async requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(mp360.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mp360.modules, uniVersion)
   },
 
   async platformRemove() {

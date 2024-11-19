@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpQQ: ModuleClass = {
@@ -5,8 +6,9 @@ const mpQQ: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(mpQQ.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mpQQ.modules, uniVersion)
   },
 
   async platformRemove() {

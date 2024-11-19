@@ -1,3 +1,4 @@
+import { App } from '../utils/app.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const mpXHS: ModuleClass = {
@@ -5,8 +6,9 @@ const mpXHS: ModuleClass = {
 
   async requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(mpXHS.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(mpXHS.modules, uniVersion)
   },
 
   async platformRemove() {

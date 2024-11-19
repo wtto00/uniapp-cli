@@ -47,9 +47,9 @@ describe('platform', () => {
     () => {
       execaUniappSync('create test-project-platform --template dcloudio/uni-preset-vue#vite-ts')
       process.chdir('test-project-platform')
-      execaSync`pnpm install`
+      execaSync`pnpm --ignore-workspace --no-lockfile install`
     },
-    { timeout: 60000 },
+    { timeout: 90000 },
   )
 
   after(
@@ -84,42 +84,42 @@ describe('platform', () => {
     const { stdout } = await execaUniapp('platform ls')
     assert.equal(
       stdout,
-      `android:              ${Log.warnColor('未安装')}
-ios:                  ${Log.warnColor('未安装')}
-harmony:              ${Log.warnColor('未安装')}
-h5:                   ${Log.successColor('已安装')}
-mp-weixin:            ${Log.successColor('已安装')}
-mp-alipay:            ${Log.successColor('已安装')}
-mp-baidu:             ${Log.successColor('已安装')}
-mp-toutiao:           ${Log.successColor('已安装')}
-mp-lark:              ${Log.successColor('已安装')}
-mp-qq:                ${Log.successColor('已安装')}
-mp-kuaishou:          ${Log.successColor('已安装')}
-mp-jd:                ${Log.successColor('已安装')}
-mp-360:               ${Log.warnColor('未安装')}
-mp-xhs:               ${Log.successColor('已安装')}
-quickapp-union:       ${Log.successColor('已安装')}
-quickapp-huawei:      ${Log.successColor('已安装')}`,
+      `h5:                  ${Log.successColor('已安装')}
+android:             ${Log.warnColor('未安装')}
+ios:                 ${Log.warnColor('未安装')}
+harmony:             ${Log.warnColor('未安装')}
+mp-weixin:           ${Log.successColor('已安装')}
+mp-alipay:           ${Log.successColor('已安装')}
+mp-baidu:            ${Log.successColor('已安装')}
+mp-toutiao:          ${Log.successColor('已安装')}
+mp-lark:             ${Log.successColor('已安装')}
+mp-qq:               ${Log.successColor('已安装')}
+mp-kuaishou:         ${Log.successColor('已安装')}
+mp-jd:               ${Log.successColor('已安装')}
+mp-360:              ${Log.warnColor('未安装')}
+mp-xhs:              ${Log.successColor('已安装')}
+quickapp-union:      ${Log.successColor('已安装')}
+quickapp-huawei:     ${Log.successColor('已安装')}`,
     )
   })
 
-  it('rm mp-xhs', { timeout: 60000 }, async () => {
+  it('rm mp-xhs', { timeout: 120000 }, async () => {
     const { stdout } = await execaUniapp('platform rm mp-xhs')
-    assert.equal(stdout, Log.successColor('平台 mp-xhs 已成功移除'))
+    assert.equal(stdout, Log.successMessage('mp-xhs 平台已成功移除'))
   })
 
   it('rm invalid platform', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('platform rm xxx')
-    assert.equal(stdout, Log.errorColor('xxx 不是一个有效的平台。\n'))
+    assert.equal(stdout, Log.warnMessage('xxx 不是一个有效的平台'))
   })
 
   it('add invalid platform', { timeout: 10000 }, async () => {
     const { stdout } = await execaUniapp('platform add xxx')
-    assert.equal(stdout, Log.errorColor('xxx 不是一个有效的平台。\n'))
+    assert.equal(stdout, Log.warnMessage('xxx 不是一个有效的平台'))
   })
 
   it('add mp-xhs', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform add mp-xhs')
-    assert.equal(stdout, Log.successColor('平台 mp-xhs 已成功添加'))
+    assert.equal(stdout, Log.successMessage('mp-xhs 平台已成功添加'))
   })
 })

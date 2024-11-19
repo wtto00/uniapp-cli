@@ -1,10 +1,11 @@
 import { existsSync } from 'node:fs'
 import type { BuildOptions } from '../build.js'
+import { App } from '../utils/app.js'
 import { HarmonyDir } from '../utils/path.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const harmony: ModuleClass = {
-  modules: ['@dcloudio/uni-app-harmony', '@dcloudio/uni-uts-v1'],
+  modules: ['@dcloudio/uni-app-harmony'],
 
   isInstalled() {
     return existsSync(HarmonyDir)
@@ -12,8 +13,9 @@ const harmony: ModuleClass = {
 
   requirement() {},
 
-  async platformAdd({ version }) {
-    await installModules(harmony.modules, version)
+  async platformAdd() {
+    const uniVersion = App.getUniVersion()
+    await installModules(harmony.modules, uniVersion)
   },
 
   async platformRemove() {
