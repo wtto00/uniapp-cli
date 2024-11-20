@@ -26,7 +26,7 @@ features:
     details: 和 WEB 一致的开发体验，VS Code或者WebStorm等任意编辑器
   - title: 快速新建项目
     icon: 🏗️
-    details: uniapp create 轻松创建新项目，可选择任意 Git 仓库模板
+    details: uniapp create 快速创建新项目，可选择任意 Git 仓库模板
   - title: 检查开发环境完整性
     icon: 🔎
     details: uniapp requirement 检查开发环境完整性，缺少哪些依赖一目了然
@@ -41,5 +41,5 @@ features:
     details: uniapp run 快速启动运行项目，并支持热更新
   - title: 一键打包各平台
     icon: 📦
-    details: uniapp build 打包各平台
+    details: uniapp build 打包各平台，支持 App 平台离线打包
 ---

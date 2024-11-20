@@ -2,11 +2,13 @@ import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { rename, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
+import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import runAndroid from '../android/run.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { devDistPath } from '../android/www.js'
+import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
@@ -122,10 +124,16 @@ const android: ModuleClass = {
   },
 
   async run(options: BuildOptions) {
+    checkConfig()
+
     const pm = App.getPackageManager()
-    const args = ['uni', '-p', 'app-android']
-    if (options.mode) {
-      args.push('--mode', options.mode)
+    const args = []
+    if (App.isVue3()) {
+      args.push('uni', '-p', 'app-android')
+      if (options.mode) args.push('--mode', options.mode)
+    } else {
+      process.env.UNI_PLATFORM = 'app-plus'
+      args.push('vue-cli-service', 'uni-build', '--watch')
     }
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
@@ -133,7 +141,7 @@ const android: ModuleClass = {
     try {
       let over = false
       let markHideError = false
-      function* errTransform(line: string) {
+      const errTransform = function* (line: string) {
         const lineText = stripAnsiColors(line)
         if (markHideError) {
           if (lineText.startsWith('file: ') || lineText.startsWith('at uni_modules/')) {
@@ -161,8 +169,8 @@ const android: ModuleClass = {
           return
         }
         yield line
-      }
-      function* outTransform(line: string) {
+      } as GeneratorTransform<false>
+      const outTransform = function* (line: string) {
         yield line
         if (!options.open || over) return
         const lineText = stripAnsiColors(line)
@@ -170,9 +178,8 @@ const android: ModuleClass = {
           over = true
           watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
         }
-      }
+      } as GeneratorTransform<false>
       execa({
-        // @ts-ignore
         stderr: [errTransform, 'inherit'],
         stdout: [outTransform, 'inherit'],
         env: { FORCE_COLOR: 'true' },

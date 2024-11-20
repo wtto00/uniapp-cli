@@ -18,18 +18,18 @@ export const App = {
 
   uniVersoin: '',
 
+  vueVersion: '',
+
   init() {
     App.projectRoot = process.cwd()
     const configPath = resolve(App.projectRoot, 'uniapp-cli.config.json')
     if (existsSync(configPath)) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      const config = readJsonFile<{ env: Record<string, any> }>(configPath, true)
-      const env = config.env
-      for (const key in env || {}) {
-        if (typeof env[key] === 'object') {
-          process.env[key] = JSON.stringify(env[key])
+      const config = readJsonFile<Record<string, unknown>>(configPath, true)
+      for (const key in config || {}) {
+        if (typeof config[key] === 'object') {
+          process.env[key] = JSON.stringify(config[key])
         } else {
-          process.env[key] = (env[key] ?? '').toString()
+          process.env[key] = (config[key] ?? '').toString()
         }
         Log.debug(`设置环境变量 ${key}="${process.env[key]}"`)
       }
@@ -66,5 +66,17 @@ export const App = {
       if (!App.uniVersoin) throw Error('获取 @dcloudio/uni-app 版本号失败')
     }
     return App.uniVersoin
+  },
+
+  getVueVersion(): string {
+    if (!App.vueVersion) {
+      App.vueVersion = getModuleVersion('vue')
+      if (!App.vueVersion) throw Error('获取 vue 版本号失败')
+    }
+    return App.vueVersion
+  },
+
+  isVue3(): boolean {
+    return App.getVueVersion().startsWith('3')
   },
 }

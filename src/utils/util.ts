@@ -14,3 +14,7 @@ export function trimEnd(source: string | undefined, trimStr: string) {
 export function isWindows() {
   return process.platform === 'win32'
 }
+
+export function uniRunSuccess(text: string) {
+  return /ready in (\d+\.)?\d+m?s\./.test(text)
+}

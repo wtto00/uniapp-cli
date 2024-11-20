@@ -49,6 +49,8 @@ Options:
 
 `vite` 框架的 [模式](https://vitejs.cn/vite3-cn/guide/env-and-mode.html#modes) 配置。
 
+仅在 `vue3` 项目时有效，`vue2` 项目此参数无效。
+
 ### --device
 
 运行到 `Android` 平台时，要打开的已连接设备的名称。设备名称可通过 `adb devices` 来获取。

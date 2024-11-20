@@ -1,13 +1,14 @@
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
+import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import Log from '../utils/log.js'
-import { isWindows } from '../utils/util.js'
+import { isWindows, uniRunSuccess } from '../utils/util.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 function getWeixinDevToolCliPath() {
@@ -72,27 +73,35 @@ const mpWeixin: ModuleClass = {
 
   async run(options) {
     const pm = App.getPackageManager()
-    const args = ['uni', '-p', 'mp-weixin']
-    if (options.mode) {
-      args.push('--mode', options.mode)
+    const args = []
+    if (App.isVue3()) {
+      args.push('uni', '-p', 'mp-weixin')
+      if (options.mode) args.push('--mode', options.mode)
+    } else {
+      args.push('vue-cli-service', 'uni-build', '--watch')
     }
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
       let over = false
-      for await (const line of execa({
-        stderr: ['inherit', 'pipe'],
-        stdout: ['inherit', 'pipe'],
-        env: { FORCE_COLOR: 'true' },
-      })`${commands.command} ${commands.args}`) {
-        if (!options.open || over) continue
+
+      const stdoutTransform = function* (line: string) {
+        yield line
+        if (over) return
+
         const text = stripAnsiColors(line)
-        if (/ready in (\d+\.)?\d+m?s\./.test(text)) {
-          over = true
-          openWeixinDevTool('dist/dev/mp-weixin')
-        }
-      }
+        if (!uniRunSuccess(text)) return
+
+        over = true
+        openWeixinDevTool('dist/dev/mp-weixin')
+      } as GeneratorTransform<false>
+
+      await execa({
+        stdout: !options.open ? 'inherit' : [stdoutTransform, 'inherit'],
+        stderr: 'inherit',
+        reject: false,
+      })`${commands.command} ${commands.args}`
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
       throw error

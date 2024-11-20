@@ -1,37 +1,38 @@
 # 配置文件
 
-在项目跟目录创建配置文件 `uniapp-cli.config.json`，内容如下:
+所有配置项都可以在环境变量中配置或者在 `uniapp-cli.config.json` 文件中配置。
+
+在项目跟目录创建配置文件 `uniapp-cli.config.json`，内容格式如下:
 
 ```json
 {
-  "env": {
-    "UNIAPP_ANDROID_SDK_URL": "",
-    "UNIAPP_SDK_HOME": "",
-    "JAVA_HOME": "",
-    "ANDROID_HOME": "",
-    "KEYSTORE_PATH": "",
-    "STORE_PASSWORD": "",
-    "KEY_PASSWORD": "",
-    "KEY_ALIAS": "",
-    "WEIXIN_DEV_TOOL": "",
-    "UNI_CLOUD_PROVIDER": [
-      {
-        "accessTokenKey": "access_token_mp-****",
-        "clientSecret": "****",
-        "endpoint": "https://api.next.bspapp.com",
-        "envType": "public",
-        "provider": "aliyun",
-        "requestUrl": "https://api.next.bspapp.com/client",
-        "spaceId": "mp-****",
-        "spaceName": "****",
-        "id": "****"
-      }
-    ]
-  }
+  "UNIAPP_ANDROID_SDK_URL": "",
+  "UNIAPP_SDK_HOME": "",
+  "JAVA_HOME": "",
+  "ANDROID_HOME": "",
+  "KEYSTORE_PATH": "",
+  "STORE_PASSWORD": "",
+  "KEY_PASSWORD": "",
+  "KEY_ALIAS": "",
+  "WEIXIN_DEV_TOOL": "",
+  "HBUILDERX_CLI": "",
+  "UNI_CLOUD_PROVIDER": [
+    {
+      "accessTokenKey": "access_token_mp-****",
+      "clientSecret": "****",
+      "endpoint": "https://api.next.bspapp.com",
+      "envType": "public",
+      "provider": "aliyun",
+      "requestUrl": "https://api.next.bspapp.com/client",
+      "spaceId": "mp-****",
+      "spaceName": "****",
+      "id": "****"
+    }
+  ]
 }
 ```
 
-上述配置中的 `env` 配置，等价与在环境变量中配置，是相同的效果。例如:
+上述配置，等价与在环境变量中配置，是相同的效果。例如:
 
 ::: code-group
 
@@ -55,7 +56,7 @@ set UNIAPP_ANDROID_SDK_URL="https://wtto00.github.io/uniapp-android-sdk"
 
 如果使用默认地址下载速度太慢，可以克隆项目 [wtto00/uniapp-android-sdk](https://github.com/wtto00/uniapp-android-sdk) ，自己部署镜像。
 
-也可以使用 [DCloud 官方离线 SDK 下载](https://nativesupport.dcloud.net.cn/AppDocs/download/android.html) 。下载完成后，把 SDK 中的 libs 文件夹内的文件复制到目录 [UNIAPP_SDK_HOME](#UNIAPP_SDK_HOME) 中。
+也可以使用 [DCloud 官方离线 SDK 下载](https://nativesupport.dcloud.net.cn/AppDocs/download/android.html) 。下载完成后，把 SDK 中的 libs 文件夹内的文件复制到目录 [UNIAPP_SDK_HOME](#uniapp-sdk-home) 中。
 
 DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里云盘的下载地址: https://www.alipan.com/s/aq2qTf9g5X4
 
@@ -119,7 +120,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--keystore` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.keystore`。
-- `uniapp-cli.config.json` 中配置的 `env.KEYSTORE_PATH`。
+- `uniapp-cli.config.json` 中配置的 `KEYSTORE_PATH`。
 - 环境变量中配置 `KEYSTORE_PATH`。
 
 ## STORE_PASSWORD
@@ -130,7 +131,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--storepasswd` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.password`。
-- `uniapp-cli.config.json` 中配置的 `env.STORE_PASSWORD`。
+- `uniapp-cli.config.json` 中配置的 `STORE_PASSWORD`。
 - 环境变量中配置 `STORE_PASSWORD`。
 
 ## KEY_ALIAS
@@ -141,7 +142,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--alias` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.aliasname`。
-- `uniapp-cli.config.json` 中配置的 `env.KEY_ALIAS`。
+- `uniapp-cli.config.json` 中配置的 `KEY_ALIAS`。
 - 环境变量中配置 `KEY_ALIAS`。
 
 ## KEY_PASSWORD
@@ -152,7 +153,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--keypasswd` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.password`。
-- `uniapp-cli.config.json` 中配置的 `env.KEY_PASSWORD`。
+- `uniapp-cli.config.json` 中配置的 `KEY_PASSWORD`。
 - 环境变量中配置 `KEY_PASSWORD`。
 
 ## WEIXIN_DEV_TOOL
