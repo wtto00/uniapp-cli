@@ -12,7 +12,6 @@ import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import { watchFiles } from '../utils/file.js'
-import { gitIgnorePath } from '../utils/git.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
@@ -109,8 +108,6 @@ const android: ModuleClass = {
       rmSync(AndroidDir, { recursive: true, force: true })
       throw error
     }
-
-    gitIgnorePath(AndroidPath)
   },
 
   async platformRemove() {
