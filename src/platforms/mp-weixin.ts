@@ -28,7 +28,7 @@ function openWeixinDevTool(projectPath: string) {
     return
   }
   const spinner = ora('正在打开微信开发者工具').start()
-  execa({ stdio: 'inherit' })`${cliPath} ${['open', '--project', resolve(App.projectRoot, projectPath)]}`
+  execa`${cliPath} ${['open', '--project', resolve(App.projectRoot, projectPath)]}`
     .then(({ stderr }) => {
       if (stderr) {
         spinner.fail('微信开发者工具打开出错了')
