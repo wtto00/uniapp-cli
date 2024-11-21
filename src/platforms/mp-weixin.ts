@@ -98,8 +98,9 @@ const mpWeixin: ModuleClass = {
       } as GeneratorTransform<false>
 
       await execa({
-        stdout: !options.open ? 'inherit' : [stdoutTransform, 'inherit'],
+        stdout: options.open ? [stdoutTransform, 'inherit'] : 'inherit',
         stderr: 'inherit',
+        env: { FORCE_COLOR: 'true' },
         reject: false,
       })`${commands.command} ${commands.args}`
     } catch (error) {

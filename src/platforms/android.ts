@@ -6,6 +6,7 @@ import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import runAndroid from '../android/run.js'
+import { initSignEnv } from '../android/sign.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { devDistPath } from '../android/www.js'
 import { checkConfig } from '../app-plus/check.js'
@@ -124,6 +125,8 @@ const android: ModuleClass = {
   },
 
   async run(options: BuildOptions) {
+    initSignEnv(options)
+
     checkConfig()
 
     const pm = App.getPackageManager()
@@ -140,50 +143,20 @@ const android: ModuleClass = {
 
     try {
       let over = false
-      let markHideError = false
-      const errTransform = function* (line: string) {
-        const lineText = stripAnsiColors(line)
-        if (markHideError) {
-          if (lineText.startsWith('file: ') || lineText.startsWith('at uni_modules/')) {
-            Log.debug(lineText)
-          } else {
-            markHideError = false
-            yield line
-          }
-          return
-        }
-        if (line === 'HBuilderX is not found') {
-          // UTS插件错误
-          Log.debug(lineText)
-          if (!options.open || over) return
-          over = true
-          watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
-          return
-        }
-        if (
-          lineText ===
-          '[plugin:uni:uts-uni_modules] [uni:uts-uni_modules] 项目使用了uts插件，正在安装 uts Android 运行扩展...'
-        ) {
-          markHideError = true
-          Log.debug(lineText)
-          return
-        }
-        yield line
-      } as GeneratorTransform<false>
       const outTransform = function* (line: string) {
         yield line
-        if (!options.open || over) return
-        const lineText = stripAnsiColors(line)
-        if (lineText === 'DONE  Build complete. Watching for changes...') {
+        if (over) return
+        const text = stripAnsiColors(line)
+        if (text === 'DONE  Build complete. Watching for changes...') {
           over = true
           watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
         }
       } as GeneratorTransform<false>
-      execa({
-        stderr: [errTransform, 'inherit'],
-        stdout: [outTransform, 'inherit'],
+      await execa({
+        stdout: options.open ? [outTransform, 'inherit'] : 'inherit',
+        stderr: 'inherit',
         env: { FORCE_COLOR: 'true' },
-        buffer: false,
+        reject: false,
       })`${commands.command} ${commands.args}`
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return

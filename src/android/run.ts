@@ -12,7 +12,6 @@ import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
-import { initSignEnv } from './sign.js'
 import { assetsAppsPath, buildDistPath, devDistPath, getWwwPath } from './www.js'
 
 let logcatProcess: ResultPromise<{
@@ -35,8 +34,6 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   cleanAndroid()
   Log.info('准备 Android 打包所需资源')
   prepare({ debug: true })
-  Log.debug('准备打包签名信息')
-  initSignEnv(options)
   Log.debug('前端打包资源嵌入 Android 资源中')
   if (existsSync(assetsAppsPath)) {
     rmSync(assetsAppsPath, { recursive: true })

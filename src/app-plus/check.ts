@@ -1,6 +1,9 @@
+import { existsSync } from 'node:fs'
+import { checkSignEnv } from '../android/sign.js'
 import { App } from '../utils/app.js'
 import Log from '../utils/log.js'
 import { AppPlusOS } from '../utils/manifest.config.js'
+import { AndroidDir, IOSDir } from '../utils/path.js'
 import { checkAd } from './modules/ad.js'
 import { checkGeolocation } from './modules/geolocation.js'
 import { checkMaps } from './modules/maps.js'
@@ -12,6 +15,13 @@ import { checkSpeech } from './modules/speech.js'
 import { checkStatistic } from './modules/statics.js'
 
 export function checkConfig(os = AppPlusOS.Android) {
+  if (os === AppPlusOS.Android && !existsSync(AndroidDir)) {
+    throw Error(`Android 平台还没有安装，请先执行 \`uniapp platform add ${os}\` 添加`)
+  }
+  if (os === AppPlusOS.iOS && !existsSync(IOSDir)) {
+    throw Error(`iOS 平台还没有安装，请先执行 \`uniapp platform add ${os}\` 添加`)
+  }
+
   const manifest = App.getManifestJson()
 
   const errors: string[] = []
@@ -50,6 +60,9 @@ export function checkConfig(os = AppPlusOS.Android) {
   if (os === AppPlusOS.Android && !manifest['app-plus']?.distribute?.android?.abiFilters?.length) {
     errors.push('请在文件manifest.json中配置应用所支持的CPU类型: app-plus.distribute.android.abiFilters')
   }
+
+  // android sign config
+  if (os === AppPlusOS.Android && !checkSignEnv()) failed = true
 
   // OAuth
   if (!checkOauth(os)) failed = true

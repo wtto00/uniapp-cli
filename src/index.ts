@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from 'commander'
 import { App } from './utils/app.js'
 import { CLI_VERSION } from './utils/const.js'

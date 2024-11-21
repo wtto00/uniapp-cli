@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
+import Log from '../utils/log.js'
 
 export interface SignConfig {
   KEYSTORE_PATH?: string
@@ -35,4 +36,14 @@ export function initSignEnv(options?: BuildOptions) {
   } else if (aliasname) {
     process.env.KEY_ALIAS = aliasname
   }
+}
+
+export function checkSignEnv(): boolean {
+  if (['KEYSTORE_PATH', 'STORE_PASSWORD', 'KEY_PASSWORD', 'KEY_ALIAS'].some((item) => !process.env[item])) {
+    Log.warn(
+      '缺少签名配置,请在文件manifest.json中配置打包签名: app-plus.distribute.android.[keystore|password|aliasname]',
+    )
+    return false
+  }
+  return true
 }

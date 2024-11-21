@@ -93,7 +93,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 推荐使用 `JDK8` 版本，其他版本的 `JDK` ，运行可能会报错。
 
-可使用 [清华大学镜像](https://mirrors.tuna.tsinghua.edu.cn/Adoptium/) 快速下载 `JDK8`。
+可使用 [清华大学 JDK 镜像](https://mirrors.tuna.tsinghua.edu.cn/Adoptium/)、[编程宝库 JDK 镜像](http://www.codebaoku.com/jdk/jdk-index.html)、[华为 JDK 镜像](https://repo.huaweicloud.com/java/jdk/) 快速下载 `JDK8`。
 
 如果安装了 `Android Studio` ，也可以设置此变量为 `Android Studio` 安装目录下的 `jbr` 目录。例如:
 
@@ -101,6 +101,17 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 - Windows: `/d/Program Files/Android/Android Studio/jbr`
 
 不过**不推荐这样做**，因为`Android Studio`自带的 `JDK`版本过高，运行时可能会报错。
+
+如果 `Android` 打包编译出现如下错误，请降低 `JDK` 版本到 `v8`:
+
+```error
+java.lang.IllegalAccessError: \
+class org.gradle.internal.compiler.java.ClassNameCollector \
+(in unnamed module @0x2de0966) cannot access class \
+com.sun.tools.javac.code.Symbol$TypeSymbol (in module jdk.compiler) \
+because module jdk.compiler does not export com.sun.tools.javac.code \
+to unnamed module @0x2de0966
+```
 
 ## ANDROID_HOME
 
