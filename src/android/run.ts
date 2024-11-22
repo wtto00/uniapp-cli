@@ -88,12 +88,9 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
     const packagename = manifest['app-plus']?.distribute?.android?.packagename ?? ''
     const spinner = ora(`安装 ${apkPath} 到设备 \`${deviceName}\``).start()
     if (await android.isInstalled(deviceName, packagename)) {
-      spinner.info(`卸载应用 ${packagename}`)
-      await android.adb(deviceName, `uninstall ${packagename}`)
-      // await android.adb(deviceName, `shell run-as ${packagename} rm -rf /data/data/${packagename}/cache/*`)
+      await android.adb(deviceName, `shell pm clear ${packagename}`)
     }
     const apkFullPath = resolve(App.projectRoot, apkPath)
-    spinner.info(`安装应用 ${packagename}`)
     await android.install(deviceName, apkFullPath, { r: true })
     spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
 

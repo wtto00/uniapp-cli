@@ -305,6 +305,9 @@ export function prepare(options?: { debug?: boolean }) {
     results
   if (options?.debug) {
     libs.add('debug-server-release.aar')
+    appBuildGradle.dependencies = mergeDependencies(appBuildGradle.dependencies, {
+      'com.squareup.okhttp3:okhttp:3.12.12': {},
+    })
   }
 
   filesWrite[AndroidManifestFilePath] = generateAndroidManifest(androidManifest)
