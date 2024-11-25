@@ -69,15 +69,18 @@ const h5: ModuleClass = {
       })`${commands.command} ${commands.args}`
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
-      throw error
+      throw Error()
     }
   },
 
   async build(options) {
     const pm = App.getPackageManager()
-    const args = ['uni', 'build']
-    if (options.mode) {
-      args.push('--mode', options.mode)
+    const args: string[] = []
+    if (App.isVue3()) {
+      args.push('uni', 'build')
+      if (options.mode) args.push('--mode', options.mode)
+    } else {
+      args.push('vue-cli-service', 'uni-build')
     }
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
@@ -86,7 +89,7 @@ const h5: ModuleClass = {
       await execa({ stdio: 'inherit', env: { FORCE_COLOR: 'true' } })`${commands.command} ${commands.args}`
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
-      throw error
+      throw Error()
     }
   },
 }

@@ -160,35 +160,43 @@ const android: ModuleClass = {
       })`${commands.command} ${commands.args}`
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
-      throw error
+      throw Error()
     }
   },
 
   async build(options: BuildOptions) {
+    initSignEnv(options)
+
+    checkConfig()
+
     const pm = App.getPackageManager()
-    const args = ['uni', 'build', '-p', 'app-android']
-    if (options.mode) {
-      args.push('--mode', options.mode)
+    const args = []
+    if (App.isVue3()) {
+      args.push('uni', 'build', '-p', 'app-android')
+      if (options.mode) args.push('--mode', options.mode)
+    } else {
+      process.env.UNI_PLATFORM = 'app-plus'
+      args.push('vue-cli-service', 'uni-build')
     }
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
-      const { stdout, stderr } = await execa({
-        stderr: ['inherit', 'pipe'],
+      const { stdout } = await execa({
         stdout: ['inherit', 'pipe'],
+        stderr: 'inherit',
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`
       if (!options.open) return
 
-      if (/DONE {2}Build complete\./.test(stdout)) {
+      const text = stripAnsiColors(stdout as unknown as string)
+
+      if (/DONE {2}Build complete\./.test(text)) {
         await runAndroid(options, true)
       }
-
-      if (stderr) throw Error(stderr)
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
-      throw error
+      throw Error()
     }
   },
 }

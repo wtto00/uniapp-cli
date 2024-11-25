@@ -12,8 +12,8 @@ Arguments:
 Options:
   --no-open                    不自动打开
   --mode <mode>                vite 环境模式
-  --bundle <bundle>            打包产物: aab,apk(默认)
-  --device <device>            运行到指定的设备上
+  --bundle <bundle>            Android打包产物: aab,apk(默认)
+  --device <device>            Android运行到指定的设备上
   --keystore <keystore>        Android签名密钥文件所在位置
   --storepasswd <storepasswd>  Android签名密钥的密码
   --alias <alias>              Android签名密钥别名

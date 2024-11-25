@@ -71,7 +71,10 @@ export default defineConfig({
       '/qa/': [
         {
           text: '常见问题',
-          items: [{ text: 'scss', link: 'scss' }],
+          items: [
+            { text: 'scss', link: 'scss' },
+            { text: 'pnpm', link: 'pnpm' },
+          ],
           base: '/qa/',
         },
       ],

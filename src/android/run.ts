@@ -40,25 +40,23 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   }
   cpSync(isBuild ? buildDistPath : devDistPath, getWwwPath(), { recursive: true })
   const gradleExePath = getGradleExePath()
+
+  let argv = 'assembleDebug'
+  if (isBuild) {
+    if (options.bundle === 'aab') argv = 'bundleRelease'
+    else argv = 'assembleRelease'
+  }
   try {
-    let argv = 'assembleDebug'
-    if (isBuild) {
-      if (options.bundle === 'aab') argv = 'bundleRelease'
-      else argv = 'assembleRelease'
-    }
-    const { stderr } = await execa({
+    await execa({
       stdio: 'inherit',
       env: { FORCE_COLOR: 'true' },
       cwd: AndroidDir,
     })`${gradleExePath} ${argv}`
-    if (stderr) {
-      Log.error(`Android打包出错了: ${stderr}`)
-      return
-    }
   } catch {
-    Log.error('Android打包出错了')
-    return
+    Log.error('Android 打包出错了')
+    process.exit(1)
   }
+
   let apkPath = `${AndroidPath}/app/build/outputs`
   if (isBuild) {
     if (options.bundle === 'aab') {
