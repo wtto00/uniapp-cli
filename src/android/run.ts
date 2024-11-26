@@ -1,4 +1,4 @@
-import { cpSync, existsSync, rmSync } from 'node:fs'
+import { existsSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
 import { type ResultPromise, execa } from 'execa'
@@ -8,11 +8,12 @@ import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
+import { AppPlusOS } from '../utils/manifest.config.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
-import { assetsAppsPath, buildDistPath, devDistPath, getWwwPath } from './www.js'
+import { assetsAppsPath, copyWww } from './www.js'
 
 let logcatProcess: ResultPromise<{
   stdout: ('inherit' | GeneratorTransform<false>)[]
@@ -27,22 +28,27 @@ function killLogcat() {
   }
 }
 
-export default async function run(options: BuildOptions, isBuild?: boolean) {
+export interface AndroidRunOptions {
+  isBuild?: boolean
+  isHbuilderX?: boolean
+}
+
+export default async function run(options: BuildOptions, runOptions?: AndroidRunOptions) {
   killLogcat()
   Log.debug('清理 Android 资源')
   // await cleanAndroidBuild()
   cleanAndroid()
-  Log.info('准备 Android 打包所需资源')
-  prepare({ debug: true })
   Log.debug('前端打包资源嵌入 Android 资源中')
   if (existsSync(assetsAppsPath)) {
     rmSync(assetsAppsPath, { recursive: true })
   }
-  cpSync(isBuild ? buildDistPath : devDistPath, getWwwPath(), { recursive: true })
+  const uts = copyWww(runOptions?.isBuild) ?? {}
+  Log.info('准备 Android 打包所需资源')
+  prepare({ debug: !runOptions?.isBuild, uts, platform: AppPlusOS.Android })
   const gradleExePath = getGradleExePath()
 
   let argv = 'assembleDebug'
-  if (isBuild) {
+  if (runOptions?.isBuild) {
     if (options.bundle === 'aab') argv = 'bundleRelease'
     else argv = 'assembleRelease'
   }
@@ -58,7 +64,7 @@ export default async function run(options: BuildOptions, isBuild?: boolean) {
   }
 
   let apkPath = `${AndroidPath}/app/build/outputs`
-  if (isBuild) {
+  if (runOptions?.isBuild) {
     if (options.bundle === 'aab') {
       apkPath += '/bundle/release/app-release.aab'
     } else {

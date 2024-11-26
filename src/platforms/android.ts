@@ -1,6 +1,6 @@
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { rename, rm, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
@@ -25,7 +25,7 @@ const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
 
 const android: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus'],
+  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
 
   isInstalled() {
     return existsSync(AndroidDir)
@@ -152,9 +152,20 @@ const android: ModuleClass = {
           watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
         }
       } as GeneratorTransform<false>
+      const errTransform = function* (line: string) {
+        const text = stripAnsiColors(line)
+        if (
+          text === 'Cannot find module: @dcloudio/uni-uts-v1' ||
+          text.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
+        ) {
+          Log.error('应用使用了UTS插件，暂不支持 run 命令，请使用 build 打包')
+          process.exit(1)
+        }
+        if (text !== 'HBuilderX is not found') yield line
+      } as GeneratorTransform<false>
       await execa({
         stdout: options.open ? [outTransform, 'inherit'] : 'inherit',
-        stderr: 'inherit',
+        stderr: [errTransform, 'inherit'],
         env: { FORCE_COLOR: 'true' },
         reject: false,
       })`${commands.command} ${commands.args}`
@@ -169,6 +180,47 @@ const android: ModuleClass = {
 
     checkConfig()
 
+    const cli = process.env.HBUILDERX_CLI_PATH
+    if (cli && existsSync(cli)) {
+      Log.debug(`使用HBuilderX的CLI打包: ${cli}`)
+
+      const open = await execa({
+        stdout: 'inherit',
+        stderr: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${cli} open`
+
+      if (open.stderr) {
+        throw Error('打开HBuilderX失败了')
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+
+      const { stderr } = await execa({
+        stdout: 'inherit',
+        stderr: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${cli} project open --path ${App.projectRoot}`
+
+      if (stderr) {
+        throw Error(`使用HBuilderX的CLI打开项目 ${App.projectRoot} 失败`)
+      }
+
+      const projectName = basename(App.projectRoot)
+      const output = await execa({
+        stdout: ['inherit', 'pipe'],
+        stderr: ['inherit', 'pipe'],
+        env: { FORCE_COLOR: 'true' },
+      })`${cli} publish --platform APP --type appResource --project ${projectName}`
+
+      if (output.stderr) {
+        throw Error('使用HBuilderX的CLI打包失败了')
+      }
+
+      await runAndroid(options, { isBuild: true, isHbuilderX: true })
+      return
+    }
+
     const pm = App.getPackageManager()
     const args = []
     if (App.isVue3()) {
@@ -182,9 +234,9 @@ const android: ModuleClass = {
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
     try {
-      const { stdout } = await execa({
+      const { stdout, stderr } = await execa({
         stdout: ['inherit', 'pipe'],
-        stderr: 'inherit',
+        stderr: ['inherit', 'pipe'],
         env: { FORCE_COLOR: 'true' },
       })`${commands.command} ${commands.args}`
       if (!options.open) return
@@ -192,7 +244,12 @@ const android: ModuleClass = {
       const text = stripAnsiColors(stdout as unknown as string)
 
       if (/DONE {2}Build complete\./.test(text)) {
-        await runAndroid(options, true)
+        await runAndroid(options, { isBuild: true })
+      } else if (
+        stderr.includes('Cannot find module: @dcloudio/uni-uts-v1') ||
+        stderr.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
+      ) {
+        Log.error('应用使用了UTS插件，请配置 `HBUILDERX_CLI_PATH` 环境变量')
       }
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return

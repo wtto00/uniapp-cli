@@ -1,7 +1,7 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
-import { PermissionRequest } from '../utils/manifest.config.js'
+import { AppPlusOS, PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { enumInclude } from '../utils/util.js'
 import { appendSet, mergeSet } from '../utils/xml.js'
@@ -271,11 +271,11 @@ export function prepareResults(): Results {
   return results
 }
 
-export function prepareUTSResults(uniModulesPath: string): Results {
+export function prepareUTSResults(uts: Record<string, string>, platform = AppPlusOS.Android): Results {
   const results = createEmptyResults()
 
-  const modules = readdirSync(uniModulesPath, { encoding: 'utf8' })
-  if (modules.length > 0) {
+  // const modules = readdirSync(uniModulesPath, { encoding: 'utf8' })
+  if (Object.keys(uts).length > 0) {
     results.libs.add('utsplugin-release.aar')
 
     results.appBuildGradle.dependencies = mergeDependencies(results.appBuildGradle.dependencies, {
@@ -288,18 +288,33 @@ export function prepareUTSResults(uniModulesPath: string): Results {
       'com.github.getActivity:XXPermissions:18.0': {},
     })
 
-    for (const uts of modules) {
+    for (const name in uts) {
       results.appBuildGradle.dependencies = mergeDependencies(results.appBuildGradle.dependencies, {
-        [`:${uts}`]: { project: true },
+        [`:${name}`]: { project: true },
       })
+      const _utsDir = resolve(uts[name], platform === AppPlusOS.Android ? 'app-android' : 'app-ios')
+      // TODO:
+      // https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#%E6%8F%92%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84
+      // │	│	├─assets                  //Android原生assets资源目录，可选
+      // │	│	├─libs                    //Android原生库目录，可选
+      // │	│	├─res                     //Android原生res资源目录，可选
+      // │	│	├─AndroidManifest.xml     //Android原生应用清单文件，可选
+      // │	│	├─config.json             //Android原生配置文件
+      // │	│	├─hybrid.kt               //Android混编的kt文件
+      // │	│	└─index.uts               //Android原生插件能力实现
     }
   }
   return results
 }
 
-export function prepare(options?: { debug?: boolean }) {
+export function prepare(options?: { debug?: boolean; uts?: Record<string, string>; platform?: AppPlusOS }) {
   const sdkVersion = App.getUniVersion()
-  const results = prepareResults()
+  let results = prepareResults()
+
+  if (options?.uts && Object.keys(options.uts).length) {
+    const utsResult = prepareUTSResults(options.uts, options.platform)
+    results = mergeResults(results, utsResult)
+  }
 
   const { androidManifest, libs, filesWrite, filesCopy, appBuildGradle, buildGradle, properties, control, strings } =
     results

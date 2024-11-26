@@ -223,18 +223,19 @@ export async function transform(source: string, target?: string, options?: Trans
       let jsconfig = {} as { compilerOptions?: ts.CompilerOptions; include?: string[]; exclude?: string[] }
       try {
         jsconfig = JSON.parse(jsconfigContent)
-        function transformPath(paths: string[]) {
+        function transformPath(paths?: string[]) {
           const value = [] as string[]
-          for (const path of paths) {
+          for (const path of paths || []) {
             const matches = path.match(/(\.\/|\/)?([\s\S]+)/)
             const match = matches?.[2] ?? ''
             if (
-              match &&
-              !keepDirs.some((item) => match.startsWith(item)) &&
-              !ignorePath.some((item) => match.startsWith(item))
+              match === '*' ||
+              (match &&
+                !keepDirs.some((item) => match.startsWith(item)) &&
+                !ignorePath.some((item) => match.startsWith(item)))
             ) {
               const index = match.indexOf('/')
-              if (index < 0 && !existsSync(resolve(targetDir, 'src', match))) {
+              if (index < 0 && match !== '*' && !existsSync(resolve(targetDir, 'src', match))) {
                 value.push(path)
               } else {
                 value.push(`${matches?.[1] ?? ''}src/${match}`)
@@ -246,12 +247,12 @@ export async function transform(source: string, target?: string, options?: Trans
           return value
         }
         for (const key of ['include', 'exclude'] as const) {
-          jsconfig[key] = transformPath(jsconfig[key] as string[])
+          jsconfig[key] = transformPath(jsconfig[key])
         }
         jsconfig.compilerOptions ||= {}
         jsconfig.compilerOptions.paths ||= {}
         for (const name in jsconfig.compilerOptions.paths as Record<string, string[]>) {
-          jsconfig.compilerOptions.paths[name] = transformPath(jsconfig.compilerOptions.paths[name] ?? [])
+          jsconfig.compilerOptions.paths[name] = transformPath(jsconfig.compilerOptions.paths[name])
         }
         if (
           !jsconfig.compilerOptions.paths['@'] &&
