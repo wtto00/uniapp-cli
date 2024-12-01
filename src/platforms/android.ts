@@ -117,7 +117,7 @@ const android: ModuleClass = {
     if (!existsSync(IOSDir)) {
       await uninstallModules(android.modules)
     }
-    showSpinner(() => rm(AndroidDir, { recursive: true, force: true }), {
+    await showSpinner(() => rm(AndroidDir, { recursive: true, force: true }), {
       start: `正在删除 ${AndroidPath}`,
       succeed: `${AndroidPath} 已删除`,
       fail: `${AndroidPath} 删除失败`,
@@ -213,7 +213,7 @@ const android: ModuleClass = {
         env: { FORCE_COLOR: 'true' },
       })`${cli} publish --platform APP --type appResource --project ${projectName}`
 
-      if (output.stderr) {
+      if (output.stderr || output.stdout.match(/Build failed in (\d+\.)?\d+m?s/)) {
         throw Error('使用HBuilderX的CLI打包失败了')
       }
 
@@ -253,7 +253,6 @@ const android: ModuleClass = {
       }
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
-      if (Log.verbose) console.error(error)
       throw Error()
     }
   },

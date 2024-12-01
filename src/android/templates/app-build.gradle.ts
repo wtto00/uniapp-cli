@@ -106,7 +106,7 @@ export function mergeAppBuildGradle(buildGradle1?: AppBuildGradle, buildGradle2?
     applicationId: mergeField('applicationId', buildGradle1, buildGradle2),
     minSdkVersion: mergeNumberField('minSdkVersion', buildGradle1, buildGradle2),
     targetSdkVersion: mergeNumberField('targetSdkVersion', buildGradle1, buildGradle2),
-    versionCode: mergeNumberField('versionCode', buildGradle1, buildGradle2),
+    versionCode: buildGradle2?.versionCode || buildGradle1?.versionCode,
     versionName: mergeField('versionName', buildGradle1, buildGradle2),
     abiFilters: new Set(),
     plugins: new Set(),
@@ -197,7 +197,7 @@ export function genderateAppBuildGradle(_buildGradle: AppBuildGradle) {
 
 android {
     compileSdkVersion ${buildGradle.compileSdkVersion}
-    buildToolsVersion '30.0.3'
+    buildToolsVersion '34.0.0'
     namespace '${buildGradle.applicationId}'
     defaultConfig {
         applicationId "${buildGradle.applicationId}"

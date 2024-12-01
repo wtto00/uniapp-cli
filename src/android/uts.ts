@@ -47,9 +47,9 @@ export function prepareUTSResults(uts: Record<string, string>, platform = AppPlu
         if (config.project?.dependencies?.length) {
           appendSet(results.buildGradle.dependencies, config.project?.dependencies)
         }
-        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle(config)
+        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle(config, name)
       } else {
-        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle({})
+        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle({}, name)
       }
 
       // assets
@@ -107,14 +107,14 @@ export interface ConfigJson {
   }
 }
 
-function prepareUtsBuildGradle(config: ConfigJson) {
+function prepareUtsBuildGradle(config: ConfigJson, name: string) {
   return `plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.example.uts_toast'
+    namespace 'com.example.${name.replace(/[^a-zA-Z]/g, '')}'
     compileSdkVersion 34
 
     defaultConfig {
