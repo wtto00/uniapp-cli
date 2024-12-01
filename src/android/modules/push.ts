@@ -134,7 +134,7 @@ export function appendPush(results: Results) {
       'com.huawei.hms:push:6.11.0.300': {},
     })
     results.buildGradle.repositories['https://developer.huawei.com/repo/'] = {}
-    results.buildGradle.dependencies.add('com.huawei.agconnect:agcp:1.6.0.300')
+    results.buildGradle.dependencies.add('com.huawei.agconnect:agcp:1.9.1.300')
     results.buildGradle.allRepositories['https://developer.huawei.com/repo/'] = {}
     appendPlugin(results.appBuildGradle, ['com.android.application', 'com.huawei.agconnect'])
     const agconnectServicesPath = resolve(AndroidDir, 'app', 'agconnect-services.json')

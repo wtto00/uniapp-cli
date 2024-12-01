@@ -136,7 +136,7 @@ export function appendBarcode(results: Results) {
     appendMerge(results.buildGradle, 'repositories', {
       'https://developer.huawei.com/repo/': {},
     })
-    results.buildGradle.dependencies.add('com.huawei.agconnect:agcp:1.6.0.300')
+    results.buildGradle.dependencies.add('com.huawei.agconnect:agcp:1.9.1.300')
     appendMerge(results.buildGradle, 'allRepositories', {
       'https://developer.huawei.com/repo/': {},
     })
