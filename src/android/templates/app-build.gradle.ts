@@ -198,6 +198,7 @@ export function genderateAppBuildGradle(_buildGradle: AppBuildGradle) {
 android {
     compileSdkVersion ${buildGradle.compileSdkVersion}
     buildToolsVersion '30.0.3'
+    namespace '${buildGradle.applicationId}'
     defaultConfig {
         applicationId "${buildGradle.applicationId}"
         minSdkVersion ${buildGradle.minSdkVersion}

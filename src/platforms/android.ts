@@ -253,6 +253,7 @@ const android: ModuleClass = {
       }
     } catch (error) {
       if (errorMessage(error).match(/CTRL-C/)) return
+      if (Log.verbose) console.error(error)
       throw Error()
     }
   },

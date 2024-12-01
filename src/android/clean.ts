@@ -10,6 +10,7 @@ import { BuildGradleFilePath } from './templates/build.gradle.js'
 import { ControlFilePath } from './templates/dcloud_control.xml.js'
 import { PropertiesFilePath } from './templates/dcloud_properties.xml.js'
 import { LibsPath } from './templates/libs.js'
+import { SettingsGradleFilePath } from './templates/settings.gradle.js'
 import { StringsFilePath } from './templates/strings.xml.js'
 import { assetsAppsPath } from './www.js'
 
@@ -25,6 +26,7 @@ export function cleanAndroid() {
   const files = [
     BuildGradleFilePath,
     AppBuildGradleFilePath,
+    SettingsGradleFilePath,
     LibsPath,
     assetsAppsPath,
     ControlFilePath,

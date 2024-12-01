@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
-import { AppPlusOS, PermissionRequest } from '../utils/manifest.config.js'
+import { type AppPlusOS, PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { enumInclude } from '../utils/util.js'
 import { appendSet, mergeSet } from '../utils/xml.js'
@@ -57,9 +57,16 @@ import {
   generateDcloudProperties,
   mergeProperties,
 } from './templates/dcloud_properties.xml.js'
+import {
+  type DcloudUniPlugin,
+  DcloudUniPluginsFilePath,
+  generateDcloudUniPlugins,
+} from './templates/dcloud_uniplugins.json.js'
 import { LibsPath, getDefaultLibs } from './templates/libs.js'
+import { SettingsGradleFilePath, generateSettingsGradle } from './templates/settings.gradle.js'
 import { type Strings, StringsFilePath, genderateStrings } from './templates/strings.xml.js'
 import { resourceSizes } from './utils.js'
+import { prepareUTSResults } from './uts.js'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -71,12 +78,15 @@ export interface Results {
   filesCopy: Record<string, string>
   appBuildGradle: AppBuildGradle
   buildGradle: BuildGradle
+  settingsGradle: Set<string>
   properties: Properties
   control: Control
   strings: Strings
+  // nativePlugins
+  plugins: DcloudUniPlugin[]
 }
 
-function createEmptyResults(): Results {
+export function createEmptyResults(): Results {
   return {
     androidManifest: {
       application: {},
@@ -92,6 +102,7 @@ function createEmptyResults(): Results {
       allRepositories: {},
       ext: {},
     },
+    settingsGradle: new Set(),
     properties: {
       features: {},
       services: {},
@@ -100,23 +111,27 @@ function createEmptyResults(): Results {
       appid: '',
     },
     strings: {},
+    plugins: [],
   }
 }
 
-export function mergeResults(results1: Results, results2: Results) {
-  const libs = new Set()
+export function mergeResults(results1: Results, results2: Results): Results {
+  const libs = new Set<string>()
   appendSet(libs, results1.libs)
   appendSet(libs, results2.libs)
   return {
     androidManifest: mergeAndroidManifest(results1.androidManifest, results2.androidManifest),
     libs,
     filesWrite: { ...results1.filesWrite, ...results2.filesWrite },
+    filesCopy: { ...results1.filesCopy, ...results2.filesCopy },
     appBuildGradle: mergeAppBuildGradle(results1.appBuildGradle, results2.appBuildGradle),
     buildGradle: mergeBuildGradle(results1.buildGradle, results2.buildGradle),
+    settingsGradle: mergeSet(results1.settingsGradle, results2.settingsGradle),
     properties: mergeProperties(results1.properties, results2.properties),
     control: mergeControl(results1.control, results2.control),
     strings: { ...results1.strings, ...results2.strings },
-  } as Results
+    plugins: [...results1.plugins, ...results2.plugins],
+  }
 }
 
 export function prepareResults(): Results {
@@ -271,42 +286,6 @@ export function prepareResults(): Results {
   return results
 }
 
-export function prepareUTSResults(uts: Record<string, string>, platform = AppPlusOS.Android): Results {
-  const results = createEmptyResults()
-
-  // const modules = readdirSync(uniModulesPath, { encoding: 'utf8' })
-  if (Object.keys(uts).length > 0) {
-    results.libs.add('utsplugin-release.aar')
-
-    results.appBuildGradle.dependencies = mergeDependencies(results.appBuildGradle.dependencies, {
-      'com.squareup.okhttp3:okhttp:3.12.12': {},
-      'androidx.core:core-ktx:1.6.0': {},
-      'org.jetbrains.kotlin:kotlin-stdlib:1.8.10': {},
-      'org.jetbrains.kotlin:kotlin-reflect:1.6.0': {},
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8': {},
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8': {},
-      'com.github.getActivity:XXPermissions:18.0': {},
-    })
-
-    for (const name in uts) {
-      results.appBuildGradle.dependencies = mergeDependencies(results.appBuildGradle.dependencies, {
-        [`:${name}`]: { project: true },
-      })
-      const _utsDir = resolve(uts[name], platform === AppPlusOS.Android ? 'app-android' : 'app-ios')
-      // TODO:
-      // https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#%E6%8F%92%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84
-      // │	│	├─assets                  //Android原生assets资源目录，可选
-      // │	│	├─libs                    //Android原生库目录，可选
-      // │	│	├─res                     //Android原生res资源目录，可选
-      // │	│	├─AndroidManifest.xml     //Android原生应用清单文件，可选
-      // │	│	├─config.json             //Android原生配置文件
-      // │	│	├─hybrid.kt               //Android混编的kt文件
-      // │	│	└─index.uts               //Android原生插件能力实现
-    }
-  }
-  return results
-}
-
 export function prepare(options?: { debug?: boolean; uts?: Record<string, string>; platform?: AppPlusOS }) {
   const sdkVersion = App.getUniVersion()
   let results = prepareResults()
@@ -316,8 +295,19 @@ export function prepare(options?: { debug?: boolean; uts?: Record<string, string
     results = mergeResults(results, utsResult)
   }
 
-  const { androidManifest, libs, filesWrite, filesCopy, appBuildGradle, buildGradle, properties, control, strings } =
-    results
+  const {
+    androidManifest,
+    libs,
+    filesWrite,
+    filesCopy,
+    appBuildGradle,
+    buildGradle,
+    settingsGradle,
+    properties,
+    control,
+    strings,
+    plugins,
+  } = results
   if (options?.debug) {
     libs.add('debug-server-release.aar')
     appBuildGradle.dependencies = mergeDependencies(appBuildGradle.dependencies, {
@@ -332,9 +322,11 @@ export function prepare(options?: { debug?: boolean; uts?: Record<string, string
   }
   filesWrite[AppBuildGradleFilePath] = genderateAppBuildGradle(appBuildGradle)
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
+  filesWrite[SettingsGradleFilePath] = generateSettingsGradle(settingsGradle)
   filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
   filesWrite[ControlFilePath] = genderateDcloudControl(control, options?.debug)
   filesWrite[StringsFilePath] = genderateStrings(strings)
+  filesWrite[DcloudUniPluginsFilePath] = generateDcloudUniPlugins({ nativePlugins: plugins })
 
   for (const target in filesCopy) {
     cpSync(filesCopy[target], target, { recursive: true })

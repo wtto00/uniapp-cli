@@ -20,15 +20,20 @@ export interface BuildGradle {
 export const defaultBuildGradle: BuildGradle = {
   repositories: {
     'https://maven.aliyun.com/repository/google': {},
+    'https://maven.aliyun.com/repository/gradle-plugin': {},
     'http://maven.aliyun.com/nexus/content/groups/public/': {},
     'http://maven.aliyun.com/nexus/content/repositories/jcenter': {},
+    'https://mirrors.huaweicloud.com/repository/maven': {},
+    'https://maven.scijava.org/content/repositories/public': {},
   },
-  dependencies: new Set(['com.android.tools.build:gradle:4.1.1']),
+  dependencies: new Set(['com.android.tools.build:gradle:8.2.2']),
   allRepositories: {
     'https://maven.aliyun.com/repository/google': {},
     'http://maven.aliyun.com/nexus/content/groups/public/': {},
     'http://maven.aliyun.com/nexus/content/repositories/jcenter': {},
     'https://mvn.getui.com/nexus/content/repositories/releases': {},
+    'https://mirrors.huaweicloud.com/repository/maven': {},
+    'https://maven.scijava.org/content/repositories/public': {},
   },
   ext: {},
 }
@@ -47,14 +52,17 @@ function genderateRepositories(repositories: BuildGradle['repositories'], space 
   for (const url in repositories) {
     const { credentials } = repositories[url]
     repositoriesXML.push(
-      `maven { url '${url}'${
-        credentials
-          ? `\n${generateSpace(space + 4)}credentials {
+      `maven { 
+            url '${url}'${
+              credentials
+                ? `\n${generateSpace(space + 4)}credentials {
 ${generateSpace(space + 8)}username '${credentials.username}'
 ${generateSpace(space + 8)}password '${credentials.password}'
 ${generateSpace(space + 4)}}`
-          : ''
-      } }`,
+                : ''
+            }
+            allowInsecureProtocol = true
+        }`,
     )
   }
   return repositoriesXML.join(`\n${generateSpace(space)}`)
@@ -84,6 +92,8 @@ export function generateBuildGradle(_gradle: BuildGradle) {
   return `buildscript {
     repositories {
         ${genderateRepositories(gradle.repositories, 8)}
+        google()
+        mavenCentral()
     }
     dependencies {
         ${genderateDependencies(gradle.dependencies)}
@@ -93,6 +103,8 @@ export function generateBuildGradle(_gradle: BuildGradle) {
 allprojects {
     repositories {
         ${genderateRepositories(gradle.allRepositories, 8)}
+        google()
+        mavenCentral()
     }
 }
 
