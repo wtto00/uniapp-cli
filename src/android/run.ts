@@ -98,22 +98,24 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
     await android.install(deviceName, apkFullPath, { r: true })
     spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
 
-    await android.adb(deviceName, 'logcat -c')
+    if (!runOptions?.isBuild) await android.adb(deviceName, 'logcat -c')
 
     Log.debug('开始拉起App')
     await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
 
-    logcatProcess = execa({
-      stdout: [
-        function* (line: string) {
-          yield line.replace(/I\/console \( \d+\)/g, '')
-        } as GeneratorTransform<false>,
-        'inherit',
-      ],
-      stderr: 'ignore',
-      buffer: false,
-      reject: false,
-    })`${android.adbBin} logcat console:D *:S -v raw -v color -v time`
+    if (!runOptions?.isBuild) {
+      logcatProcess = execa({
+        stdout: [
+          function* (line: string) {
+            yield line.replace(/I\/console \( \d+\)/g, '')
+          } as GeneratorTransform<false>,
+          'inherit',
+        ],
+        stderr: 'ignore',
+        buffer: false,
+        reject: false,
+      })`${android.adbBin} logcat console:D *:S -v raw -v color -v time`
+    }
   } catch (error) {
     Log.error(`出错了: ${errorMessage(error)}`)
     killLogcat()
