@@ -1,13 +1,13 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { readJsonFile } from '../utils/file.js'
-import { type AndroidAbiFilters, AppPlusOS } from '../utils/manifest.config.js'
+import type { AndroidAbiFilters } from '../utils/manifest.config.js'
 import { AndroidDir } from '../utils/path.js'
 import { appendSet, mergeSet } from '../utils/xml.js'
 import { type Results, createEmptyResults } from './prepare.js'
 import { appendDependencies } from './templates/app-build.gradle.js'
 
-export function prepareUTSResults(uts: Record<string, string>, platform = AppPlusOS.Android): Results {
+export function prepareUTSResults(uts: Record<string, string>): Results {
   const results = createEmptyResults()
 
   if (Object.keys(uts).length > 0) {
@@ -28,7 +28,7 @@ export function prepareUTSResults(uts: Record<string, string>, platform = AppPlu
     for (const name in uts) {
       results.appBuildGradle.dependencies[`:${name}`] = { project: true }
       results.settingsGradle.add(name)
-      const utsDir = resolve(uts[name], platform === AppPlusOS.Android ? 'app-android' : 'app-ios')
+      const utsDir = resolve(uts[name], 'app-android')
 
       // config.json
       const configJson = resolve(utsDir, 'config.json')
@@ -114,7 +114,7 @@ function prepareUtsBuildGradle(config: ConfigJson, name: string) {
 }
 
 android {
-    namespace 'com.example.${name.replace(/[^a-zA-Z]/g, '')}'
+    namespace 'com.example.${name.replace(/[^a-zA-Z]/g, '_')}'
     compileSdkVersion 34
 
     defaultConfig {

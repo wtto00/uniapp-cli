@@ -13,6 +13,7 @@ import { checkPush } from './modules/push.js'
 import { checkShare } from './modules/share.js'
 import { checkSpeech } from './modules/speech.js'
 import { checkStatistic } from './modules/statics.js'
+import { checkNativePlugins } from './native-plugins.js'
 
 export function checkConfig(os = AppPlusOS.Android) {
   if (os === AppPlusOS.Android && !existsSync(AndroidDir)) {
@@ -251,6 +252,8 @@ export function checkConfig(os = AppPlusOS.Android) {
       Log.warn('您配置了腾讯TBS x5内核，请注意: 腾讯TBS x5内核不支持“x86”；您无法提交到Google Play商店。')
     }
   }
+
+  if (!checkNativePlugins(os)) failed = true
 
   if (failed) throw Error('一些配置没有检查通过，请完善后重试')
 }

@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
-import { type AppPlusOS, PermissionRequest } from '../utils/manifest.config.js'
+import { PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { enumInclude } from '../utils/util.js'
 import { appendSet, mergeSet } from '../utils/xml.js'
@@ -26,6 +26,7 @@ import { appendSQLite } from './modules/sqlite.js'
 import { appendStatistic } from './modules/statics.js'
 import { appendVideoPlayer } from './modules/video-player.js'
 import { appendWebviewX5 } from './modules/webview-x5.js'
+import { appendPlugins } from './native-plugins.js'
 import {
   type AndroidManifest,
   AndroidManifestFilePath,
@@ -283,15 +284,17 @@ export function prepareResults(): Results {
 
   // channel_list
 
+  appendPlugins(results)
+
   return results
 }
 
-export function prepare(options?: { debug?: boolean; uts?: Record<string, string>; platform?: AppPlusOS }) {
+export function prepare(options?: { debug?: boolean; uts?: Record<string, string> }) {
   const sdkVersion = App.getUniVersion()
   let results = prepareResults()
 
   if (options?.uts && Object.keys(options.uts).length) {
-    const utsResult = prepareUTSResults(options.uts, options.platform)
+    const utsResult = prepareUTSResults(options.uts)
     results = mergeResults(results, utsResult)
   }
 

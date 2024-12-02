@@ -569,6 +569,7 @@ export interface AppPlusDistributeSdkConfigs {
     }
   }
 }
+export type ValidArchitectures = 'arm64' | 'arm64e' | 'armv7' | 'armv7s' | 'x86_64'
 export interface AppPlusDistributeIOS {
   /**
    * 从3.1.10版本开始使用App离线SDK需要申请Appkey
@@ -658,11 +659,29 @@ export interface AppPlusDistributeIOS {
   /** 应用的CFBundleName名称，默认值为HBuilder */
   CFBundleName?: string
   /** 编译时支持的CPU指令，可取值arm64、arm64e、armv7、armv7s、x86_64 */
-  validArchitectures?: ('arm64' | 'arm64e' | 'armv7' | 'armv7s' | 'x86_64')[]
+  validArchitectures?: ValidArchitectures[]
   /** 使用“Push(消息推送)”模块时申请系统推送权限模式，设置为manual表示调用push相关API时申请，设置为其它值表示应用启动时自动申请 */
   pushRegisterMode?: string
   /** 设置为manual表示同意隐私政策后再获取相关隐私信息，设置为其它值表示应用启动时自动获取详见 */
   privacyRegisterMode?: string
+}
+export interface NativePlugin {
+  name?: string
+  description?: string
+  /** 支持的平台。Android,iOS英文逗号分割 */
+  platforms?: string
+  /** 云端插件的url地址 */
+  url?: string
+  /** 安卓包名 */
+  android_package_name?: string
+  /** iOS包名 */
+  ios_bundle_id?: string
+  /** 是否是云端插件 */
+  isCloud?: boolean
+  /** 是否已购买 */
+  bought?: -1 | 0 | 1
+  pid?: string
+  parameters?: object
 }
 export interface AppPlus {
   /** 编译器兼容性配置 */
@@ -737,6 +756,7 @@ export interface AppPlus {
       useOriginalMsgbox?: boolean
     }
   }
+  nativePlugins?: Record<string, { __plugin_info__: NativePlugin }>
   /**
    * nvue 编译模式
    * 默认为 weex

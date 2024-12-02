@@ -8,7 +8,6 @@ import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
-import { AppPlusOS } from '../utils/manifest.config.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
@@ -44,7 +43,7 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
   }
   const uts = copyWww(runOptions?.isBuild) ?? {}
   Log.info('准备 Android 打包所需资源')
-  prepare({ debug: !runOptions?.isBuild, uts, platform: AppPlusOS.Android })
+  prepare({ debug: !runOptions?.isBuild, uts })
   const gradleExePath = getGradleExePath()
 
   let argv = 'assembleDebug'
@@ -104,22 +103,24 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
       throw error
     }
 
-    await android.adb(deviceName, 'logcat -c')
+    if (!runOptions?.isBuild) await android.adb(deviceName, 'logcat -c')
 
     Log.debug('开始拉起App')
     await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
 
-    logcatProcess = execa({
-      stdout: [
-        function* (line: string) {
-          yield line.replace(/I\/console \( \d+\)/g, '')
-        } as GeneratorTransform<false>,
-        'inherit',
-      ],
-      stderr: 'ignore',
-      buffer: false,
-      reject: false,
-    })`${android.adbBin} -s ${deviceName} logcat console:D jsLog:D weex:E *:S -v raw -v color -v time`
+    if (!runOptions?.isBuild) {
+      logcatProcess = execa({
+        stdout: [
+          function* (line: string) {
+            yield line.replace(/I\/console \( \d+\)/g, '')
+          } as GeneratorTransform<false>,
+          'inherit',
+        ],
+        stderr: 'ignore',
+        buffer: false,
+        reject: false,
+      })`${android.adbBin} -s ${deviceName} logcat console:D jsLog:D weex:E *:S -v raw -v color -v time`
+    }
   } catch (error) {
     Log.error(`出错了: ${errorMessage(error)}`)
     killLogcat()
