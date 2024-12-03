@@ -32,7 +32,7 @@ describe('android', () => {
 
   it('add', { timeout: 60000 }, async () => {
     const { stdout } = await execaUniapp('platform add android')
-    assert.equal(stdout, Log.successMessage('平台 android 已成功添加'))
+    assert.equal(stdout, Log.successMessage('android 平台已成功添加'))
   })
 
   it('remove', { timeout: 60000, todo: true })
