@@ -58,23 +58,24 @@ export interface UniStatistics {
 export interface SimpleUniStatistics extends Pick<UniStatistics, 'enable'> {}
 /** PNG格式的图片 */
 export type PNG = `${string}.png` | `${string}.PNG`
+export interface AndroidDrawableImage {
+  /** 2K屏设备程序图标，分辨率要求192x192 */
+  xxxhdpi?: PNG
+  /** 1080P高分屏设备程序图标，分辨率要求144x144 */
+  xxhdpi?: PNG
+  /** 720P高分屏设备程序图标，分辨率要求96x96 */
+  xhdpi?: PNG
+  /** 高分屏设备程序图标，分辨率要求72x72 */
+  hdpi?: PNG
+  /** 普通屏设备程序图标，分辨率要求48x48，这类设备很少见，可以不配置 */
+  mdpi?: PNG
+  /** 大屏设备程序图标，分辨率要求48x48，这类设备很少见，可以不配置 */
+  ldpi?: PNG
+}
 /** App图标配置 */
 export interface AppPlusIcons {
   /** Android平台 */
-  android?: {
-    /** 2K屏设备程序图标，分辨率要求192x192 */
-    xxxhdpi?: PNG
-    /** 1080P高分屏设备程序图标，分辨率要求144x144 */
-    xxhdpi?: PNG
-    /** 720P高分屏设备程序图标，分辨率要求96x96 */
-    xhdpi?: PNG
-    /** 高分屏设备程序图标，分辨率要求72x72 */
-    hdpi?: PNG
-    /** 普通屏设备程序图标，分辨率要求48x48，这类设备很少见，可以不配置 */
-    mdpi?: PNG
-    /** 大屏设备程序图标，分辨率要求48x48，这类设备很少见，可以不配置 */
-    ldpi?: PNG
-  }
+  android?: AndroidDrawableImage
   /** iOS平台 */
   ios?: {
     /** App Store图标路径，分辨率要求1024x1024 */
@@ -472,14 +473,7 @@ export interface AppPlusDistributeSdkConfigs {
     unipush?: {
       offline?: boolean
       icons?: {
-        small?: {
-          ldpi?: string
-          mdpi?: string
-          hdpi?: string
-          xhdpi?: string
-          xxhdpi?: string
-          xxxhdpi?: string
-        }
+        small?: AndroidDrawableImage
       }
       /** 应用的app id/app key等信息，从开发者后台->unipush->配置管理->应用管理 界面查看 ** 注意：HBuilderX3.1.15之后需要添加GETUI_APPID属性 ** */
       appid?: string
@@ -753,6 +747,14 @@ export interface AppPlus {
      * @see https://uniapp.dcloud.net.cn/tutorial/app-privacy-android.html#
      */
     splashscreen?: {
+      /**
+       * - common: 通用启动界面 https://uniapp.dcloud.io/tutorial/app-splashscreen?id=common
+       * - default: 自定义启动图
+       */
+      androidStyle?: 'common' | 'default'
+      /** 安卓自定义启动图 */
+      android?: AndroidDrawableImage
+      /** 使用原生隐私政策提示框 */
       useOriginalMsgbox?: boolean
     }
   }

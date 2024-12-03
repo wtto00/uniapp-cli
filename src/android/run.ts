@@ -1,4 +1,3 @@
-import { existsSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
 import { type ResultPromise, execa } from 'execa'
@@ -12,7 +11,6 @@ import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
-import { assetsAppsPath, copyWww } from './www.js'
 
 let logcatProcess: ResultPromise<{
   stdout: ('inherit' | GeneratorTransform<false>)[]
@@ -37,15 +35,11 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
   Log.debug('清理 Android 资源')
   // await cleanAndroidBuild()
   cleanAndroid()
-  Log.debug('前端打包资源嵌入 Android 资源中')
-  if (existsSync(assetsAppsPath)) {
-    rmSync(assetsAppsPath, { recursive: true })
-  }
-  const uts = copyWww(runOptions?.isBuild) ?? {}
-  Log.info('准备 Android 打包所需资源')
-  prepare({ debug: !runOptions?.isBuild, uts })
-  const gradleExePath = getGradleExePath()
 
+  Log.info('准备 Android 打包所需资源')
+  prepare(runOptions?.isBuild)
+
+  const gradleExePath = getGradleExePath()
   let argv = 'assembleDebug'
   if (runOptions?.isBuild) {
     if (options.bundle === 'aab') argv = 'bundleRelease'

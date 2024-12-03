@@ -3,95 +3,93 @@ import { resolve } from 'node:path'
 import { readJsonFile } from '../utils/file.js'
 import type { AndroidAbiFilters } from '../utils/manifest.config.js'
 import { AndroidDir } from '../utils/path.js'
-import { appendSet, mergeSet } from '../utils/xml.js'
-import { type Results, createEmptyResults } from './prepare.js'
-import { appendDependencies } from './templates/app-build.gradle.js'
+import { appendSet } from '../utils/xml.js'
+import type { Results } from './prepare.js'
+import { appendDependencies, appendPlugin } from './templates/app-build.gradle.js'
 
-export function prepareUTSResults(uts: Record<string, string>): Results {
-  const results = createEmptyResults()
+export function appendUTS(results: Results, uts: Record<string, string>) {
+  if (Object.keys(uts).length === 0) return
 
-  if (Object.keys(uts).length > 0) {
-    results.libs.add('utsplugin-release.aar')
+  results.libs.add('utsplugin-release.aar')
+  appendDependencies(results.appBuildGradle, {
+    'com.squareup.okhttp3:okhttp:3.12.12': {},
+    'androidx.core:core-ktx:1.6.0': {},
+    'org.jetbrains.kotlin:kotlin-stdlib:1.8.10': {},
+    'org.jetbrains.kotlin:kotlin-reflect:1.6.0': {},
+    'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8': {},
+    'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8': {},
+    'com.github.getActivity:XXPermissions:18.0': {},
+  })
 
-    results.appBuildGradle.dependencies = {
-      'com.squareup.okhttp3:okhttp:3.12.12': {},
-      'androidx.core:core-ktx:1.6.0': {},
-      'org.jetbrains.kotlin:kotlin-stdlib:1.8.10': {},
-      'org.jetbrains.kotlin:kotlin-reflect:1.6.0': {},
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8': {},
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8': {},
-      'com.github.getActivity:XXPermissions:18.0': {},
+  results.buildGradle.dependencies.add('org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0')
+
+  for (const name in uts) {
+    appendDependencies(results.appBuildGradle, {
+      [`:${name}`]: { project: true },
+    })
+    results.settingsGradle.add(name)
+    const utsDir = resolve(uts[name], 'app-android')
+
+    // config.json
+    const configJson = resolve(utsDir, 'config.json')
+    if (existsSync(configJson)) {
+      const config = readJsonFile<ConfigJson>(configJson, true)
+      for (const item of config.dependencies ?? []) {
+        if (typeof item === 'string') {
+          appendDependencies(results.appBuildGradle, { [item]: {} })
+        } else if (typeof item === 'object' && item.source) {
+          appendDependencies(results.appBuildGradle, { [item.source]: {} })
+        }
+      }
+      if (config.project?.plugins?.length) {
+        appendPlugin(results.appBuildGradle, config.project.plugins)
+      }
+      if (config.project?.dependencies?.length) {
+        appendSet(results.buildGradle.dependencies, config.project?.dependencies)
+      }
+      results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle(config, name)
+    } else {
+      results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle({}, name)
     }
 
-    results.buildGradle.dependencies.add('org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0')
+    // assets
+    const assetsPath = resolve(utsDir, 'assets')
+    if (existsSync(assetsPath)) {
+      results.filesCopy[resolve(AndroidDir, name, 'src/main/assets')] = assetsPath
+    }
 
-    for (const name in uts) {
-      results.appBuildGradle.dependencies[`:${name}`] = { project: true }
-      results.settingsGradle.add(name)
-      const utsDir = resolve(uts[name], 'app-android')
+    // libs
+    const libsPath = resolve(utsDir, 'libs')
+    if (existsSync(libsPath)) {
+      results.filesCopy[resolve(AndroidDir, name, 'libs')] = libsPath
+    }
 
-      // config.json
-      const configJson = resolve(utsDir, 'config.json')
-      if (existsSync(configJson)) {
-        const config = readJsonFile<ConfigJson>(configJson, true)
-        for (const item of config.dependencies ?? []) {
-          if (typeof item === 'string') {
-            appendDependencies(results.appBuildGradle, { [item]: {} })
-          } else if (typeof item === 'object' && item.source) {
-            appendDependencies(results.appBuildGradle, { [item.source]: {} })
-          }
-        }
-        if (config.project?.plugins?.length) {
-          results.appBuildGradle.plugins = mergeSet(results.appBuildGradle.plugins, new Set(config.project.plugins))
-        }
-        if (config.project?.dependencies?.length) {
-          appendSet(results.buildGradle.dependencies, config.project?.dependencies)
-        }
-        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle(config, name)
-      } else {
-        results.filesWrite[resolve(AndroidDir, name, 'build.gradle')] = prepareUtsBuildGradle({}, name)
-      }
+    // res
+    const resPath = resolve(utsDir, 'res')
+    if (existsSync(resPath)) {
+      results.filesCopy[resolve(AndroidDir, name, 'src/main/res')] = resPath
+    }
 
-      // assets
-      const assetsPath = resolve(utsDir, 'assets')
-      if (existsSync(assetsPath)) {
-        results.filesCopy[resolve(AndroidDir, name, 'src/main/assets')] = assetsPath
-      }
-
-      // libs
-      const libsPath = resolve(utsDir, 'libs')
-      if (existsSync(libsPath)) {
-        results.filesCopy[resolve(AndroidDir, name, 'libs')] = libsPath
-      }
-
-      // res
-      const resPath = resolve(utsDir, 'res')
-      if (existsSync(resPath)) {
-        results.filesCopy[resolve(AndroidDir, name, 'src/main/res')] = resPath
-      }
-
-      // AndroidManifest.xml
-      const AndroidManifestPath = resolve(utsDir, 'AndroidManifest.xml')
-      if (existsSync(AndroidManifestPath)) {
-        results.filesCopy[resolve(AndroidDir, name, 'src/main/AndroidManifest.xml')] = AndroidManifestPath
-      } else {
-        results.filesWrite[resolve(AndroidDir, name, 'src/main/AndroidManifest.xml')] =
-          `<?xml version="1.0" encoding="utf-8"?>
+    // AndroidManifest.xml
+    const AndroidManifestPath = resolve(utsDir, 'AndroidManifest.xml')
+    if (existsSync(AndroidManifestPath)) {
+      results.filesCopy[resolve(AndroidDir, name, 'src/main/AndroidManifest.xml')] = AndroidManifestPath
+    } else {
+      results.filesWrite[resolve(AndroidDir, name, 'src/main/AndroidManifest.xml')] =
+        `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 </manifest>`
-      }
+    }
 
-      // src
-      const srcPath = resolve(utsDir, 'src')
-      if (existsSync(srcPath)) {
-        const files = readdirSync(srcPath)
-        for (const file of files) {
-          results.filesCopy[resolve(AndroidDir, name, 'src/main/java', file)] = resolve(srcPath, file)
-        }
+    // src
+    const srcPath = resolve(utsDir, 'src')
+    if (existsSync(srcPath)) {
+      const files = readdirSync(srcPath)
+      for (const file of files) {
+        results.filesCopy[resolve(AndroidDir, name, 'src/main/java', file)] = resolve(srcPath, file)
       }
     }
   }
-  return results
 }
 
 export interface ConfigJson {

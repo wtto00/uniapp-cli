@@ -21,6 +21,10 @@
 - **alias**: [查看配置 KEY_ALIAS](../config/#key-alias)
 - **keypasswd**: [查看配置 KEY_PASSWORD](../config/#key-password)
 
+## 上架 Google Play
+
+- 在 `manifest.json` 中配置 `app-plus.distribute.android.installApkSdk` 为 `false`。
+
 ## uni 一键登录
 
 使用 `uni一键登录` 模块的，需要在 `manifest.json` 中配置 `app-plus.distribute.sdkConfigs.oauth.univerify.appid`。

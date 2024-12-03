@@ -73,14 +73,14 @@ export function appendPush(results: Results) {
 
   if (icons?.small) {
     for (const size of resourceSizes) {
-      if (icons.small?.[size]) {
+      if (icons.small[size]) {
         const iconPath = resolve(
           AndroidDir,
           'app/src/main/res',
           `drawable-${size}`,
-          `push${extname(icons.small?.[size])}`,
+          `push${extname(icons.small[size])}`,
         )
-        results.filesCopy[iconPath] = resolve(App.projectRoot, 'src', icons.small?.[size])
+        results.filesCopy[iconPath] = resolve(App.projectRoot, 'src', icons.small[size])
       }
     }
   }

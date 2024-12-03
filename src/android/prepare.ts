@@ -1,6 +1,7 @@
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import { App } from '../utils/app.js'
+import Log from '../utils/log.js'
 import { PermissionRequest } from '../utils/manifest.config.js'
 import { AndroidDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { enumInclude } from '../utils/util.js'
@@ -27,6 +28,7 @@ import { appendStatistic } from './modules/statics.js'
 import { appendVideoPlayer } from './modules/video-player.js'
 import { appendWebviewX5 } from './modules/webview-x5.js'
 import { appendPlugins } from './native-plugins.js'
+import { appendSplashScreen } from './splashscreen.js'
 import {
   type AndroidManifest,
   AndroidManifestFilePath,
@@ -67,7 +69,8 @@ import { LibsPath, getDefaultLibs } from './templates/libs.js'
 import { SettingsGradleFilePath, generateSettingsGradle } from './templates/settings.gradle.js'
 import { type Strings, StringsFilePath, genderateStrings } from './templates/strings.xml.js'
 import { resourceSizes } from './utils.js'
-import { prepareUTSResults } from './uts.js'
+import { appendUTS } from './uts.js'
+import { assetsAppsPath, copyWww } from './www.js'
 
 export interface Results {
   androidManifest: AndroidManifest
@@ -135,7 +138,7 @@ export function mergeResults(results1: Results, results2: Results): Results {
   }
 }
 
-export function prepareResults(): Results {
+export function prepareResults(uts: Record<string, string>): Results {
   const manifest = App.getManifestJson()
   const results = createEmptyResults()
 
@@ -160,6 +163,9 @@ export function prepareResults(): Results {
       results.filesCopy[iconPath] = resolve(App.projectRoot, 'src', icons[size])
     }
   }
+
+  // splashscreen
+  appendSplashScreen(results)
 
   const {
     dcloud_appkey,
@@ -208,6 +214,7 @@ export function prepareResults(): Results {
   if (forceDarkAllowed) {
     appendMetaData(results.androidManifest, { DCLOUD_DARK_MODE: { value: 'auto' } })
   }
+  // permissions
   if (permissions) {
     appendPermissions(results.androidManifest, parsePermissionConfig(permissions))
   }
@@ -284,19 +291,25 @@ export function prepareResults(): Results {
 
   // channel_list
 
+  // native plugins
   appendPlugins(results)
+
+  // uts uni_moudles
+  appendUTS(results, uts)
 
   return results
 }
 
-export function prepare(options?: { debug?: boolean; uts?: Record<string, string> }) {
-  const sdkVersion = App.getUniVersion()
-  let results = prepareResults()
-
-  if (options?.uts && Object.keys(options.uts).length) {
-    const utsResult = prepareUTSResults(options.uts)
-    results = mergeResults(results, utsResult)
+export function prepare(isBuild?: boolean) {
+  Log.debug('前端打包资源嵌入 Android 资源中')
+  if (existsSync(assetsAppsPath)) {
+    rmSync(assetsAppsPath, { recursive: true })
   }
+  const uts = copyWww(isBuild) ?? {}
+
+  const sdkVersion = App.getUniVersion()
+
+  const results = prepareResults(uts)
 
   const {
     androidManifest,
@@ -311,7 +324,8 @@ export function prepare(options?: { debug?: boolean; uts?: Record<string, string
     strings,
     plugins,
   } = results
-  if (options?.debug) {
+
+  if (!isBuild) {
     libs.add('debug-server-release.aar')
     appBuildGradle.dependencies = mergeDependencies(appBuildGradle.dependencies, {
       'com.squareup.okhttp3:okhttp:3.12.12': {},
@@ -327,7 +341,7 @@ export function prepare(options?: { debug?: boolean; uts?: Record<string, string
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
   filesWrite[SettingsGradleFilePath] = generateSettingsGradle(settingsGradle)
   filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
-  filesWrite[ControlFilePath] = genderateDcloudControl(control, options?.debug)
+  filesWrite[ControlFilePath] = genderateDcloudControl(control, isBuild)
   filesWrite[StringsFilePath] = genderateStrings(strings)
   filesWrite[DcloudUniPluginsFilePath] = generateDcloudUniPlugins({ nativePlugins: plugins })
 
