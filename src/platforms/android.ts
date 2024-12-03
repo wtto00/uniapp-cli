@@ -39,12 +39,7 @@ const android: ModuleClass = {
         const { stderr, stdout } = await execa`${javaBinPath} -version`
         const raw = (stdout || stderr).split('\n')[0]
         if (raw.includes(' version ')) {
-          const version = (stdout || stderr).match(/build ([\d\.]+)/)?.[1]
-          if (version?.startsWith('1.8')) {
-            Log.success(`${raw}`)
-          } else {
-            Log.warn(`java@${version} 不支持，请下载 java@1.8`)
-          }
+          Log.success(`${raw}`)
         } else {
           Log.warn('检测 Java 版本失败了')
         }
