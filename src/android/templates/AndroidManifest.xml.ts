@@ -49,8 +49,8 @@ export interface AndroidManifest {
 export const defaultAndroidManifest: AndroidManifest = {
   permissions: {
     // 为了兼容android 13 新的权限要求，需要在AndroidManifest.xml 中新增下面的权限声明，以适配图片选择功能。
-    'android.permission.READ_MEDIA_IMAGES': {},
-    'android.permission.READ_MEDIA_VIDEO': {},
+    // 'android.permission.READ_MEDIA_IMAGES': {},
+    // 'android.permission.READ_MEDIA_VIDEO': {},
   },
   application: {
     'android:name': 'io.dcloud.application.DCloudApplication',

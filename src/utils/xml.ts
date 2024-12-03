@@ -9,7 +9,7 @@ export function parseXMLProperties(properties: string) {
   const arr = properties.split(/\s+/)
   for (const propertie of arr) {
     const [key, value] = propertie.split('=')
-    propertiesJson[key] = value
+    propertiesJson[key] = value.replace(/['"]/g, '')
   }
   return propertiesJson
 }
