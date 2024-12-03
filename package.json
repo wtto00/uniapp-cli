@@ -4,7 +4,7 @@
   "description": "CLI for uniapp.",
   "type": "module",
   "bin": {
-    "uniapp": "./dist/index.js"
+    "uniapp": "dist/index.js"
   },
   "files": ["templates", "dist"],
   "scripts": {
