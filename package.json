@@ -1,6 +1,6 @@
 {
   "name": "@wtto00/uniapp-cli",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "CLI for uniapp.",
   "type": "module",
   "bin": {
