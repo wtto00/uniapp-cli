@@ -1,16 +1,21 @@
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
+import chokidar from 'chokidar'
 import { type ResultPromise, execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
+import type { WebSocket } from 'ws'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
+import { HMRServer, SocketMessage, startFileServer, startWebSocketServer } from '../utils/server.js'
+import { isWindows } from '../utils/util.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
+import { buildDistPath, devDistPath } from './www.js'
 
 let logcatProcess: ResultPromise<{
   stdout: ('inherit' | GeneratorTransform<false>)[]
@@ -28,9 +33,13 @@ function killLogcat() {
 export interface AndroidRunOptions {
   isBuild?: boolean
   isHbuilderX?: boolean
+  socket?: {
+    host: string
+    port: number
+  }
 }
 
-export default async function run(options: BuildOptions, runOptions?: AndroidRunOptions) {
+export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRunOptions) {
   killLogcat()
   Log.debug('清理 Android 资源')
   // await cleanAndroidBuild()
@@ -85,10 +94,6 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
     const packagename = manifest['app-plus']?.distribute?.android?.packagename ?? ''
     const spinner = ora(`安装 ${apkPath} 到设备 \`${deviceName}\``).start()
     try {
-      if (await android.isInstalled(deviceName, packagename)) {
-        // 清除应用数据
-        await android.adb(deviceName, `shell pm clear ${packagename}`)
-      }
       const apkFullPath = resolve(App.projectRoot, apkPath)
       await android.install(deviceName, apkFullPath, { r: true })
       spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
@@ -100,7 +105,15 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
     if (!runOptions?.isBuild) await android.adb(deviceName, 'logcat -c')
 
     Log.debug('开始拉起App')
-    await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
+    if (runOptions?.isBuild) {
+      await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
+    } else {
+      let command = `shell am start -n ${packagename}/io.dcloud.PandoraEntry`
+      if (runOptions?.socket) {
+        command += ` --es appid ${manifest.appid} --es ip ${runOptions.socket.host} --es port ${runOptions.socket.port}`
+      }
+      await android.adb(deviceName, command)
+    }
 
     if (!runOptions?.isBuild) {
       logcatProcess = execa({
@@ -113,10 +126,55 @@ export default async function run(options: BuildOptions, runOptions?: AndroidRun
         stderr: 'ignore',
         buffer: false,
         reject: false,
-      })`${android.adbBin} -s ${deviceName} logcat console:D jsLog:D weex:E *:S -v raw -v color -v time`
+      })`${android.adbBin} -s ${deviceName} logcat console:D jsLog:D weex:E aaa:D *:S -v raw -v color -v time`
     }
   } catch (error) {
     Log.error(`出错了: ${errorMessage(error)}`)
     killLogcat()
   }
+}
+
+export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunOptions) {
+  let ws: WebSocket | null = null
+  const runOpts = { ...runOptions }
+  // 启动websocket服务器
+  await startWebSocketServer((_ws) => {
+    ws = _ws
+  })
+  runOpts.socket = {
+    host: HMRServer.getIp(),
+    port: HMRServer.webSocketPort,
+  }
+
+  // 启动文件下载服务器
+  const dir = runOptions?.isBuild ? buildDistPath : devDistPath
+  await startFileServer(dir)
+
+  // 监听文件变化
+  const watchDir = runOpts.isBuild ? buildDistPath : devDistPath
+  const watcher = chokidar.watch(watchDir, {
+    persistent: true,
+    interval: 1000,
+    binaryInterval: 1500,
+    usePolling: true,
+    ignoreInitial: true,
+    ignorePermissionErrors: true,
+    awaitWriteFinish: true,
+  })
+  let watchClock: NodeJS.Timeout
+  const changedFiles = new Set<string>()
+  const reload = (path: string) => {
+    changedFiles.add(relative(watchDir, path).replace(isWindows() ? /\\/g : /\//g, '/'))
+    clearTimeout(watchClock)
+    watchClock = setTimeout(() => {
+      ws?.send(SocketMessage.build(changedFiles), (err) => {
+        if (!err) {
+          Log.debug('HMR热更新指令发送成功')
+        }
+      })
+    }, 1000)
+  }
+  watcher.on('add', reload).on('change', reload).on('unlink', reload)
+
+  await buildAndroid(options, runOpts)
 }

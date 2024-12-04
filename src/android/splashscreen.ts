@@ -1,4 +1,4 @@
-import { readdirSync, rmSync } from 'node:fs'
+import { existsSync, readdirSync, rmSync } from 'node:fs'
 import { extname, join } from 'node:path'
 import { App } from '../utils/app.js'
 import { AndroidDir } from '../utils/path.js'
@@ -14,6 +14,7 @@ export function appendSplashScreen(results: Results) {
     const resourceDir = join(AndroidDir, 'app/src/main/res')
     for (const size of resourceSizes) {
       const sizePath = join(resourceDir, `drawable-${size}`)
+      if (!existsSync(sizePath)) continue
       const files = readdirSync(sizePath)
       const splashImage = files.find((file) => file.startsWith('splash.'))
       if (splashImage) {

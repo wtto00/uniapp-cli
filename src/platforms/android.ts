@@ -5,20 +5,18 @@ import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
-import runAndroid from '../android/run.js'
+import { buildAndroid, runAndroid } from '../android/run.js'
 import { initSignEnv } from '../android/sign.js'
 import { getLibSDKDir } from '../android/utils.js'
-import { devDistPath } from '../android/www.js'
 import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
-import { watchFiles } from '../utils/file.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
-import { trimEnd } from '../utils/util.js'
+import { trimEnd, uniRunSuccess } from '../utils/util.js'
 import { type ModuleClass, installModules, uninstallModules } from './index.js'
 
 const UNIAPP_ANDROID_SDK_URL =
@@ -142,9 +140,9 @@ const android: ModuleClass = {
         yield line
         if (over) return
         const text = stripAnsiColors(line)
-        if (text === 'DONE  Build complete. Watching for changes...') {
+        if (uniRunSuccess(text)) {
           over = true
-          watchFiles(devDistPath, () => runAndroid(options), { immediate: true })
+          runAndroid(options)
         }
       } as GeneratorTransform<false>
       const errTransform = function* (line: string) {
@@ -177,7 +175,7 @@ const android: ModuleClass = {
 
     const cli = process.env.HBUILDERX_CLI_PATH
     if (cli && existsSync(cli)) {
-      Log.debug(`使用HBuilderX的CLI打包: ${cli}`)
+      Log.info(`使用HBuilderX的CLI打包: ${cli}`)
 
       const open = await execa({
         stdout: 'inherit',
@@ -212,7 +210,7 @@ const android: ModuleClass = {
         throw Error('使用HBuilderX的CLI打包失败了')
       }
 
-      await runAndroid(options, { isBuild: true, isHbuilderX: true })
+      await buildAndroid(options, { isBuild: true, isHbuilderX: true })
       return
     }
 
@@ -239,7 +237,7 @@ const android: ModuleClass = {
       const text = stripAnsiColors(stdout as unknown as string)
 
       if (/DONE {2}Build complete\./.test(text)) {
-        await runAndroid(options, { isBuild: true })
+        await buildAndroid(options, { isBuild: true })
       } else if (
         stderr.includes('Cannot find module: @dcloudio/uni-uts-v1') ||
         stderr.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
