@@ -62,8 +62,9 @@ export default defineConfig({
         {
           text: '适配',
           items: [
-            { text: 'uniCloud', link: 'unicloud' },
+            { text: 'UniCloud', link: 'unicloud' },
             { text: 'Android', link: 'android' },
+            { text: '内置模块', link: 'module' },
           ],
           base: '/adapter/',
         },
