@@ -1,5 +1,6 @@
 import http from 'node:http'
 import os from 'node:os'
+import path from 'node:path'
 import send from 'send'
 import { type Server, type WebSocket, WebSocketServer } from 'ws'
 import { App } from './app.js'
@@ -170,7 +171,13 @@ export async function startFileServer(dir: string) {
   return new Promise<http.Server>((resolve, reject) => {
     const server = http
       .createServer((req, res) => {
-        send(req, req.url ?? '', { root: dir }).pipe(res)
+        const filePath = path.resolve(dir, `.${req.url ?? ''}`)
+        if (!filePath.startsWith(path.resolve(dir))) {
+          res.statusCode = 403
+          res.end('Forbidden')
+          return
+        }
+        send(req, filePath, { root: dir }).pipe(res)
       })
       .listen(HMRServer.fileServerPort)
       .on('listening', () => {
