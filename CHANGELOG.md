@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- Android 运行热更新。fixed #89
+- SDK 下载添加进度显示。fixed #95
+
+### Changed
+
+- 使用 `node-fetch` 代替 `fetch`，并添加系统代理的使用。(https://github.com/wtto00/uniapp-cli/commit/37570967f9d361fa5c38a2288e415ca0cb2eb4d0)
+- 文档维护。(https://github.com/wtto00/uniapp-cli/commit/d2415f58042e0c7d7e8ee55795bbd631fc5be61e)
+
+### Security
+
+- Android 热更新启动的 HTTP 文件下载服务器路径匹配不安全。fixed [#1](https://github.com/wtto00/uniapp-cli/security/code-scanning/1)
+- Windows 路径正则替换。fixed [#2](https://github.com/wtto00/uniapp-cli/security/code-scanning/2)
+
 ## [0.0.3-alpha] - 2024-12-04
 
 ### Added
