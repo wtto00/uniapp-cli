@@ -2,8 +2,10 @@ import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, extname, resolve } from 'node:path'
 import { checkbox } from '@inquirer/prompts'
+import fetch from 'node-fetch'
 import ora from 'ora'
 import { type PackageJson, readPackageJSON } from 'pkg-types'
+import { ProxyAgent } from 'proxy-agent'
 import type ts from 'typescript'
 import { App } from './utils/app.js'
 import { errorMessage } from './utils/error.js'
@@ -143,11 +145,12 @@ export async function transform(source: string, target?: string, options?: Trans
 
     spinnner.text = '正在处理文件: package.json'
     const packageUrl = vue3 ? `${vue3template}/package.json` : `${vue2template}/package.json`
-    const packageRes = await fetch(packageUrl)
+    const agent = new ProxyAgent()
+    const packageRes = await fetch(packageUrl, { agent })
     if (!packageRes.ok) {
       throw Error(`获取 uniapp 版本信息出错了: ${packageRes.statusText}`)
     }
-    const packageInfo: PackageJson = await packageRes.json()
+    const packageInfo = (await packageRes.json()) as PackageJson
 
     const packageVersion = manifest.versionName ?? ''
 

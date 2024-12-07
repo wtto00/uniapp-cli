@@ -3,8 +3,10 @@ import { rename, rm, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
+import fetch from 'node-fetch'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
+import { ProxyAgent } from 'proxy-agent'
 import { buildAndroid, runAndroid } from '../android/run.js'
 import { initSignEnv } from '../android/sign.js'
 import { getLibSDKDir } from '../android/utils.js'
@@ -61,17 +63,18 @@ const android: ModuleClass = {
     await installModules(android.modules, uniVersion)
 
     const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', uniVersion)
+    const agent = new ProxyAgent()
     if (!existsSync(sdkDir)) {
       // download sdk libs
       const spinner = ora('正在下载Android SDK Lib文件: ').start()
       const url = `${UNIAPP_ANDROID_SDK_URL}/libs/${uniVersion}/index.json`
       let sdkFiles: Record<string, string> = {}
       try {
-        const fetchResult = await fetch(url)
+        const fetchResult = await fetch(url, { agent })
         if (fetchResult.status === 404) {
           throw Error(`Android 平台暂不支持版本 ${uniVersion}`)
         }
-        sdkFiles = await fetchResult.json()
+        sdkFiles = (await fetchResult.json()) as Record<string, string>
         if (!sdkFiles) throw Error()
       } catch (error) {
         spinner.fail(errorMessage(error))
@@ -80,15 +83,32 @@ const android: ModuleClass = {
       const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${uniVersion}-tmp`)
       if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true })
       const libSDKDir = getLibSDKDir(uniVersion)
+      const libsName = Object.keys(sdkFiles)
+      const libsCount = libsName.length
       try {
-        for (const lib in sdkFiles) {
-          spinner.text = `正在下载Android SDK Lib文件: ${lib}`
+        for (let i = 0; i < libsCount; i++) {
+          const lib = libsName[i]
+          spinner.text = `(${i + 1}/${libsCount}) 正在下载Android SDK Lib文件: ${lib} (0%)`
           const libPath = resolve(targetDir, lib)
           if (existsSync(libPath)) continue
           const libUrl = `${UNIAPP_ANDROID_SDK_URL}/libs/${sdkFiles[lib]}`
-          const libFetchRes = await fetch(libUrl)
-          const libContent = await libFetchRes.arrayBuffer()
-          await writeFile(libPath, new Uint8Array(libContent))
+          const libFetchRes = await fetch(libUrl, { agent })
+          if (!libFetchRes.ok) throw Error(`下载出错了: ${libFetchRes.statusText}`)
+          const contentLength = libFetchRes.headers.get('content-length')
+          if (!contentLength) throw Error('下载出错了: content-length为空')
+          const total = Number.parseInt(contentLength, 10)
+          if (!total) throw Error('下载出错了: 文件大小为0')
+          if (!libFetchRes.body) throw Error('下载出错了: body为空')
+          let fileBuffer = new Uint8Array()
+          libFetchRes.body.on('data', (chunk) => {
+            fileBuffer = Buffer.concat([fileBuffer, chunk])
+            spinner.text = `(${i + 1}/${libsCount}) 正在下载Android SDK Lib文件: ${lib} (${Number(((fileBuffer.byteLength / total) * 100).toFixed(2))}%)`
+          })
+          await new Promise((resolve, reject) => {
+            libFetchRes.body!.on('error', reject)
+            libFetchRes.body!.on('finish', resolve)
+          })
+          await writeFile(libPath, fileBuffer)
         }
         spinner.succeed('Android SDK Lib文件已下载完成')
         await rename(targetDir, libSDKDir)
