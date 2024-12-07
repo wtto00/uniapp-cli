@@ -164,7 +164,11 @@ export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunO
   let watchClock: NodeJS.Timeout
   const changedFiles = new Set<string>()
   const reload = (path: string) => {
-    changedFiles.add(relative(watchDir, path).replace(isWindows() ? /\\/g : /\//g, '/'))
+    let filePath = relative(watchDir, path)
+    if (isWindows()) {
+      filePath = filePath.replace(/\\/g, '/')
+    }
+    changedFiles.add(filePath)
     clearTimeout(watchClock)
     watchClock = setTimeout(() => {
       ws?.send(SocketMessage.build(changedFiles), (err) => {
