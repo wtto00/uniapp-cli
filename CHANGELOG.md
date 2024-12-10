@@ -11,6 +11,7 @@
 
 - 使用 `node-fetch` 代替 `fetch`，并添加系统代理的使用。([3757096](https://github.com/wtto00/uniapp-cli/commit/37570967f9d361fa5c38a2288e415ca0cb2eb4d0))
 - 文档维护。([d2415f5](https://github.com/wtto00/uniapp-cli/commit/d2415f58042e0c7d7e8ee55795bbd631fc5be61e))
+- 更新依赖。
 
 ### Security
 
