@@ -2,7 +2,7 @@
 
 如果项目中使用了 `uniCloud`，需要按照以下方式配置，才可以正常连接 `云端云函数`。不支持连接 `本地云函数`。
 
-在 `uniapp-cli.config.json` 中配置 `UNI_CLOUD_PROVIDER`:
+在 `uniapp.config.json` 中配置 `UNI_CLOUD_PROVIDER`:
 
 ```jsonc
 {

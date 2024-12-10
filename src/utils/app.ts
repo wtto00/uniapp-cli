@@ -22,7 +22,7 @@ export const App = {
 
   init() {
     App.projectRoot = process.cwd()
-    const configPath = resolve(App.projectRoot, 'uniapp-cli.config.json')
+    const configPath = resolve(App.projectRoot, 'uniapp.config.json')
     if (existsSync(configPath)) {
       const config = readJsonFile<Record<string, unknown>>(configPath, true)
       for (const key in config || {}) {

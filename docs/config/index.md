@@ -1,8 +1,8 @@
 # 配置文件
 
-所有配置项都可以在环境变量中配置或者在 `uniapp-cli.config.json` 文件中配置。
+所有配置项都可以在环境变量中配置或者在 `uniapp.config.json` 文件中配置。
 
-在项目跟目录创建配置文件 `uniapp-cli.config.json`，内容格式如下:
+在项目跟目录创建配置文件 `uniapp.config.json`，内容格式如下:
 
 ```json
 {
@@ -118,7 +118,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--keystore` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.keystore`。
-- `uniapp-cli.config.json` 中配置的 `KEYSTORE_PATH`。
+- `uniapp.config.json` 中配置的 `KEYSTORE_PATH`。
 - 环境变量中配置 `KEYSTORE_PATH`。
 
 ## STORE_PASSWORD
@@ -129,7 +129,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--storepasswd` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.password`。
-- `uniapp-cli.config.json` 中配置的 `STORE_PASSWORD`。
+- `uniapp.config.json` 中配置的 `STORE_PASSWORD`。
 - 环境变量中配置 `STORE_PASSWORD`。
 
 ## KEY_ALIAS
@@ -140,7 +140,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--alias` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.aliasname`。
-- `uniapp-cli.config.json` 中配置的 `KEY_ALIAS`。
+- `uniapp.config.json` 中配置的 `KEY_ALIAS`。
 - 环境变量中配置 `KEY_ALIAS`。
 
 ## KEY_PASSWORD
@@ -151,7 +151,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - 在 `run` 或者 `build` 命令中显式输入 `--keypasswd` 参数。
 - `manifest.json` 中配置的 `app-plus.distribute.android.password`。
-- `uniapp-cli.config.json` 中配置的 `KEY_PASSWORD`。
+- `uniapp.config.json` 中配置的 `KEY_PASSWORD`。
 - 环境变量中配置 `KEY_PASSWORD`。
 
 ## WEIXIN_DEV_TOOL
