@@ -1,6 +1,8 @@
+import { createWriteStream } from 'node:fs'
 import http from 'node:http'
 import os from 'node:os'
 import path from 'node:path'
+import archiver from 'archiver'
 import send from 'send'
 import { type Server, type WebSocket, WebSocketServer } from 'ws'
 import { App } from './app.js'
@@ -117,7 +119,34 @@ export const SocketMessage = {
           customBase: false,
         },
         refreashType: 'reload',
-      },
+      } as ISocketMessage['contents'],
+    })
+  },
+
+  initial() {
+    const manifest = App.getManifestJson()
+
+    return JSON.stringify({
+      mobile: SocketMessage.mobile,
+      contents: {
+        project: {
+          type: 'UniApp',
+          appID: manifest.appid,
+        },
+        app: {
+          appID: manifest.appid,
+          customBase: false,
+        },
+        fileinfo: [
+          {
+            action: 'getFile',
+            sourcePath: `http://${HMRServer.getIp()}:${HMRServer.fileServerPort}/debug.zip`,
+            fullPackage: true,
+            firstInstall: true,
+          },
+        ],
+        refreashType: 'reload',
+      } as ISocketMessage['contents'],
     })
   },
 }
@@ -160,10 +189,7 @@ export async function startWebSocketServer(callback: (ws: WebSocket) => void) {
     wss.on('error', reject)
     wss.on('close', () => {
       Log.debug('HMR服务已关闭')
-      process.off('exit', wss.close)
     })
-
-    process.on('exit', wss.close)
   })
 }
 
@@ -171,13 +197,18 @@ export async function startFileServer(dir: string) {
   return new Promise<http.Server>((resolve, reject) => {
     const server = http
       .createServer((req, res) => {
-        const filePath = path.resolve(dir, `.${req.url ?? ''}`)
+        if (!req.url) {
+          res.statusCode = 404
+          res.end('Not Found')
+          return
+        }
+        const filePath = path.resolve(dir, `.${req.url}`)
         if (!filePath.startsWith(path.resolve(dir))) {
           res.statusCode = 403
           res.end('Forbidden')
           return
         }
-        send(req, filePath, { root: dir }).pipe(res)
+        send(req, req.url, { root: dir }).pipe(res)
       })
       .listen(HMRServer.fileServerPort)
       .on('listening', () => {
@@ -187,8 +218,27 @@ export async function startFileServer(dir: string) {
       .on('error', reject)
       .on('close', () => {
         Log.debug('HMR文件服务已关闭')
-        process.off('beforeExit', server.close)
       })
-    process.on('beforeExit', server.close)
+  })
+}
+
+export async function zipDir(dir: string) {
+  return new Promise<void>((resolve, reject) => {
+    const output = createWriteStream(path.join(dir, 'debug.zip'))
+    const archive = archiver('zip', { zlib: { level: 9 } })
+    output.on('close', () => {
+      resolve()
+    })
+    archive.on('error', (err) => {
+      reject(err)
+    })
+
+    archive.pipe(output)
+
+    archive.directory(dir, false, (entry) => {
+      if (entry.name === 'debug.zip') return false
+      return entry
+    })
+    archive.finalize()
   })
 }

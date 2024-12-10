@@ -2,7 +2,6 @@ import { relative, resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
 import chokidar from 'chokidar'
 import { type ResultPromise, execa } from 'execa'
-import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import type { WebSocket } from 'ws'
 import type { BuildOptions } from '../build.js'
@@ -10,7 +9,7 @@ import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
-import { HMRServer, SocketMessage, startFileServer, startWebSocketServer } from '../utils/server.js'
+import { HMRServer, SocketMessage, startFileServer, startWebSocketServer, zipDir } from '../utils/server.js'
 import { isWindows } from '../utils/util.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
@@ -18,8 +17,8 @@ import { prepare } from './prepare.js'
 import { buildDistPath, devDistPath } from './www.js'
 
 let logcatProcess: ResultPromise<{
-  stdout: ('inherit' | GeneratorTransform<false>)[]
-  stderr: 'inherit'
+  stdout: 'inherit'
+  stderr: 'ignore'
   buffer: false
   reject: false
 }>
@@ -106,9 +105,11 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
 
     Log.debug('开始拉起App')
     if (runOptions?.isBuild) {
+      // build
       await android.adb(deviceName, `shell am start -n ${packagename}/io.dcloud.PandoraEntry`)
     } else {
-      let command = `shell am start -n ${packagename}/io.dcloud.PandoraEntry`
+      // debug
+      let command = `shell am start -n ${packagename}/io.dcloud.debug.PullDebugActivity`
       if (runOptions?.socket) {
         command += ` --es appid ${manifest.appid} --es ip ${runOptions.socket.host} --es port ${runOptions.socket.port}`
       }
@@ -117,12 +118,7 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
 
     if (!runOptions?.isBuild) {
       logcatProcess = execa({
-        stdout: [
-          function* (line: string) {
-            yield line.replace(/I\/console \( \d+\)/g, '')
-          } as GeneratorTransform<false>,
-          'inherit',
-        ],
+        stdout: 'inherit',
         stderr: 'ignore',
         buffer: false,
         reject: false,
@@ -137,22 +133,25 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
 export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunOptions) {
   let ws: WebSocket | null = null
   const runOpts = { ...runOptions }
+  // 启动文件下载服务器
+  const distDir = runOpts.isBuild ? buildDistPath : devDistPath
+  await startFileServer(distDir)
+
+  // 压缩打包结果
+  await zipDir(distDir)
+
   // 启动websocket服务器
   await startWebSocketServer((_ws) => {
     ws = _ws
+    ws.send(SocketMessage.initial())
   })
   runOpts.socket = {
     host: HMRServer.getIp(),
     port: HMRServer.webSocketPort,
   }
 
-  // 启动文件下载服务器
-  const dir = runOptions?.isBuild ? buildDistPath : devDistPath
-  await startFileServer(dir)
-
   // 监听文件变化
-  const watchDir = runOpts.isBuild ? buildDistPath : devDistPath
-  const watcher = chokidar.watch(watchDir, {
+  const watcher = chokidar.watch(distDir, {
     persistent: true,
     interval: 1000,
     binaryInterval: 1500,
@@ -164,7 +163,7 @@ export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunO
   let watchClock: NodeJS.Timeout
   const changedFiles = new Set<string>()
   const reload = (path: string) => {
-    let filePath = relative(watchDir, path)
+    let filePath = relative(distDir, path)
     if (isWindows()) {
       filePath = filePath.replace(/\\/g, '/')
     }
