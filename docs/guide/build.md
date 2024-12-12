@@ -17,8 +17,8 @@ Arguments:
   platform                     要打包的平台: android,ios,h5,mp-weixin...
 
 Options:
-  --no-open                    不自动打开
   --mode <mode>                vite 环境模式
+  --no-open                    不自动打开
   --bundle <bundle>            打包产物: aab,apk(默认)
   --device <device>            运行到指定的设备上
   --keystore <keystore>        Android签名密钥文件所在位置
@@ -35,15 +35,15 @@ Options:
 
 ## 参数说明
 
+### --mode
+
+同 [运行参数--mode](./run#mode)。
+
 ### --no-open
 
 同 [运行参数--no-open](./run#no-open)。
 
 - `H5` 平台此参数无效。
-
-### --mode
-
-同 [运行参数--mode](./run#mode)。
 
 ### --device
 

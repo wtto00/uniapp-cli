@@ -17,8 +17,8 @@ Arguments:
   platform                     要运行的平台: android,ios,h5,mp-weixin...
 
 Options:
-  --no-open                    不自动打开
   --mode <mode>                vite 环境模式
+  --no-open                    不自动打开
   --device <device>            运行到指定的设备上
   --keystore <keystore>        Android签名密钥文件所在位置
   --storepasswd <storepasswd>  Android签名密钥的密码
@@ -34,6 +34,12 @@ Options:
 
 ## 参数说明
 
+### --mode
+
+`vite` 框架的 [模式](https://vitejs.cn/vite3-cn/guide/env-and-mode.html#modes) 配置。
+
+仅在 `vue3` 项目时有效，`vue2` 项目此参数无效。
+
 ### --no-open
 
 运行完毕后，是否自动打开平台所对应的工具。
@@ -44,12 +50,6 @@ Options:
 - android: 已连接的 `Android` 设备或者模拟器
 - mp-weixin: [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 - 其他: 待开发
-
-### --mode
-
-`vite` 框架的 [模式](https://vitejs.cn/vite3-cn/guide/env-and-mode.html#modes) 配置。
-
-仅在 `vue3` 项目时有效，`vue2` 项目此参数无效。
 
 ### --device
 
