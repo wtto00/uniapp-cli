@@ -1,23 +1,19 @@
-import { App } from '../utils/app.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const mp360: ModuleClass = {
-  modules: ['@dcloudio/uni-mp-360'],
+export class PlatformMP360 extends PlatformModule {
+  modules = ['@dcloudio/uni-mp-360']
 
-  async requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(mp360.modules, uniVersion)
-  },
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  async platformRemove() {
-    await uninstallModules(mp360.modules)
-  },
-
-  run() {},
-
-  build() {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default mp360

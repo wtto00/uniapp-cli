@@ -1,17 +1,39 @@
 import type { BuildOptions } from '../build.js'
-import { installPackages, uninstallPackages } from '../utils/exec.js'
-import { isInstalled } from '../utils/package.js'
+import type { RunOptions } from '../run.js'
+import { App } from '../utils/app.js'
+import { installDeps, isInstalled, uninstallDeps } from '../utils/package.js'
 
-type MaybePromise<T> = T | Promise<T>
+export type MaybePromise<T> = T | Promise<T>
 
-export interface ModuleClass {
-  modules: string[]
-  isInstalled?: () => boolean
-  requirement: () => MaybePromise<void>
-  platformAdd: () => MaybePromise<void>
-  platformRemove: () => MaybePromise<void>
-  run: (options: BuildOptions) => MaybePromise<void>
-  build: (options: BuildOptions) => MaybePromise<void>
+export const NotImplemented = Promise.reject(Error('暂未实现'))
+
+export class PlatformModule {
+  modules: string[] = []
+
+  async isInstalled() {
+    return this.modules.every((module) => isInstalled(module))
+  }
+
+  async requirement() {}
+
+  /** platform add */
+  async add() {
+    const uniVersion = App.getUniVersion()
+    await installDeps(this.modules, uniVersion)
+  }
+
+  /** platform remove */
+  async remove() {
+    await uninstallDeps(this.modules)
+  }
+
+  async run(_options: RunOptions): Promise<void> {
+    return NotImplemented
+  }
+
+  async build(_options: BuildOptions): Promise<void> {
+    return NotImplemented
+  }
 }
 
 export enum PLATFORM {
@@ -34,57 +56,41 @@ export enum PLATFORM {
 }
 export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
 
-export async function importPlatform(platform: PLATFORM): Promise<ModuleClass> {
+export async function importPlatform(platform: PLATFORM): Promise<PlatformModule> {
   switch (platform) {
     case PLATFORM.ANDROID:
-      return (await import('./android.js')).default
+      return new (await import('./android.js')).PlatformAndroid()
     case PLATFORM.IOS:
-      return (await import('./ios.js')).default
+      return new (await import('./ios.js')).PlatformIOS()
     case PLATFORM.HARMONY:
-      return (await import('./harmony.js')).default
+      return new (await import('./harmony.js')).PlatformHarmony()
     case PLATFORM.H5:
-      return (await import('./h5.js')).default
+      return new (await import('./h5.js')).PlatformH5()
     case PLATFORM.MP_WEIXIN:
-      return (await import('./mp-weixin.js')).default
+      return new (await import('./mp-weixin.js')).PlatformMPWeixin()
     case PLATFORM.MP_ALIPAY:
-      return (await import('./mp-alipay.js')).default
+      return new (await import('./mp-alipay.js')).PlatformMPAlipay()
     case PLATFORM.MP_BAIDU:
-      return (await import('./mp-baidu.js')).default
+      return new (await import('./mp-baidu.js')).PlatformMPBaidu()
     case PLATFORM.MP_TOUTIAO:
-      return (await import('./mp-toutiao.js')).default
+      return new (await import('./mp-toutiao.js')).PlatformMPToutiao()
     case PLATFORM.MP_LARK:
-      return (await import('./mp-lark.js')).default
+      return new (await import('./mp-lark.js')).PlatformMPLark()
     case PLATFORM.MP_QQ:
-      return (await import('./mp-qq.js')).default
+      return new (await import('./mp-qq.js')).PlatformMPQQ()
     case PLATFORM.MP_KUAISHOU:
-      return (await import('./mp-kuaishou.js')).default
+      return new (await import('./mp-kuaishou.js')).PlatformMPKuaishou()
     case PLATFORM.MP_JD:
-      return (await import('./mp-jd.js')).default
+      return new (await import('./mp-jd.js')).PlatformMPJD()
     case PLATFORM.MP_360:
-      return (await import('./mp-360.js')).default
+      return new (await import('./mp-360.js')).PlatformMP360()
     case PLATFORM.MP_XHS:
-      return (await import('./mp-xhs.js')).default
+      return new (await import('./mp-xhs.js')).PlatformMPXhs()
     case PLATFORM.MP_QUICKAPP_UNION:
-      return (await import('./quickapp-union.js')).default
+      return new (await import('./quickapp-union.js')).PlatformQuickappWebview()
     case PLATFORM.MP_QUICKAPP_HUAWEI:
-      return (await import('./quickapp-huawei.js')).default
+      return new (await import('./quickapp-huawei.js')).PlatformQuickappHuawei()
     default:
       throw Error(`未知的平台: ${platform}`)
-  }
-}
-
-export async function installModules(modules: string[], version: string) {
-  for (const module of modules) {
-    if (!isInstalled(module)) {
-      await installPackages([`${module}@${version}`])
-    }
-  }
-}
-
-export async function uninstallModules(modules: string[]) {
-  for (const module of modules) {
-    if (isInstalled(module)) {
-      await uninstallPackages([module])
-    }
   }
 }

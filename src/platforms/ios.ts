@@ -1,31 +1,37 @@
-import { existsSync } from 'node:fs'
-import { App } from '../utils/app.js'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
+import { exists } from '../utils/file.js'
 import { AndroidDir, IOSDir } from '../utils/path.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const ios: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
+export class PlatformIOS extends PlatformModule {
+  modules = ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1']
 
-  isInstalled() {
-    return existsSync(IOSDir)
-  },
+  async isInstalled() {
+    return (await super.isInstalled()) && (await exists(IOSDir))
+  }
 
-  requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(ios.modules, uniVersion)
-  },
+  async add() {
+    await super.add()
+    return NotImplemented
+  }
 
-  async platformRemove() {
-    if (!existsSync(AndroidDir)) {
-      await uninstallModules(ios.modules)
+  async remove() {
+    if (!(await exists(AndroidDir))) {
+      await super.remove()
     }
-  },
+    return NotImplemented
+  }
 
-  run() {},
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  build() {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default ios

@@ -1,30 +1,33 @@
-import { existsSync } from 'node:fs'
 import type { BuildOptions } from '../build.js'
-import { App } from '../utils/app.js'
+import type { RunOptions } from '../run.js'
+import { exists } from '../utils/file.js'
 import { HarmonyDir } from '../utils/path.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const harmony: ModuleClass = {
-  modules: ['@dcloudio/uni-app-harmony', '@dcloudio/uni-uts-v1'],
+export class PlatformHarmony extends PlatformModule {
+  modules = ['@dcloudio/uni-app-harmony', '@dcloudio/uni-uts-v1']
 
-  isInstalled() {
-    return existsSync(HarmonyDir)
-  },
+  async isInstalled() {
+    return (await super.isInstalled()) && (await exists(HarmonyDir))
+  }
 
-  requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(harmony.modules, uniVersion)
-  },
+  async add() {
+    return NotImplemented
+  }
 
-  async platformRemove() {
-    await uninstallModules(harmony.modules)
-  },
+  async remove() {
+    return NotImplemented
+  }
 
-  run(_options: BuildOptions) {},
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  build(_options: BuildOptions) {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default harmony

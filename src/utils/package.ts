@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { PackageJson } from 'pkg-types'
 import { App } from './app.js'
+import { installPackages, uninstallPackages } from './exec.js'
 import { readJsonFile } from './file.js'
 
 export function isInstalled(module: string): boolean {
@@ -30,4 +31,12 @@ export function getPackageDependencies(packageJson: PackageJson) {
     ...packageJson.optionalDependencies,
     ...packageJson.peerDependencies,
   }
+}
+
+export async function installDeps(deps: string[], version: string) {
+  await installPackages(deps.filter((dep) => !isInstalled(dep)).map((dep) => `${dep}@${version}`))
+}
+
+export async function uninstallDeps(deps: string[]) {
+  await uninstallPackages(deps.filter((dep) => isInstalled(dep)))
 }

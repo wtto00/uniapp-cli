@@ -1,5 +1,4 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
-import { rename, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
@@ -12,30 +11,33 @@ import { initSignEnv } from '../android/sign.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { checkConfig } from '../app-plus/check.js'
 import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
+// import { getHBuilderXCli } from '../utils/hbuilderx.js'
+import { exists } from '../utils/file.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
 import { trimEnd, uniRunSuccess } from '../utils/util.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import { PlatformModule } from './index.js'
 
 const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
 
-const android: ModuleClass = {
-  modules: ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1'],
+export class PlatformAndroid extends PlatformModule {
+  modules = ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1']
 
-  isInstalled() {
-    return existsSync(AndroidDir)
-  },
+  async isInstalled() {
+    return (await super.isInstalled()) && (await exists(AndroidDir))
+  }
 
   async requirement() {
     // JAVA_HOME
     if (process.env.JAVA_HOME) {
       const javaBinPath = resolve(process.env.JAVA_HOME, `bin/java${process.platform === 'win32' ? '.exe' : ''}`)
-      if (existsSync(javaBinPath)) {
+      if (await exists(javaBinPath)) {
         const { stderr, stdout } = await execa`${javaBinPath} -version`
         const raw = (stdout || stderr).split('\n')[0]
         if (raw.includes(' version ')) {
@@ -55,16 +57,16 @@ const android: ModuleClass = {
     } else {
       Log.warn('没有设置环境变量: `ANDROID_HOME` ')
     }
-  },
+  }
 
-  async platformAdd() {
+  async add() {
+    await super.add()
+
     const uniVersion = App.getUniVersion()
-
-    await installModules(android.modules, uniVersion)
 
     const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', uniVersion)
     const agent = new ProxyAgent()
-    if (!existsSync(sdkDir)) {
+    if (!(await exists(sdkDir))) {
       // download sdk libs
       const spinner = ora('正在下载Android SDK Lib文件: ').start()
       const url = `${UNIAPP_ANDROID_SDK_URL}/libs/${uniVersion}/index.json`
@@ -81,7 +83,7 @@ const android: ModuleClass = {
         throw Error(`请求UniApp Android SDK@${uniVersion} 文件列表失败: ${url}`)
       }
       const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${uniVersion}-tmp`)
-      if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true })
+      if (!(await exists(targetDir))) await mkdir(targetDir, { recursive: true })
       const libSDKDir = getLibSDKDir(uniVersion)
       const libsName = Object.keys(sdkFiles)
       const libsCount = libsName.length
@@ -90,7 +92,7 @@ const android: ModuleClass = {
           const lib = libsName[i]
           spinner.text = `(${i + 1}/${libsCount}) 正在下载Android SDK Lib文件: ${lib} (0%)`
           const libPath = resolve(targetDir, lib)
-          if (existsSync(libPath)) continue
+          if (await exists(libPath)) continue
           const libUrl = `${UNIAPP_ANDROID_SDK_URL}/libs/${sdkFiles[lib]}`
           const libFetchRes = await fetch(libUrl, { agent })
           if (!libFetchRes.ok) throw Error(`下载出错了: ${libFetchRes.statusText}`)
@@ -119,28 +121,30 @@ const android: ModuleClass = {
     }
 
     try {
-      cpSync(resolve(TemplateDir, 'android'), AndroidDir, { recursive: true })
+      await cp(resolve(TemplateDir, 'android'), AndroidDir, { recursive: true })
     } catch (error) {
-      rmSync(AndroidDir, { recursive: true, force: true })
+      await rm(AndroidDir, { recursive: true, force: true })
       throw error
     }
-  },
+  }
 
-  async platformRemove() {
-    if (!existsSync(IOSDir)) {
-      await uninstallModules(android.modules)
+  async remove() {
+    if (!(await exists(IOSDir))) {
+      await super.remove()
     }
     await showSpinner(() => rm(AndroidDir, { recursive: true, force: true }), {
       start: `正在删除 ${AndroidPath}`,
       succeed: `${AndroidPath} 已删除`,
       fail: `${AndroidPath} 删除失败`,
     })
-  },
+  }
 
-  async run(options: BuildOptions) {
+  async run(options: RunOptions) {
     initSignEnv(options)
 
     checkConfig()
+
+    // const hxcli = await getHBuilderXCli(options.hxcli)
 
     const pm = App.getPackageManager()
     const args = []
@@ -186,7 +190,7 @@ const android: ModuleClass = {
       if (errorMessage(error).match(/CTRL-C/)) return
       throw Error()
     }
-  },
+  }
 
   async build(options: BuildOptions) {
     initSignEnv(options)
@@ -194,7 +198,7 @@ const android: ModuleClass = {
     checkConfig()
 
     const cli = process.env.HBUILDERX_CLI_PATH
-    if (cli && existsSync(cli)) {
+    if (cli && (await exists(cli))) {
       Log.info(`使用HBuilderX的CLI打包: ${cli}`)
 
       const open = await execa({
@@ -268,7 +272,5 @@ const android: ModuleClass = {
       if (errorMessage(error).match(/CTRL-C/)) return
       throw Error()
     }
-  },
+  }
 }
-
-export default android

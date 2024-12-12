@@ -4,12 +4,14 @@ import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import Log from '../utils/log.js'
 import { isWindows, uniRunSuccess } from '../utils/util.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import { PlatformModule } from './index.js'
 
 function getWeixinDevToolCliPath() {
   if (process.env.WEIXIN_DEV_TOOL) {
@@ -41,8 +43,8 @@ function openWeixinDevTool(projectPath: string) {
     })
 }
 
-const mpWeixin: ModuleClass = {
-  modules: ['@dcloudio/uni-mp-weixin'],
+export class PlatformMPWeixin extends PlatformModule {
+  modules = ['@dcloudio/uni-mp-weixin']
 
   async requirement() {
     if (process.platform !== 'win32' && process.platform !== 'darwin') {
@@ -60,18 +62,9 @@ const mpWeixin: ModuleClass = {
     Log.warn(
       `没有检测到微信开发者工具。如果已经安装，请设置环境变量 \`WEIXIN_DEV_TOOL\` 为 \`cli${isWindows() ? '.bat' : ''}\` 可执行文件的位置`,
     )
-  },
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(mpWeixin.modules, uniVersion)
-  },
-
-  async platformRemove() {
-    await uninstallModules(mpWeixin.modules)
-  },
-
-  async run(options) {
+  async run(options: RunOptions) {
     const pm = App.getPackageManager()
     const args = []
     if (App.isVue3()) {
@@ -107,9 +100,9 @@ const mpWeixin: ModuleClass = {
       if (errorMessage(error).match(/CTRL-C/)) return
       throw Error()
     }
-  },
+  }
 
-  async build(options) {
+  async build(options: BuildOptions) {
     const pm = App.getPackageManager()
     const args: string[] = []
     if (App.isVue3()) {
@@ -137,7 +130,5 @@ const mpWeixin: ModuleClass = {
       if (errorMessage(error).match(/CTRL-C/)) return
       throw Error()
     }
-  },
+  }
 }
-
-export default mpWeixin

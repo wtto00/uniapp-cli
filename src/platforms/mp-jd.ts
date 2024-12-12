@@ -1,23 +1,19 @@
-import { App } from '../utils/app.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const mpJD: ModuleClass = {
-  modules: ['@dcloudio/uni-mp-jd'],
+export class PlatformMPJD extends PlatformModule {
+  modules = ['@dcloudio/uni-mp-jd']
 
-  requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(mpJD.modules, uniVersion)
-  },
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  async platformRemove() {
-    await uninstallModules(mpJD.modules)
-  },
-
-  run() {},
-
-  build() {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default mpJD

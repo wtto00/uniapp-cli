@@ -2,7 +2,6 @@ import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import { App } from './app.js'
-import Log from './log.js'
 
 /**
  * Remove the color of the output text
@@ -17,33 +16,9 @@ export function parseExecaError(error: unknown) {
   return Error((error as { stderr: string }).stderr || (error as { message: string }).message)
 }
 
-/**
- * `@vue/cli` has been installed or not
- */
-export async function isVueCliInstalled() {
-  const { stdout } = await execa`vue`
-  return stdout.includes('Usage: vue')
-}
-
-export async function installVueCli() {
-  const spinner = ora('@vue/cli 没有安装，开始全局安装 @vue/cli').start()
-  const { stderr } = await execa`npm i -g @vue/cli`
-  if (stderr) {
-    spinner.fail(`全局安装 @vue/cli 失败了: ${stderr}`)
-    throw Error
-  }
-
-  if (await isVueCliInstalled()) {
-    spinner.succeed('@vue/cli 已成功全局安装。')
-  }
-}
-
-export async function createVueProject(appName: string, template: string, force = false) {
-  Log.debug('开始使用@vue/cli创建应用')
-  await execa({ stdio: 'inherit' })`vue create -p ${template} ${appName} ${force ? '--force' : ''}`
-}
-
 export async function installPackages(packages: string[]) {
+  if (packages.length === 0) return
+
   const pm = App.getPackageManager()
   const commands = resolveCommand(pm.agent, 'add', packages)
   if (!commands) throw Error(`无法转换执行命令: ${pm.agent} add ${packages.join(' ')}`)
@@ -58,6 +33,8 @@ export async function installPackages(packages: string[]) {
 }
 
 export async function uninstallPackages(packages: string[]) {
+  if (packages.length === 0) return
+
   const pm = App.getPackageManager()
   const commands = resolveCommand(pm.agent, 'uninstall', packages)
   if (!commands) throw Error(`无法转换执行命令: ${pm.agent} uninstall ${packages.join(' ')}`)

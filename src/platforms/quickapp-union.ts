@@ -1,27 +1,25 @@
-import { App } from '../utils/app.js'
-import { isInstalled } from '../utils/package.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
-import quickAppHuawei from './quickapp-huawei.js'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
+import Log from '../utils/log.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const quickAppUnion: ModuleClass = {
-  modules: ['@dcloudio/uni-quickapp-webview'],
+export class PlatformQuickappWebview extends PlatformModule {
+  modules = ['@dcloudio/uni-quickapp-webview']
 
-  requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(quickAppUnion.modules, uniVersion)
-  },
+  async remove() {
+    Log.warn('移除通用快应用，将同时移除华为快应用')
+    await super.remove()
+  }
 
-  async platformRemove() {
-    if (!isInstalled(quickAppHuawei.modules[0])) {
-      await uninstallModules(quickAppUnion.modules)
-    }
-  },
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  run() {},
-
-  build() {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default quickAppUnion

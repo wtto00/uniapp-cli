@@ -1,23 +1,19 @@
-import { App } from '../utils/app.js'
-import { type ModuleClass, installModules, uninstallModules } from './index.js'
+import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
+import { NotImplemented, PlatformModule } from './index.js'
 
-const mpKuaishou: ModuleClass = {
-  modules: ['@dcloudio/uni-mp-kuaishou'],
+export class PlatformMPKuaishou extends PlatformModule {
+  modules = ['@dcloudio/uni-mp-kuaishou']
 
-  requirement() {},
+  async requirement() {
+    return NotImplemented
+  }
 
-  async platformAdd() {
-    const uniVersion = App.getUniVersion()
-    await installModules(mpKuaishou.modules, uniVersion)
-  },
+  async run(_options: RunOptions) {
+    return NotImplemented
+  }
 
-  async platformRemove() {
-    await uninstallModules(mpKuaishou.modules)
-  },
-
-  run() {},
-
-  build() {},
+  async build(_options: BuildOptions) {
+    return NotImplemented
+  }
 }
-
-export default mpKuaishou
