@@ -1,10 +1,28 @@
-import type { BuildOptions } from './build.js'
 import { importPlatform } from './platforms/index.js'
 import { type PLATFORM, allPlatforms } from './platforms/index.js'
 import { App } from './utils/app.js'
 import { isInstalled } from './utils/package.js'
 
-export async function run(platform: PLATFORM, options: BuildOptions) {
+export interface CommonOptions {
+  open: boolean
+  mode?: string
+}
+
+export interface AndroidCommonOptoins {
+  device?: string
+  /** Android签名 */
+  keystore?: string
+  storepasswd?: string
+  keypasswd?: string
+  alias?: string
+}
+
+export interface RunOptions extends CommonOptions, AndroidCommonOptoins {
+  /** Android平台是否使用HBuilderX打包运行 */
+  hxcli: string | boolean
+}
+
+export async function run(platform: PLATFORM, options: RunOptions) {
   if (!allPlatforms.includes(platform)) {
     throw Error(`未知的平台: ${platform}`)
   }

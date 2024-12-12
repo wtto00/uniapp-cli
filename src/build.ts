@@ -1,20 +1,12 @@
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
+import type { AndroidCommonOptoins, CommonOptions } from './run.js'
 import { App } from './utils/app.js'
 import Log from './utils/log.js'
 import { isInstalled } from './utils/package.js'
 
-export interface BuildOptions {
-  open: boolean
-  device?: string
-  /** vite mode */
-  mode?: string
+export interface BuildOptions extends CommonOptions, AndroidCommonOptoins {
   /** Android打包产物类型 */
-  bundle?: 'apk' | 'aab'
-  /** Android签名 */
-  keystore?: string
-  storepasswd?: string
-  keypasswd?: string
-  alias?: string
+  bundle?: 'apk' | 'aab' | 'wgt'
 }
 
 export async function build(platform: PLATFORM, options: BuildOptions) {

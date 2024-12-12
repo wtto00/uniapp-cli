@@ -14,7 +14,6 @@ program
   .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息')
   .helpOption('-h, --help', '帮助信息')
   .allowUnknownOption(true)
-  .showHelpAfterError(true)
   .showSuggestionAfterError(true)
 
 program
@@ -147,6 +146,7 @@ program
   .argument('<platform>', '要运行的平台: android,ios,h5,mp-weixin...')
   .option('--mode <mode>', 'vite 环境模式')
   .option('--no-open', '不自动打开')
+  .option('--hxcli [hxcli]', 'App使用HBuilderX的cli打包运行', false)
   .option('--device <device>', '运行到指定的设备上')
   .option('--keystore <keystore>', 'Android签名密钥文件所在位置')
   .option('--storepasswd <storepasswd>', 'Android签名密钥的密码')
@@ -171,7 +171,7 @@ program
   .argument('<platform>', '要打包的平台: android,ios,h5,mp-weixin...')
   .option('--mode <mode>', 'vite 环境模式')
   .option('--no-open', '不自动打开')
-  .option('--bundle <bundle>', 'Android打包产物: aab,apk(默认)')
+  .option('--bundle <bundle>', 'Android打包产物: aab,apk(默认),wgt')
   .option('--device <device>', 'Android运行到指定的设备上')
   .option('--keystore <keystore>', 'Android签名密钥文件所在位置')
   .option('--storepasswd <storepasswd>', 'Android签名密钥的密码')

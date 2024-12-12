@@ -14,11 +14,16 @@
 - 文档维护。
 - 更新依赖。
 - 文件监听由 `node:fs` 中的 `watch` 更改为 `chokidar`。
+- 安装依赖，移除依赖时，多个包一起操作，而不是之前的一个一个的操作。
 
 ### Security
 
 - Android 热更新启动的 HTTP 文件下载服务器路径匹配不安全。fixed [#1](https://github.com/wtto00/uniapp-cli/security/code-scanning/1)
 - Windows 路径正则替换。fixed [#2](https://github.com/wtto00/uniapp-cli/security/code-scanning/2)
+
+### Removed
+
+- 错误的命令参数不再显示帮助信息。
 
 ## [0.0.3-alpha] - 2024-12-04
 
