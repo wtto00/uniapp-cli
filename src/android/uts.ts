@@ -112,7 +112,7 @@ function prepareUtsBuildGradle(config: ConfigJson, name: string) {
 }
 
 android {
-    namespace 'com.example.${name.replace(/[^a-zA-Z]/g, '_')}'
+    namespace 'uniapp.plugin.${name.replace(/[^a-zA-Z]/g, '_')}'
     compileSdkVersion 34
 
     defaultConfig {

@@ -15,8 +15,8 @@ import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
-// import { getHBuilderXCli } from '../utils/hbuilderx.js'
 import { exists } from '../utils/file.js'
+import { runHXCli } from '../utils/hbuilderx.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
@@ -144,7 +144,11 @@ export class PlatformAndroid extends PlatformModule {
 
     checkConfig()
 
-    // const hxcli = await getHBuilderXCli(options.hxcli)
+    if (options.hxcli !== false) {
+      // 使用HBuilderX运行
+      await runHXCli(options)
+      return
+    }
 
     const pm = App.getPackageManager()
     const args = []
@@ -158,38 +162,33 @@ export class PlatformAndroid extends PlatformModule {
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
-    try {
-      let over = false
-      const outTransform = function* (line: string) {
-        yield line
-        if (over) return
-        const text = stripAnsiColors(line)
-        if (uniRunSuccess(text)) {
-          over = true
-          runAndroid(options)
-        }
-      } as GeneratorTransform<false>
-      const errTransform = function* (line: string) {
-        const text = stripAnsiColors(line)
-        if (
-          text === 'Cannot find module: @dcloudio/uni-uts-v1' ||
-          text.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
-        ) {
-          Log.error('应用使用了UTS插件，暂不支持 run 命令，请使用 build 打包')
-          process.exit(1)
-        }
-        if (text !== 'HBuilderX is not found') yield line
-      } as GeneratorTransform<false>
-      await execa({
-        stdout: options.open ? [outTransform, 'inherit'] : 'inherit',
-        stderr: [errTransform, 'inherit'],
-        env: { FORCE_COLOR: 'true' },
-        reject: false,
-      })`${commands.command} ${commands.args}`
-    } catch (error) {
-      if (errorMessage(error).match(/CTRL-C/)) return
-      throw Error()
-    }
+    let over = false
+    const outTransform = function* (line: string) {
+      yield line
+      if (over) return
+      const text = stripAnsiColors(line)
+      if (uniRunSuccess(text)) {
+        over = true
+        runAndroid(options)
+      }
+    } as GeneratorTransform<false>
+    const errTransform = function* (line: string) {
+      const text = stripAnsiColors(line)
+      if (
+        text === 'Cannot find module: @dcloudio/uni-uts-v1' ||
+        text.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
+      ) {
+        Log.error('应用使用了UTS插件，请添加 `--hxcli [cliPath]` 参数以使用HBuilderX运行')
+        process.exit(1)
+      }
+      if (text !== 'HBuilderX is not found') yield line
+    } as GeneratorTransform<false>
+    await execa({
+      stdout: options.open ? [outTransform, 'inherit'] : 'inherit',
+      stderr: [errTransform, 'inherit'],
+      env: { FORCE_COLOR: 'true' },
+      reject: false,
+    })`${commands.command} ${commands.args}`
   }
 
   async build(options: BuildOptions) {
@@ -250,27 +249,22 @@ export class PlatformAndroid extends PlatformModule {
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
-    try {
-      const { stdout, stderr } = await execa({
-        stdout: ['inherit', 'pipe'],
-        stderr: ['inherit', 'pipe'],
-        env: { FORCE_COLOR: 'true' },
-      })`${commands.command} ${commands.args}`
-      if (!options.open) return
+    const { stdout, stderr } = await execa({
+      stdout: ['inherit', 'pipe'],
+      stderr: ['inherit', 'pipe'],
+      env: { FORCE_COLOR: 'true' },
+    })`${commands.command} ${commands.args}`
+    if (!options.open) return
 
-      const text = stripAnsiColors(stdout as unknown as string)
+    const text = stripAnsiColors(stdout as unknown as string)
 
-      if (/DONE {2}Build complete\./.test(text)) {
-        await buildAndroid(options, { isBuild: true })
-      } else if (
-        stderr.includes('Cannot find module: @dcloudio/uni-uts-v1') ||
-        stderr.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
-      ) {
-        Log.error('应用使用了UTS插件，请配置 `HBUILDERX_CLI_PATH` 环境变量')
-      }
-    } catch (error) {
-      if (errorMessage(error).match(/CTRL-C/)) return
-      throw Error()
+    if (/DONE {2}Build complete\./.test(text)) {
+      await buildAndroid(options, { isBuild: true })
+    } else if (
+      stderr.includes('Cannot find module: @dcloudio/uni-uts-v1') ||
+      stderr.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
+    ) {
+      Log.error('应用使用了UTS插件，请配置 `HBUILDERX_CLI_PATH` 环境变量')
     }
   }
 }

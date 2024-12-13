@@ -300,12 +300,12 @@ export function prepareResults(uts: Record<string, string>): Results {
   return results
 }
 
-export function prepare(isBuild?: boolean) {
+export function prepare(options?: { isBuild?: boolean; isHBuilderX?: boolean }) {
   Log.debug('前端打包资源嵌入 Android 资源中')
   if (existsSync(assetsAppsPath)) {
     rmSync(assetsAppsPath, { recursive: true })
   }
-  const uts = copyWww(isBuild) ?? {}
+  const uts = copyWww(options) ?? {}
 
   const sdkVersion = App.getUniVersion()
 
@@ -325,7 +325,7 @@ export function prepare(isBuild?: boolean) {
     plugins,
   } = results
 
-  if (!isBuild) {
+  if (!options?.isBuild) {
     libs.add('debug-server-release.aar')
     appBuildGradle.dependencies = mergeDependencies(appBuildGradle.dependencies, {
       'com.squareup.okhttp3:okhttp:3.12.12': {},
@@ -341,7 +341,7 @@ export function prepare(isBuild?: boolean) {
   filesWrite[BuildGradleFilePath] = generateBuildGradle(buildGradle)
   filesWrite[SettingsGradleFilePath] = generateSettingsGradle(settingsGradle)
   filesWrite[PropertiesFilePath] = generateDcloudProperties(properties)
-  filesWrite[ControlFilePath] = genderateDcloudControl(control, isBuild)
+  filesWrite[ControlFilePath] = genderateDcloudControl(control, options?.isBuild)
   filesWrite[StringsFilePath] = genderateStrings(strings)
   filesWrite[DcloudUniPluginsFilePath] = generateDcloudUniPlugins({ nativePlugins: plugins })
 

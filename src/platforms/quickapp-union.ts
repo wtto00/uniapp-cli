@@ -1,13 +1,13 @@
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import Log from '../utils/log.js'
-import { NotImplemented, PlatformModule } from './index.js'
+import { PlatformModule } from './index.js'
 
 export class PlatformQuickappWebview extends PlatformModule {
   modules = ['@dcloudio/uni-quickapp-webview']
 
   async requirement() {
-    return NotImplemented
+    return Promise.reject(Error('暂未实现'))
   }
 
   async remove() {
@@ -16,10 +16,10 @@ export class PlatformQuickappWebview extends PlatformModule {
   }
 
   async run(_options: RunOptions) {
-    return NotImplemented
+    return Promise.reject(Error('暂未实现'))
   }
 
   async build(_options: BuildOptions) {
-    return NotImplemented
+    return Promise.reject(Error('暂未实现'))
   }
 }

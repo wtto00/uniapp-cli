@@ -6,6 +6,7 @@
 
 - Android 运行热更新。fixed [#89](https://github.com/wtto00/uniapp-cli/issues/89)
 - SDK 下载添加进度显示。fixed [#95](https://github.com/wtto00/uniapp-cli/issues/95)
+- 使用了 `UTS` 插件的项目，可使用 `HBuilderX` 的 `cli` 运行并热更新。fixed [#93](https://github.com/wtto00/uniapp-cli/issues/93)
 
 ### Changed
 

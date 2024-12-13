@@ -5,8 +5,6 @@ import { installDeps, isInstalled, uninstallDeps } from '../utils/package.js'
 
 export type MaybePromise<T> = T | Promise<T>
 
-export const NotImplemented = Promise.reject(Error('暂未实现'))
-
 export class PlatformModule {
   modules: string[] = []
 
@@ -28,11 +26,11 @@ export class PlatformModule {
   }
 
   async run(_options: RunOptions): Promise<void> {
-    return NotImplemented
+    return Promise.reject(Error('暂未实现'))
   }
 
   async build(_options: BuildOptions): Promise<void> {
-    return NotImplemented
+    return Promise.reject(Error('暂未实现'))
   }
 }
 

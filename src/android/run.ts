@@ -14,7 +14,7 @@ import { isWindows } from '../utils/util.js'
 import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
-import { buildDistPath, devDistPath } from './www.js'
+import { buildDistPath, devDistPath, hBuilderDistPath } from './www.js'
 
 let logcatProcess: ResultPromise<{
   stdout: 'inherit'
@@ -45,7 +45,7 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
   cleanAndroid()
 
   Log.info('准备 Android 打包所需资源')
-  prepare(runOptions?.isBuild)
+  prepare({ isBuild: runOptions?.isBuild, isHBuilderX: runOptions?.isHbuilderX })
 
   const gradleExePath = getGradleExePath()
   let argv = 'assembleDebug'
@@ -134,7 +134,7 @@ export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunO
   let ws: WebSocket | null = null
   const runOpts = { ...runOptions }
   // 启动文件下载服务器
-  const distDir = runOpts.isBuild ? buildDistPath : devDistPath
+  const distDir = runOpts.isHbuilderX ? hBuilderDistPath : runOpts.isBuild ? buildDistPath : devDistPath
   await startFileServer(distDir)
 
   // 压缩打包结果
@@ -162,22 +162,30 @@ export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunO
   })
   let watchClock: NodeJS.Timeout
   const changedFiles = new Set<string>()
-  const reload = (path: string) => {
+  const reload = (type: string, path: string) => {
     let filePath = relative(distDir, path)
     if (isWindows()) {
       filePath = filePath.replace(/\\/g, '/')
     }
-    changedFiles.add(filePath)
+
+    if (type === 'unlink') changedFiles.delete(filePath)
+    else changedFiles.add(filePath)
+
     clearTimeout(watchClock)
     watchClock = setTimeout(() => {
-      ws?.send(SocketMessage.build(changedFiles), (err) => {
-        if (!err) {
-          Log.debug('HMR热更新指令发送成功')
-        }
-      })
+      if (changedFiles.size > 0) {
+        ws?.send(SocketMessage.build(changedFiles), (err) => {
+          if (!err) {
+            Log.debug('HMR热更新指令发送成功')
+          }
+        })
+      }
     }, 1000)
   }
-  watcher.on('add', reload).on('change', reload).on('unlink', reload)
+  watcher
+    .on('add', (path) => reload('add', path))
+    .on('change', (path) => reload('change', path))
+    .on('unlink', (path) => reload('unlink', path))
 
   await buildAndroid(options, runOpts)
 }
