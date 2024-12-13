@@ -58,7 +58,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/archiver": "^6.0.3",
-    "@types/node": "^22.10.1",
+    "@types/node": "^22.10.2",
     "@types/send": "^0.17.4",
     "@types/validate-npm-package-name": "^4.0.2",
     "@types/ws": "^8.5.13",
