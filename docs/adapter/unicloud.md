@@ -26,7 +26,7 @@
 
 或者在环境变量中配置:
 
-```bash
+```shell
 # 值为上述配置的JSON.stringify
 export UNI_CLOUD_PROVIDER='[{"accessTokenKey":"access_token_mp-****","clientSecret":"****","endpoint":"https://api.next.bspapp.com","envType":"public","provider":"aliyun","requestUrl":"https://api.next.bspapp.com/client","spaceId":"mp-****","spaceName":"****","id":"****"}]'
 ```

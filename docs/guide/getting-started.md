@@ -9,23 +9,23 @@
 
 ::: code-group
 
-```bash [npm]
+```shell [npm]
 npm i -g @wtto00/uniapp-cli
 ```
 
-```bash [pnpm]
+```shell [pnpm]
 pnpm add -g @wtto00/uniapp-cli
 ```
 
-```bash [yarn]
+```shell [yarn]
 yarn global add @wtto00/uniapp-cli
 ```
 
-```bash [bun]
+```shell [bun]
 bun install -g @wtto00/uniapp-cli
 ```
 
-```bash [deno]
+```shell [deno]
 deno install -g npm:@wtto00/uniapp-cli
 ```
 
@@ -33,7 +33,7 @@ deno install -g npm:@wtto00/uniapp-cli
 
 ## 开始
 
-```bash
+```shell
 uniapp --help
 ```
 

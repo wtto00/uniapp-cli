@@ -7,7 +7,6 @@ import { resolveCommand } from 'package-manager-detector/commands'
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
-import { errorMessage } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import Log from '../utils/log.js'
 import { isWindows, uniRunSuccess } from '../utils/util.js'
@@ -76,30 +75,25 @@ export class PlatformMPWeixin extends PlatformModule {
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
-    try {
-      let over = false
+    let over = false
 
-      const stdoutTransform = function* (line: string) {
-        yield line
-        if (over) return
+    const stdoutTransform = function* (line: string) {
+      yield line
+      if (over) return
 
-        const text = stripAnsiColors(line)
-        if (!uniRunSuccess(text)) return
+      const text = stripAnsiColors(line)
+      if (!uniRunSuccess(text)) return
 
-        over = true
-        openWeixinDevTool('dist/dev/mp-weixin')
-      } as GeneratorTransform<false>
+      over = true
+      openWeixinDevTool('dist/dev/mp-weixin')
+    } as GeneratorTransform<false>
 
-      await execa({
-        stdout: options.open ? [stdoutTransform, 'inherit'] : 'inherit',
-        stderr: 'inherit',
-        env: { FORCE_COLOR: 'true' },
-        reject: false,
-      })`${commands.command} ${commands.args}`
-    } catch (error) {
-      if (errorMessage(error).match(/CTRL-C/)) return
-      throw Error()
-    }
+    await execa({
+      stdout: options.open ? [stdoutTransform, 'inherit'] : 'inherit',
+      stderr: 'inherit',
+      env: { FORCE_COLOR: 'true' },
+      reject: false,
+    })`${commands.command} ${commands.args}`
   }
 
   async build(options: BuildOptions) {
@@ -114,21 +108,16 @@ export class PlatformMPWeixin extends PlatformModule {
     const commands = resolveCommand(pm.agent, 'execute-local', args)
     if (!commands) throw Error(`无法转换执行命令: ${pm.agent} execute-local ${args.join(' ')}`)
 
-    try {
-      const { stdout } = await execa({
-        stdout: ['inherit', 'pipe'],
-        stderr: 'inherit',
-        env: { FORCE_COLOR: 'true' },
-      })`${commands.command} ${commands.args}`
-      if (!options.open) return
+    const { stdout } = await execa({
+      stdout: ['inherit', 'pipe'],
+      stderr: 'inherit',
+      env: { FORCE_COLOR: 'true' },
+    })`${commands.command} ${commands.args}`
+    if (!options.open) return
 
-      const text = stripAnsiColors(stdout as unknown as string)
-      if (/DONE {2}Build complete\./.test(text)) {
-        openWeixinDevTool('dist/build/mp-weixin')
-      }
-    } catch (error) {
-      if (errorMessage(error).match(/CTRL-C/)) return
-      throw Error()
+    const text = stripAnsiColors(stdout as unknown as string)
+    if (/DONE {2}Build complete\./.test(text)) {
+      openWeixinDevTool('dist/build/mp-weixin')
     }
   }
 }

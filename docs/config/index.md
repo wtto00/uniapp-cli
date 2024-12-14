@@ -36,7 +36,7 @@
 
 ::: code-group
 
-```bash
+```shell
 # Linux/MacOS
 export UNIAPP_ANDROID_SDK_URL="https://wtto00.github.io/uniapp-android-sdk"
 ```
@@ -162,6 +162,10 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 - Windows 上为: `C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat`
 - MacOS 上为: `/Applications/wechatwebdevtools.app/Contents/MacOS/cli`
+
+## HBUILDERX_CLI
+
+`HBuilderX` 的 `cli` 可执行文件的位置。
 
 ## UNI_CLOUD_PROVIDER
 

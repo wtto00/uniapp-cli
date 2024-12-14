@@ -176,7 +176,7 @@ export class PlatformAndroid extends PlatformModule {
       const text = stripAnsiColors(line)
       if (
         text === 'Cannot find module: @dcloudio/uni-uts-v1' ||
-        text.includes('项目使用了uts插件，正在安装 uts Android 运行扩展...')
+        text.includes('应用使用了uts插件，正在安装 uts Android 运行扩展...')
       ) {
         Log.error('应用使用了UTS插件，请添加 `--hxcli [cliPath]` 参数以使用HBuilderX运行')
         process.exit(1)

@@ -26,3 +26,10 @@
 - 在 `manifest.json` 中配置 `app-plus.distribute.android.installApkSdk` 为 `false`。
 - 如果使用了 `友盟统计` 模块，需要在 `manifest.json` 中配置 `app-plus.distribute.sdkConfigs.statics.umeng.google_play` 为 `true`。
 - 如果使用了 `Facebook登录` 模块，需要在 `manifest.json` 中配置 `app-plus.distribute.sdkConfigs.oauth.facebook.permission_ad_remove` 为 `true`。
+
+## UTS 运行热更新
+
+由于 DCloud 的限制，如果项目中使用了 UTS 插件，则需要使用`HBuilderX`的`cli`来启动运行。
+即在 `run android` 命令中添加参数 `--hxcli [/path/to/cli]`。
+
+如果项目中没有使用 UTS 插件，则不需要`HBuilderX`启动运行，但是如果手动加上了参数`--hxcli`，则依然会使用`HBuilderX`的`cli`来启动运行。

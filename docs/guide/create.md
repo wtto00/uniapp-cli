@@ -4,7 +4,7 @@
 
 ## 帮助信息
 
-```bash
+```shell
 uniapp help create
 ```
 

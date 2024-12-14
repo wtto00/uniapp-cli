@@ -5,6 +5,7 @@ import { type ResultPromise, execa } from 'execa'
 import ora from 'ora'
 import type { WebSocket } from 'ws'
 import type { BuildOptions } from '../build.js'
+import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
 import { errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
@@ -130,7 +131,7 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
   }
 }
 
-export async function runAndroid(options: BuildOptions, runOptions?: AndroidRunOptions) {
+export async function runAndroid(options: RunOptions, runOptions?: AndroidRunOptions) {
   let ws: WebSocket | null = null
   const runOpts = { ...runOptions }
   // 启动文件下载服务器

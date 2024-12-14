@@ -4,7 +4,7 @@
 
 ## 帮助信息
 
-```bash
+```shell
 uniapp help requirement
 ```
 
@@ -26,7 +26,7 @@ Options:
 
 ## H5
 
-```bash
+```shell
 uniapp requirement h5
 ```
 
@@ -34,7 +34,7 @@ uniapp requirement h5
 
 ## Android App
 
-```bash
+```shell
 uniapp requirement android
 ```
 
@@ -45,7 +45,7 @@ uniapp requirement android
 
 ## iOS App
 
-```bash
+```shell
 uniapp requirement ios
 ```
 
@@ -53,7 +53,7 @@ uniapp requirement ios
 
 ## 鸿蒙 App
 
-```bash
+```shell
 uniapp requirement harmony
 ```
 
@@ -61,7 +61,7 @@ uniapp requirement harmony
 
 ## 微信小程序
 
-```bash
+```shell
 uniapp requirement mp-weixin
 ```
 
@@ -71,7 +71,7 @@ uniapp requirement mp-weixin
 
 ## 支付宝小程序
 
-```bash
+```shell
 uniapp requirement mp-alipay
 ```
 
@@ -79,7 +79,7 @@ uniapp requirement mp-alipay
 
 ## 百度小程序
 
-```bash
+```shell
 uniapp requirement mp-baidu
 ```
 
@@ -87,7 +87,7 @@ uniapp requirement mp-baidu
 
 ## 头条小程序
 
-```bash
+```shell
 uniapp requirement mp-toutiao
 ```
 
@@ -95,7 +95,7 @@ uniapp requirement mp-toutiao
 
 ## 飞书小程序
 
-```bash
+```shell
 uniapp requirement mp-lark
 ```
 
@@ -103,7 +103,7 @@ uniapp requirement mp-lark
 
 ## QQ 小程序
 
-```bash
+```shell
 uniapp requirement mp-qq
 ```
 
@@ -111,7 +111,7 @@ uniapp requirement mp-qq
 
 ## 快手小程序
 
-```bash
+```shell
 uniapp requirement mp-kuaishou
 ```
 
@@ -119,7 +119,7 @@ uniapp requirement mp-kuaishou
 
 ## 京东小程序
 
-```bash
+```shell
 uniapp requirement mp-jd
 ```
 
@@ -127,7 +127,7 @@ uniapp requirement mp-jd
 
 ## 360 小程序
 
-```bash
+```shell
 uniapp requirement mp-360
 ```
 
@@ -135,7 +135,7 @@ uniapp requirement mp-360
 
 ## 小红书小程序
 
-```bash
+```shell
 uniapp requirement mp-xhs
 ```
 
@@ -143,7 +143,7 @@ uniapp requirement mp-xhs
 
 ## 快应用
 
-```bash
+```shell
 uniapp requirement quickapp-union
 ```
 
@@ -151,7 +151,7 @@ uniapp requirement quickapp-union
 
 ## 华为快应用
 
-```bash
+```shell
 uniapp requirement quickapp-huawei
 ```
 
