@@ -1,4 +1,3 @@
-import { access } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import chokidar from 'chokidar'
 import { type ResultPromise, execa } from 'execa'
@@ -7,6 +6,7 @@ import { runAndroid } from '../android/run.js'
 import type { RunOptions } from '../run.js'
 import { App } from './app.js'
 import { stripAnsiColors } from './exec.js'
+import { exists } from './file.js'
 import Log from './log.js'
 
 export async function getHBuilderXCli(hxcli: string | boolean): Promise<string> {
@@ -14,12 +14,10 @@ export async function getHBuilderXCli(hxcli: string | boolean): Promise<string> 
   const useEnv = hxcli === true || !hxcli.trim()
   const hxcliPath = useEnv ? process.env.HBUILDERX_CLI : hxcli
   if (!hxcliPath) return Promise.reject(Error('未设置HBuilderX的cli可执行文件位置'))
-  try {
-    await access(hxcliPath)
+  if (await exists(hxcliPath)) {
     return hxcliPath
-  } catch {
-    return Promise.reject(Error(`设置的HBuilderX的cli可执行文件位置不存在: ${hxcliPath}`))
   }
+  return Promise.reject(Error(`设置的HBuilderX的cli可执行文件位置不存在: ${hxcliPath}`))
 }
 
 type HBuilderBuildProcess = ResultPromise<{

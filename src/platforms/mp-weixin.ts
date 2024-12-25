@@ -7,6 +7,7 @@ import { resolveCommand } from 'package-manager-detector/commands'
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
+import { errorDebugLog } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
 import Log from '../utils/log.js'
 import { isWindows, uniRunSuccess } from '../utils/util.js'
@@ -37,8 +38,9 @@ function openWeixinDevTool(projectPath: string) {
         spinner.succeed('微信开发者工具已打开')
       }
     })
-    .catch((_err) => {
+    .catch((err) => {
       spinner.fail('微信开发者工具打开出错了')
+      errorDebugLog(err)
     })
 }
 

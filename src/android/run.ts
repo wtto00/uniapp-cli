@@ -7,7 +7,7 @@ import type { WebSocket } from 'ws'
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
-import { errorMessage } from '../utils/error.js'
+import { errorDebugLog, errorMessage } from '../utils/error.js'
 import Log from '../utils/log.js'
 import { AndroidDir, AndroidPath } from '../utils/path.js'
 import { HMRServer, SocketMessage, startFileServer, startWebSocketServer, zipDir } from '../utils/server.js'
@@ -60,7 +60,8 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
       env: { FORCE_COLOR: 'true' },
       cwd: AndroidDir,
     })`${gradleExePath} ${argv}`
-  } catch {
+  } catch (error) {
+    errorDebugLog(error)
     Log.error('Android 打包出错了')
     process.exit(1)
   }
@@ -99,6 +100,7 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidRu
       spinner.succeed(`已成功安装 ${apkPath} 到设备 ${deviceName} 上`)
     } catch (error) {
       spinner.fail('apk安装失败')
+      errorDebugLog(error)
       throw error
     }
 

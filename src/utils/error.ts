@@ -11,3 +11,7 @@ export function error2exit(error: unknown, defaultMessage: string, code = 1) {
 export function errorMessage(error: unknown) {
   return (error as Error).message ?? ''
 }
+
+export function errorDebugLog(error: unknown) {
+  Log.debug((error as Error).toString())
+}

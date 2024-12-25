@@ -1,6 +1,7 @@
 import { rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
+import { errorDebugLog } from '../utils/error.js'
 import Log from '../utils/log.js'
 import { AndroidDir } from '../utils/path.js'
 import { getGradleExePath } from './gradle.js'
@@ -18,7 +19,8 @@ import { assetsAppsPath } from './www.js'
 export async function cleanAndroidBuild() {
   try {
     await execa({ stdio: 'inherit', cwd: AndroidDir })`${getGradleExePath()} clean`
-  } catch {
+  } catch (error) {
+    errorDebugLog(error)
     Log.error('gradle clean 失败')
   }
 }

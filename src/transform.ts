@@ -8,7 +8,7 @@ import { type PackageJson, readPackageJSON } from 'pkg-types'
 import { ProxyAgent } from 'proxy-agent'
 import type ts from 'typescript'
 import { App } from './utils/app.js'
-import { errorMessage } from './utils/error.js'
+import { errorDebugLog, errorMessage } from './utils/error.js'
 import { readJsonFile } from './utils/file.js'
 import Log from './utils/log.js'
 import type { ManifestConfig } from './utils/manifest.config.js'
@@ -264,7 +264,9 @@ export async function transform(source: string, target?: string, options?: Trans
         ) {
           jsconfig.compilerOptions.paths['@'] = ['./src']
         }
-      } catch {}
+      } catch (error) {
+        errorDebugLog(error)
+      }
       await writeFile(jsconfigPath, JSON.stringify(jsconfig, null, 2), 'utf8')
     }
 
