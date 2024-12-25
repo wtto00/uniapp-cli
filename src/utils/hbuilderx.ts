@@ -68,19 +68,24 @@ export async function runHXCli(options: RunOptions) {
     clearTimeout(watchClock)
     watchClock = setTimeout(() => {
       if (proc && !proc.killed) proc.kill()
-      buildHXCli({ open: options.open, outTransform, hxcli }).then((res) => {
-        proc = res
+      prepareHXProject({ open: options.open, hxcli }).then(() => {
+        Log.debug('开始使用HBuilderX的cli打包')
+        proc = execa({
+          stdout: options.open ? [outTransform, 'inherit'] : 'inherit',
+          stderr: 'inherit',
+          env: { FORCE_COLOR: 'true' },
+          reject: false,
+        })`${hxcli} publish --platform APP --type appResource --project ${App.projectRoot}`
       })
     }, 1000)
   }
   watcher.on('add', reload).on('change', reload).on('unlink', reload)
 }
 
-async function buildHXCli(options: {
+async function prepareHXProject(options: {
   open?: boolean
   hxcli: string
-  outTransform: GeneratorTransform<false>
-}): Promise<HBuilderBuildProcess> {
+}) {
   Log.debug('开始打开HBuilderX')
   const openOut = await execa`${options.hxcli} open`
   if (openOut.stderr) {
@@ -95,12 +100,4 @@ async function buildHXCli(options: {
 
   // 等待HBuilderX索引到项目
   await new Promise((resolve) => setTimeout(resolve, 3000))
-
-  Log.debug('开始使用HBuilderX的cli打包')
-  return execa({
-    stdout: options.open ? [options.outTransform, 'inherit'] : 'inherit',
-    stderr: 'inherit',
-    env: { FORCE_COLOR: 'true' },
-    reject: false,
-  })`${options.hxcli} publish --platform APP --type appResource --project ${App.projectRoot}`
 }
