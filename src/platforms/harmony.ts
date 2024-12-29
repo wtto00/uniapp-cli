@@ -1,6 +1,7 @@
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { exists } from '../utils/file.js'
+import Log from '../utils/log.js'
 import { HarmonyDir } from '../utils/path.js'
 import { PlatformModule } from './index.js'
 
@@ -12,7 +13,12 @@ export class PlatformHarmony extends PlatformModule {
   }
 
   async requirement() {
-    return Promise.reject(Error('暂未实现'))
+    // HARMONY_HOME
+    if (process.env.HARMONY_HOME) {
+      Log.success(`HARMONY_HOME=${process.env.HARMONY_HOME}`)
+    } else {
+      Log.warn('没有设置环境变量: `HARMONY_HOME`')
+    }
   }
 
   async add() {

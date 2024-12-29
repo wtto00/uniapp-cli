@@ -49,13 +49,13 @@ export class PlatformAndroid extends PlatformModule {
         Log.warn(`Java 可执行文件不存在: ${javaBinPath}`)
       }
     } else {
-      Log.warn('没有设置环境变量: `JAVA_HOME` ')
+      Log.warn('没有设置环境变量: `JAVA_HOME`')
     }
     // ANDROID_HOME
     if (process.env.ANDROID_HOME) {
       Log.success(`ANDROID_HOME=${process.env.ANDROID_HOME}`)
     } else {
-      Log.warn('没有设置环境变量: `ANDROID_HOME` ')
+      Log.warn('没有设置环境变量: `ANDROID_HOME`')
     }
   }
 
