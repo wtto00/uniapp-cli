@@ -3,7 +3,9 @@ import type { RunOptions } from '../run.js'
 import Log from '../utils/log.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformQuickappWebview extends PlatformModule {
+export default class PlatformQuickappWebview extends PlatformModule {
+  static instance = new PlatformQuickappWebview()
+
   modules = ['@dcloudio/uni-quickapp-webview']
 
   async requirement() {

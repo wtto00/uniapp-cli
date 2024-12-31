@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMPToutiao extends PlatformModule {
+export default class PlatformMPToutiao extends PlatformModule {
+  static instance = new PlatformMPToutiao()
+
   modules = ['@dcloudio/uni-mp-toutiao']
 
   async requirement() {

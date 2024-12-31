@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMPAlipay extends PlatformModule {
+export default class PlatformMPAlipay extends PlatformModule {
+  static instance = new PlatformMPAlipay()
+
   modules = ['@dcloudio/uni-mp-alipay']
 
   async requirement() {

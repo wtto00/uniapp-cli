@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMPLark extends PlatformModule {
+export default class PlatformMPLark extends PlatformModule {
+  static instance = new PlatformMPLark()
+
   modules = ['@dcloudio/uni-mp-lark']
 
   async requirement() {

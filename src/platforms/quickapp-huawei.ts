@@ -3,7 +3,9 @@ import type { RunOptions } from '../run.js'
 import Log from '../utils/log.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformQuickappHuawei extends PlatformModule {
+export default class PlatformQuickappHuawei extends PlatformModule {
+  static instance = new PlatformQuickappHuawei()
+
   modules = ['@dcloudio/uni-quickapp-webview']
 
   async requirement() {

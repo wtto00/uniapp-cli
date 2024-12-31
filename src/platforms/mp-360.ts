@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMP360 extends PlatformModule {
+export default class PlatformMP360 extends PlatformModule {
+  static instance = new PlatformMP360()
+
   modules = ['@dcloudio/uni-mp-360']
 
   async requirement() {

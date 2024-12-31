@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMPKuaishou extends PlatformModule {
+export default class PlatformMPKuaishou extends PlatformModule {
+  static instance = new PlatformMPKuaishou()
+
   modules = ['@dcloudio/uni-mp-kuaishou']
 
   async requirement() {

@@ -44,7 +44,9 @@ function openWeixinDevTool(projectPath: string) {
     })
 }
 
-export class PlatformMPWeixin extends PlatformModule {
+export default class PlatformMPWeixin extends PlatformModule {
+  static instance = new PlatformMPWeixin()
+
   modules = ['@dcloudio/uni-mp-weixin']
 
   async requirement() {

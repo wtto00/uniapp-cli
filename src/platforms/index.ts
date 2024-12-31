@@ -57,37 +57,37 @@ export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
 export async function importPlatform(platform: PLATFORM): Promise<PlatformModule> {
   switch (platform) {
     case PLATFORM.ANDROID:
-      return new (await import('./android.js')).PlatformAndroid()
+      return (await import('./android.js')).default.instance
     case PLATFORM.IOS:
-      return new (await import('./ios.js')).PlatformIOS()
+      return (await import('./ios.js')).default.instance
     case PLATFORM.HARMONY:
-      return new (await import('./harmony.js')).PlatformHarmony()
+      return (await import('./harmony.js')).default.instance
     case PLATFORM.H5:
-      return new (await import('./h5.js')).PlatformH5()
+      return (await import('./h5.js')).default.instance
     case PLATFORM.MP_WEIXIN:
-      return new (await import('./mp-weixin.js')).PlatformMPWeixin()
+      return (await import('./mp-weixin.js')).default.instance
     case PLATFORM.MP_ALIPAY:
-      return new (await import('./mp-alipay.js')).PlatformMPAlipay()
+      return (await import('./mp-alipay.js')).default.instance
     case PLATFORM.MP_BAIDU:
-      return new (await import('./mp-baidu.js')).PlatformMPBaidu()
+      return (await import('./mp-baidu.js')).default.instance
     case PLATFORM.MP_TOUTIAO:
-      return new (await import('./mp-toutiao.js')).PlatformMPToutiao()
+      return (await import('./mp-toutiao.js')).default.instance
     case PLATFORM.MP_LARK:
-      return new (await import('./mp-lark.js')).PlatformMPLark()
+      return (await import('./mp-lark.js')).default.instance
     case PLATFORM.MP_QQ:
-      return new (await import('./mp-qq.js')).PlatformMPQQ()
+      return (await import('./mp-qq.js')).default.instance
     case PLATFORM.MP_KUAISHOU:
-      return new (await import('./mp-kuaishou.js')).PlatformMPKuaishou()
+      return (await import('./mp-kuaishou.js')).default.instance
     case PLATFORM.MP_JD:
-      return new (await import('./mp-jd.js')).PlatformMPJD()
+      return (await import('./mp-jd.js')).default.instance
     case PLATFORM.MP_360:
-      return new (await import('./mp-360.js')).PlatformMP360()
+      return (await import('./mp-360.js')).default.instance
     case PLATFORM.MP_XHS:
-      return new (await import('./mp-xhs.js')).PlatformMPXhs()
+      return (await import('./mp-xhs.js')).default.instance
     case PLATFORM.MP_QUICKAPP_UNION:
-      return new (await import('./quickapp-union.js')).PlatformQuickappWebview()
+      return (await import('./quickapp-union.js')).default.instance
     case PLATFORM.MP_QUICKAPP_HUAWEI:
-      return new (await import('./quickapp-huawei.js')).PlatformQuickappHuawei()
+      return (await import('./quickapp-huawei.js')).default.instance
     default:
       throw Error(`未知的平台: ${platform}`)
   }

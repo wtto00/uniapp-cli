@@ -10,7 +10,9 @@ import Log from '../utils/log.js'
 import { uniRunSuccess } from '../utils/util.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformH5 extends PlatformModule {
+export default class PlatformH5 extends PlatformModule {
+  static instance = new PlatformH5()
+
   modules = ['@dcloudio/uni-h5']
 
   async run(options: RunOptions) {

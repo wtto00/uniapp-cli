@@ -2,7 +2,9 @@ import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformMPBaidu extends PlatformModule {
+export default class PlatformMPBaidu extends PlatformModule {
+  static instance = new PlatformMPBaidu()
+
   modules = ['@dcloudio/uni-mp-baidu']
 
   async requirement() {

@@ -26,7 +26,9 @@ import { PlatformModule } from './index.js'
 const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
 
-export class PlatformAndroid extends PlatformModule {
+export default class PlatformAndroid extends PlatformModule {
+  static instance = new PlatformAndroid()
+
   modules = ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1']
 
   async isInstalled() {

@@ -4,7 +4,9 @@ import { exists } from '../utils/file.js'
 import { AndroidDir, IOSDir } from '../utils/path.js'
 import { PlatformModule } from './index.js'
 
-export class PlatformIOS extends PlatformModule {
+export default class PlatformIOS extends PlatformModule {
+  static instance = new PlatformIOS()
+
   modules = ['@dcloudio/uni-app-plus', '@dcloudio/uni-uts-v1']
 
   async isInstalled() {
