@@ -6,7 +6,8 @@ import fetch from 'node-fetch'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import { ProxyAgent } from 'proxy-agent'
-import { buildAndroid, runAndroid } from '../android/run.js'
+import { buildAndroid } from '../android/build.js'
+import { runAndroid } from '../android/run.js'
 import { initSignEnv } from '../android/sign.js'
 import { getLibSDKDir } from '../android/utils.js'
 import { checkConfig } from '../app-plus/check.js'
@@ -18,10 +19,13 @@ import { stripAnsiColors } from '../utils/exec.js'
 import { exists } from '../utils/file.js'
 import { runHXCli } from '../utils/hbuilderx.js'
 import Log from '../utils/log.js'
-import { AndroidDir, AndroidPath, IOSDir, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
+import { uninstallDeps } from '../utils/package.js'
+import { AndroidDir, AndroidPath, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
 import { trimEnd, uniRunSuccess } from '../utils/util.js'
+import PlatformHarmony from './harmony.js'
 import { PlatformModule } from './index.js'
+import PlatformIOS from './ios.js'
 
 const UNIAPP_ANDROID_SDK_URL =
   trimEnd(process.env.UNIAPP_ANDROID_SDK_URL, '/') || 'https://wtto00.github.io/uniapp-android-sdk'
@@ -131,9 +135,18 @@ export default class PlatformAndroid extends PlatformModule {
   }
 
   async remove() {
-    if (!(await exists(IOSDir))) {
-      await super.remove()
+    const deps: Set<string> = new Set(this.modules)
+    if (await PlatformIOS.instance.isInstalled()) {
+      for (const dep of PlatformIOS.instance.modules) {
+        if (deps.has(dep)) deps.delete(dep)
+      }
     }
+    if (await PlatformHarmony.instance.isInstalled()) {
+      for (const dep of PlatformHarmony.instance.modules) {
+        if (deps.has(dep)) deps.delete(dep)
+      }
+    }
+    if (deps.size > 0) await uninstallDeps([...deps])
     await showSpinner(() => rm(AndroidDir, { recursive: true, force: true }), {
       start: `正在删除 ${AndroidPath}`,
       succeed: `${AndroidPath} 已删除`,

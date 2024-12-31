@@ -1275,6 +1275,34 @@ export interface MpKuaishou {
   scopedSlotsCompiler?: 'auto' | 'legacy' | 'augmented'
   [x: string]: unknown
 }
+export interface AppHarmony {
+  distribute?: {
+    bundleName?: string
+    modules?: {
+      'uni-facialRecognitionVerify'?: object
+      'uni-map'?: {
+        tencent?: {
+          key?: string
+        }
+      }
+      'uni-oauth'?: {
+        huawei?: object
+      }
+      'uni-payment'?: {
+        alipay?: object
+      }
+      'uni-push'?: object
+    }
+    icons?: {
+      foreground?: string
+      background?: string
+    }
+    splashScreens?: {
+      startWindowBackground?: string
+      startWindowIcon?: string
+    }
+  }
+}
 export interface ManifestConfig {
   /** 应用名称，安装 APP 后显示的名称 */
   name?: string
@@ -1314,6 +1342,7 @@ export interface ManifestConfig {
   uniStatistics?: UniStatistics
   /** APP 特有配置 */
   'app-plus'?: AppPlus
+  'app-harmony'?: AppHarmony
   channel_list?: { id?: string; name?: string }[]
   /** H5 特有配置 */
   h5?: H5
