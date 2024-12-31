@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 import { select } from '@inquirer/prompts'
 import { execa } from 'execa'
 import { readPackageJSON, writePackageJSON } from 'pkg-types'
@@ -24,7 +24,8 @@ export interface CreateOptoins {
   force?: boolean
 }
 
-export async function create(projectName: string, options: CreateOptoins) {
+export async function create(projectPath: string, options: CreateOptoins) {
+  const projectName = basename(projectPath)
   const result = validateProjectName(projectName)
   if (!result.validForNewPackages) {
     const message = [`无效的项目名称: ${projectName}`]
@@ -43,18 +44,16 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   const { force } = options
 
-  const projectPath = resolve(App.projectRoot, projectName)
-
   if (existsSync(projectPath)) {
     if (!force) {
-      throw Error(`${projectName} 已存在, 使用 \`--force\` 强制覆盖`)
+      throw Error(`${projectPath} 已存在, 使用 \`--force\` 强制覆盖`)
     }
 
     await showSpinner(
       () => rm(projectPath, { force: true, recursive: true }),
       {
         start: `使用 \`--force\`，正在删除 \`${projectPath}\``,
-        succeed: `${projectName} 已删除`,
+        succeed: `${projectPath} 已删除`,
         fail: `${projectPath} 删除出错了`,
       },
       { throw: true },
@@ -79,7 +78,7 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   const templateRepositoryUrl = getTemplateRepositoryUrl(repo)
   await showSpinner(
-    () => execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${templateRepositoryUrl} ${projectName}`,
+    () => execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${templateRepositoryUrl} ${projectPath}`,
     {
       start: `正在克隆项目模板: ${template}`,
       succeed: `项目模板 ${template} 已克隆完成`,
@@ -106,7 +105,7 @@ export async function create(projectName: string, options: CreateOptoins) {
 
   Log.info(`
 运行以下命令开始吧:
-  cd ${projectName}
+  cd ${projectPath}
   ${App.getPackageManager({ notWarn: true }).name} install
   uniapp run h5
 `)

@@ -18,10 +18,10 @@ program
 
 program
   .command('create')
-  .usage('<project-name>')
+  .usage('<project-path>')
   .summary('创建新项目')
   .description('使用 uniapp-cli 创建新项目')
-  .argument('<project-name>', '项目名称')
+  .argument('<project-path>', '新项目的位置')
   .option('-t, --template <template>', '新建项目的模板，是一个 Git 仓库地址')
   .option('-f, --force', '如果目录已存在，强制覆盖')
   .addHelpText(
@@ -34,10 +34,10 @@ program
   uniapp create my-uniapp -t git@gitee.com:dcloudio/uni-preset-vue#vite
 `,
   )
-  .action(async (projectName, options) => {
+  .action(async (projectPath, options) => {
     try {
       const { create } = await import('./create.js')
-      await create(projectName, options)
+      await create(projectPath, options)
     } catch (error) {
       error2exit(error, '创建新项目出错了')
     }

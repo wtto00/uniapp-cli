@@ -9,12 +9,12 @@ uniapp help create
 ```
 
 ```
-Usage: uniapp create <project-name>
+Usage: uniapp create <project-path>
 
 使用 uniapp-cli 创建新项目
 
 Arguments:
-  project-name               项目名称
+  project-path               新项目的位置
 
 Options:
   -t, --template <template>  新建项目的模板，是一个 Git 仓库地址

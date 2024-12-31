@@ -5,12 +5,12 @@ import type { SyncResult } from 'execa'
 import Log from '../src/utils/log.js'
 import { execaUniapp, execaUniappSync } from './helper.js'
 
-const HELP_TEXT = `Usage: uniapp create <project-name>
+const HELP_TEXT = `Usage: uniapp create <project-path>
 
 使用 uniapp-cli 创建新项目
 
 Arguments:
-  project-name               项目名称
+  project-path               新项目的位置
 
 Options:
   -t, --template <template>  新建项目的模板，是一个 Git 仓库地址
