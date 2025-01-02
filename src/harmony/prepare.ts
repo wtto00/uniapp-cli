@@ -1,13 +1,62 @@
-import { cp, rm } from 'node:fs/promises'
+import { cp, readdir, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { PackageJson } from 'pkg-types'
 import { App } from '../utils/app.js'
-import { editJsonFile, exists } from '../utils/file.js'
+import { editJsonFile, exists, readJsonFile } from '../utils/file.js'
 import Log from '../utils/log.js'
+import { getPackageDependencies } from '../utils/package.js'
 import { HarmonyDir, TemplateDir } from '../utils/path.js'
 import type { AppJson } from './templates/app.json5.js'
+import type { BuildProfile } from './templates/build-profile.js'
 import type { ColorConfig } from './templates/element.json.js'
-import { assetsAppsPath, copyWww } from './www.js'
+
+export const assetsAppsPath = join(HarmonyDir, 'entry/src/main/resources/resfile/apps/HBuilder/www')
+
+export const devDistPath = join(App.projectRoot, 'dist/dev/app-harmony')
+
+export const buildDistPath = join(App.projectRoot, 'dist/build/app-harmony')
+
+export async function copyWww(options?: { isBuild?: boolean }) {
+  const buildDistDir = options?.isBuild ? buildDistPath : devDistPath
+  const files = await readdir(buildDistDir)
+  for (const file of files) {
+    const filePath = join(buildDistDir, file)
+    if (file === 'uni_modules') {
+      const hmFiles = await readdir(filePath)
+      for (const hmFile of hmFiles) {
+        const hmFilePath = join(filePath, hmFile)
+        if (hmFile === 'build-profile.json5') {
+          const modules = readJsonFile<BuildProfile>(hmFilePath, true).modules || []
+          if (modules.length > 0) {
+            await editJsonFile(join(HarmonyDir, hmFile), (data: BuildProfile) => {
+              data.modules.push(...modules)
+            })
+          }
+        } else if (hmFile === 'index.generated.ets') {
+          await cp(hmFilePath, join(HarmonyDir, `entry/src/main/ets/uni_modules/${hmFile}`), { recursive: true })
+        } else if (hmFile === 'oh-package.json5') {
+          const dependencies = getPackageDependencies(readJsonFile<PackageJson>(hmFilePath, true) || {})
+          if (Object.keys(dependencies).length > 0) {
+            await editJsonFile(join(HarmonyDir, hmFile), (data: PackageJson) => {
+              if (!data.dependencies) data.dependencies = dependencies
+              else {
+                for (const key in dependencies) {
+                  if (data.dependencies[key]) {
+                    if (data.dependencies[key] === dependencies[key]) continue
+                    Log.debug(`uni_modules 依赖 \`${key}\` 版本不一致，使用版本 ${dependencies[key]}`)
+                  }
+                  data.dependencies[key] = dependencies[key]
+                }
+              }
+            })
+          }
+        }
+      }
+    } else {
+      await cp(filePath, join(assetsAppsPath, file), { recursive: true })
+    }
+  }
+}
 
 export async function prepare(options?: { isBuild?: boolean }) {
   Log.debug('前端打包资源嵌入 Harmony 资源中')

@@ -1,7 +1,9 @@
 import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
+import which from 'which'
 import { App } from './app.js'
+import { exists } from './file.js'
 
 /**
  * Remove the color of the output text
@@ -14,6 +16,12 @@ export function stripAnsiColors(text: string) {
 
 export function parseExecaError(error: unknown) {
   return Error((error as { stderr: string }).stderr || (error as { message: string }).message)
+}
+
+export async function whichPath(cmd: string) {
+  const result = await which(cmd, { nothrow: true })
+  if (result) return await exists(result)
+  return ''
 }
 
 export async function installPackages(packages: string[]) {

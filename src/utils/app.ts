@@ -7,18 +7,21 @@ import Log from './log.js'
 import type { ManifestConfig } from './manifest.config.js'
 import { getModuleVersion } from './package.js'
 
+/**
+ * 缓存相关配置
+ */
 export const App = {
   projectRoot: '',
 
-  package: null as PackageJson | null,
+  _package: null as PackageJson | null,
 
-  manifest: null as ManifestConfig | null,
+  _manifest: null as ManifestConfig | null,
 
-  packageManager: null as DetectResult | null,
+  _packageManager: null as DetectResult | null,
 
-  uniVersoin: '',
+  _uniVersoin: '',
 
-  vueVersion: '',
+  _vueVersion: '',
 
   init() {
     App.projectRoot = process.cwd()
@@ -37,43 +40,43 @@ export const App = {
   },
 
   getPackageJson(): PackageJson {
-    if (!App.package) {
-      App.package = readJsonFile<PackageJson>('package.json')
+    if (!App._package) {
+      App._package = readJsonFile<PackageJson>('package.json')
     }
-    return App.package
+    return App._package
   },
 
   getManifestJson(): ManifestConfig {
-    if (!App.manifest) {
-      App.manifest = readJsonFile<ManifestConfig>('src/manifest.json', true)
+    if (!App._manifest) {
+      App._manifest = readJsonFile<ManifestConfig>('src/manifest.json', true)
     }
-    return App.manifest
+    return App._manifest
   },
 
   getPackageManager(options?: { notWarn?: boolean }): DetectResult {
-    if (!App.packageManager) {
-      App.packageManager = detectSync()
-      if (!App.packageManager && !options?.notWarn) {
+    if (!App._packageManager) {
+      App._packageManager = detectSync()
+      if (!App._packageManager && !options?.notWarn) {
         Log.warn('没有检测到已配置的包管理器，请在 package.json 中配置 packageManager 属性')
       }
     }
-    return App.packageManager ?? { name: 'npm', agent: 'npm' }
+    return App._packageManager ?? { name: 'npm', agent: 'npm' }
   },
 
   getUniVersion(): string {
-    if (!App.uniVersoin) {
-      App.uniVersoin = getModuleVersion('@dcloudio/uni-app')
-      if (!App.uniVersoin) throw Error('获取 @dcloudio/uni-app 版本号失败')
+    if (!App._uniVersoin) {
+      App._uniVersoin = getModuleVersion('@dcloudio/uni-app')
+      if (!App._uniVersoin) throw Error('获取 @dcloudio/uni-app 版本号失败')
     }
-    return App.uniVersoin
+    return App._uniVersoin
   },
 
   getVueVersion(): string {
-    if (!App.vueVersion) {
-      App.vueVersion = getModuleVersion('vue')
-      if (!App.vueVersion) throw Error('获取 vue 版本号失败')
+    if (!App._vueVersion) {
+      App._vueVersion = getModuleVersion('vue')
+      if (!App._vueVersion) throw Error('获取 vue 版本号失败')
     }
-    return App.vueVersion
+    return App._vueVersion
   },
 
   isVue3(): boolean {

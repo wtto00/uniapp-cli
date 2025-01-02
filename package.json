@@ -53,6 +53,7 @@
     "proxy-agent": "^6.5.0",
     "send": "^1.1.0",
     "validate-npm-package-name": "^6.0.0",
+    "which": "^5.0.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
@@ -61,6 +62,7 @@
     "@types/node": "^22.10.2",
     "@types/send": "^0.17.4",
     "@types/validate-npm-package-name": "^4.0.2",
+    "@types/which": "^3.0.4",
     "@types/ws": "^8.5.13",
     "@wtto00/biome-config": "^0.0.1",
     "globstar": "^1.0.0",

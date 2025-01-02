@@ -14,18 +14,18 @@ export function checkConfig() {
 
   if (!bundleName) {
     failed = true
-    Log.warn('请在文件manifest.json中配置应用包名: app-harmony.distribute.bundleName')
+    Log.error('请在文件manifest.json中配置应用包名: app-harmony.distribute.bundleName')
   }
 
   // versionName
   if (!manifest.versionName) {
     failed = true
-    Log.warn('请在文件manifest.json中配置应用版本号: versionName')
+    Log.error('请在文件manifest.json中配置应用版本号: versionName')
   }
   // versionCode
-  if (!manifest.versionCode) {
+  if (!manifest.versionCode || Number.isNaN(Number(manifest.versionCode))) {
     failed = true
-    Log.warn('请在文件manifest.json中配置应用版本码: versionCode')
+    Log.error('请在文件manifest.json中配置应用版本码(数字类型): versionCode')
   }
 
   if (!icons?.foreground) {
@@ -47,7 +47,7 @@ export function checkConfig() {
 
   if (modules?.['uni-map']?.tencent && !modules['uni-map'].tencent.key) {
     failed = true
-    Log.warn(
+    Log.error(
       '您配置了腾讯地图，请在文件manifest.json中配置腾讯地图的key: app-harmony.distribute.modules.uni-map.tencent.key',
     )
   }

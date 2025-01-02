@@ -15,6 +15,10 @@ export function isWindows() {
   return process.platform === 'win32'
 }
 
+export function isDarwin() {
+  return process.platform === 'darwin'
+}
+
 export function uniRunSuccess(text: string) {
   return /ready in (\d+\.)?\d+m?s\./.test(text)
 }

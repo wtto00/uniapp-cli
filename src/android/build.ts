@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import Android from '@wtto00/android-tools'
-import { type ResultPromise, execa } from 'execa'
+import { execa } from 'execa'
 import ora from 'ora'
 import type { BuildOptions } from '../build.js'
 import { App } from '../utils/app.js'
@@ -11,17 +11,10 @@ import { cleanAndroid } from './clean.js'
 import { getGradleExePath } from './gradle.js'
 import { prepare } from './prepare.js'
 
-let logcatProcess: ResultPromise<{
-  stdout: 'inherit'
-  stderr: 'ignore'
-  buffer: false
-  reject: false
-}>
+let logcatProcessController = new AbortController()
 
 function killLogcat() {
-  if (logcatProcess && !logcatProcess.killed) {
-    logcatProcess.kill()
-  }
+  logcatProcessController.abort()
 }
 
 export interface AndroidBuildOptions {
@@ -114,11 +107,13 @@ export async function buildAndroid(options: BuildOptions, runOptions?: AndroidBu
     }
 
     if (!runOptions?.isBuild) {
-      logcatProcess = execa({
+      logcatProcessController = new AbortController()
+      await execa({
         stdout: 'inherit',
         stderr: 'ignore',
         buffer: false,
         reject: false,
+        cancelSignal: logcatProcessController.signal,
       })`${android.adbBin} -s ${deviceName} logcat console:D jsLog:D weex:E aaa:D *:S -v raw -v color -v time`
     }
   } catch (error) {

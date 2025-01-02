@@ -4,9 +4,13 @@ import { App } from './utils/app.js'
 import Log from './utils/log.js'
 import { isInstalled } from './utils/package.js'
 
+export type AndroidBundle = 'apk' | 'aab' | 'wgt'
+
+export type HarmonyBundle = 'hap' | 'har' | 'hsp' | 'app'
+
 export interface BuildOptions extends CommonOptions, AndroidCommonOptoins {
   /** Android打包产物类型 */
-  bundle?: 'apk' | 'aab' | 'wgt'
+  bundle?: AndroidBundle | HarmonyBundle
 }
 
 export async function build(platform: PLATFORM, options: BuildOptions) {
