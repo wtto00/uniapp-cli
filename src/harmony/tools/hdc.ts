@@ -49,5 +49,5 @@ export async function getHdc() {
     if (await exists(hdcPath)) return hdcPath
   }
 
-  throw Error('未找到 hdc 可执行文件，请确定已安装 Harmony SDK')
+  throw Error('未找到 hdc 可执行文件，请确认已安装 Harmony SDK')
 }

@@ -31,7 +31,7 @@ export async function getHvigorw() {
     if (await exists(hvigorwPath)) return hvigorwPath
   }
 
-  throw Error('未找到 hvigorw 可执行文件，请确定已安装 Harmony 命令行工具或者DevEco')
+  throw Error('未找到 hvigorw 可执行文件，请确认已安装 Harmony 命令行工具或者DevEco')
 }
 
 export async function hvigorwClean() {

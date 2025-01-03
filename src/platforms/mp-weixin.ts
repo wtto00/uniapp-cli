@@ -1,47 +1,41 @@
-import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execa } from 'execa'
 import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
-import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
 import type { BuildOptions } from '../build.js'
 import type { RunOptions } from '../run.js'
 import { App } from '../utils/app.js'
-import { errorDebugLog } from '../utils/error.js'
 import { stripAnsiColors } from '../utils/exec.js'
+import { exists } from '../utils/file.js'
 import Log from '../utils/log.js'
-import { isWindows, uniRunSuccess } from '../utils/util.js'
+import { isDarwin, isWindows, uniRunSuccess } from '../utils/util.js'
 import { PlatformModule } from './index.js'
 
-function getWeixinDevToolCliPath() {
+async function getWeixinDevToolCliPath() {
   if (process.env.WEIXIN_DEV_TOOL) {
-    if (existsSync(process.env.WEIXIN_DEV_TOOL)) return process.env.WEIXIN_DEV_TOOL
+    if (await exists(process.env.WEIXIN_DEV_TOOL)) return process.env.WEIXIN_DEV_TOOL
   }
   const defaultPath = isWindows()
     ? 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat'
     : '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
-  if (existsSync(defaultPath)) return defaultPath
+  if (await exists(defaultPath)) return defaultPath
 }
 
-function openWeixinDevTool(projectPath: string) {
-  const cliPath = getWeixinDevToolCliPath()
-  if (!cliPath) {
-    Log.error('微信开发工具没有找到，请运行 `uniapp requirement mp-weixin` 查看详细信息')
+async function openWeixinDevTool(projectPath: string) {
+  if (!isWindows() && !isDarwin()) {
+    Log.error(`微信开发者工具不支持系统: ${process.platform}`)
     return
   }
-  const spinner = ora('正在打开微信开发者工具').start()
-  execa`${cliPath} ${['open', '--project', resolve(App.projectRoot, projectPath)]}`
-    .then(({ stderr }) => {
-      if (stderr) {
-        spinner.fail('微信开发者工具打开出错了')
-      } else {
-        spinner.succeed('微信开发者工具已打开')
-      }
-    })
-    .catch((err) => {
-      spinner.fail('微信开发者工具打开出错了')
-      errorDebugLog(err)
-    })
+  const cliPath = await getWeixinDevToolCliPath()
+  if (!cliPath) {
+    Log.error('未找到微信开发工具，请确认已安装')
+    return
+  }
+  await execa({
+    stdio: 'inherit',
+    env: { FORCE_COLOR: 'true' },
+    reject: false,
+  })`${cliPath} ${['open', '--project', resolve(App.projectRoot, projectPath)]}`
 }
 
 export default class PlatformMPWeixin extends PlatformModule {
@@ -50,12 +44,12 @@ export default class PlatformMPWeixin extends PlatformModule {
   modules = ['@dcloudio/uni-mp-weixin']
 
   async requirement() {
-    if (process.platform !== 'win32' && process.platform !== 'darwin') {
+    if (!isWindows() && !isDarwin()) {
       Log.error(`微信开发者工具不支持系统: ${process.platform}`)
       return
     }
 
-    const cliPath = getWeixinDevToolCliPath()
+    const cliPath = await getWeixinDevToolCliPath()
 
     if (cliPath) {
       Log.success(`微信开发者工具已安装 (${cliPath})`)
@@ -89,7 +83,7 @@ export default class PlatformMPWeixin extends PlatformModule {
       if (!uniRunSuccess(text)) return
 
       over = true
-      openWeixinDevTool('dist/dev/mp-weixin')
+      void openWeixinDevTool('dist/dev/mp-weixin')
     } as GeneratorTransform<false>
 
     await execa({
@@ -121,7 +115,7 @@ export default class PlatformMPWeixin extends PlatformModule {
 
     const text = stripAnsiColors(stdout as unknown as string)
     if (/DONE {2}Build complete\./.test(text)) {
-      openWeixinDevTool('dist/build/mp-weixin')
+      await openWeixinDevTool('dist/build/mp-weixin')
     }
   }
 }
