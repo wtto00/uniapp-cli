@@ -85,6 +85,11 @@ export default defineConfig({
       provider: 'local',
     },
 
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2019-present wtto00',
+    },
+
     docFooter: {
       prev: '上一页',
       next: '下一页',

@@ -43,3 +43,14 @@ features:
     icon: 📦
     details: uniapp build 打包各平台，支持 App 平台离线打包
 ---
+
+<h1 style="text-align:center;margin-top:80px;">社区</h1>
+
+<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
+
+[GitHub discussions](https://github.com/wtto00/uniapp-cli/discussions)
+
+扫码加入 QQ 群: [949070706](https://qm.qq.com/q/DqVKpnHEK4)
+
+<img src="/qq-group.jpg" alt="加入QQ群: 949070706" width="200" height="200" />
+</div>

@@ -46,3 +46,11 @@ uniapp --help
 - [ ] 小红书小程序适配
 - [ ] 快应用适配
 - [ ] 华为快应用适配
+
+## 社区
+
+[GitHub discussions](https://github.com/wtto00/uniapp-cli/discussions)
+
+扫码加入 QQ 群: [949070706](https://qm.qq.com/q/DqVKpnHEK4)
+
+![加入QQ群: 949070706](./docs/public/qq-group.jpg)
