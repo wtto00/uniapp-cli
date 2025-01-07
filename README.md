@@ -53,4 +53,5 @@ uniapp --help
 
 扫码加入 QQ 群: [949070706](https://qm.qq.com/q/DqVKpnHEK4)
 
-![加入QQ群: 949070706](./docs/public/qq-group.jpg)
+<img src="./docs/public/qq-group.jpg" alt="加入QQ群: 949070706" width="200" />
+
