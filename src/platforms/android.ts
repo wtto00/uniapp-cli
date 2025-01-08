@@ -20,7 +20,7 @@ import { exists } from '../utils/file.js'
 import { runHXCli } from '../utils/hbuilderx.js'
 import Log from '../utils/log.js'
 import { uninstallDeps } from '../utils/package.js'
-import { AndroidDir, AndroidPath, TemplateDir, UNIAPP_SDK_HOME } from '../utils/path.js'
+import { AndroidDir, AndroidPath, TemplateDir } from '../utils/path.js'
 import { showSpinner } from '../utils/spinner.js'
 import { trimEnd, uniRunSuccess } from '../utils/util.js'
 import PlatformHarmony from './harmony.js'
@@ -70,33 +70,33 @@ export default class PlatformAndroid extends PlatformModule {
 
     const uniVersion = App.getUniVersion()
 
-    const sdkDir = resolve(UNIAPP_SDK_HOME, 'android', uniVersion)
+    const sdkDir = getLibSDKDir(uniVersion)
     const agent = new ProxyAgent()
     if (!(await exists(sdkDir))) {
       // download sdk libs
       const spinner = ora('正在下载Android SDK Lib文件: ').start()
       const url = `${UNIAPP_ANDROID_SDK_URL}/libs/${uniVersion}/index.json`
-      let sdkFiles: Record<string, string> = {}
+      const sdkFiles: Record<string, string> = {}
       try {
         const fetchResult = await fetch(url, { agent })
         if (fetchResult.status === 404) {
           throw Error(`Android 平台暂不支持版本 ${uniVersion}`)
         }
-        sdkFiles = (await fetchResult.json()) as Record<string, string>
-        if (!sdkFiles) throw Error()
+        const sdkJson = (await fetchResult.json()) as Record<string, string>
+        if (!sdkJson) throw Error()
+        Object.assign(sdkFiles, sdkJson)
       } catch (error) {
         spinner.fail(errorMessage(error))
-        throw Error(`请求UniApp Android SDK@${uniVersion} 文件列表失败: ${url}`)
+        throw Error(`请求Android SDK@${uniVersion} Lib文件列表失败: ${url}`)
       }
-      const targetDir = resolve(UNIAPP_SDK_HOME, 'android', `${uniVersion}-tmp`)
+      const targetDir = getLibSDKDir(`${uniVersion}-tmp`)
       if (!(await exists(targetDir))) await mkdir(targetDir, { recursive: true })
-      const libSDKDir = getLibSDKDir(uniVersion)
-      const libsName = Object.keys(sdkFiles)
-      const libsCount = libsName.length
+      const libNames = Object.keys(sdkFiles)
+      const libCount = libNames.length
       try {
-        for (let i = 0; i < libsCount; i++) {
-          const lib = libsName[i]
-          spinner.text = `(${i + 1}/${libsCount}) 正在下载Android SDK Lib文件: ${lib} (0%)`
+        for (let i = 0; i < libCount; i++) {
+          const lib = libNames[i]
+          spinner.text = `(${i + 1}/${libCount}) 正在下载Android SDK Lib文件: ${lib} (0%)`
           const libPath = resolve(targetDir, lib)
           if (await exists(libPath)) continue
           const libUrl = `${UNIAPP_ANDROID_SDK_URL}/libs/${sdkFiles[lib]}`
@@ -110,7 +110,7 @@ export default class PlatformAndroid extends PlatformModule {
           let fileBuffer = new Uint8Array()
           libFetchRes.body.on('data', (chunk) => {
             fileBuffer = Buffer.concat([fileBuffer, chunk])
-            spinner.text = `(${i + 1}/${libsCount}) 正在下载Android SDK Lib文件: ${lib} (${Number(((fileBuffer.byteLength / total) * 100).toFixed(2))}%)`
+            spinner.text = `(${i + 1}/${libCount}) 正在下载Android SDK Lib文件: ${lib} (${Number(((fileBuffer.byteLength / total) * 100).toFixed(2))}%)`
           })
           await new Promise((resolve, reject) => {
             libFetchRes.body!.on('error', reject)
@@ -119,7 +119,7 @@ export default class PlatformAndroid extends PlatformModule {
           await writeFile(libPath, fileBuffer)
         }
         spinner.succeed('Android SDK Lib文件已下载完成')
-        await rename(targetDir, libSDKDir)
+        await rename(targetDir, sdkDir)
       } catch (error) {
         spinner.fail(errorMessage(error))
         throw Error('下载Android SDK Lib文件失败了，请重试')
