@@ -22,7 +22,7 @@ jobs:
         run: pnpm i
 
       - name: Type Check
-        run: pnpm type-check
+        run: pnpm -C packages/core type-check
 
       - name: Biome Check
         run: pnpm biome check .
@@ -53,4 +53,4 @@ jobs:
           echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
 
       - name: Test
-        run: pnpm test
+        run: pnpm -C packages/core test

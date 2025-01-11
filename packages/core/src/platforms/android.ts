@@ -1,7 +1,7 @@
 import { cp, mkdir, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { execa } from 'execa'
-import type { GeneratorTransform } from 'execa/types/transform/normalize.js'
+import type { GeneratorTransform } from 'execa/types/transform/normalize.d.ts'
 import fetch from 'node-fetch'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'

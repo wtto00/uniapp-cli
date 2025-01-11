@@ -4,14 +4,13 @@ import { program } from 'commander'
 import { App } from './utils/app.js'
 import { CLI_VERSION } from './utils/const.js'
 import { error2exit } from './utils/error.js'
-import Log from './utils/log.js'
 import { checkIsUniapp } from './utils/package.js'
 
 program
   .name('uniapp')
   .version(`uniapp-cli v${CLI_VERSION}`, '-v, --version', 'uniapp-cli 的版本号')
   .usage('<command> [options]')
-  .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息')
+  .option('-d, --verbose', '调试模式，输出 debug 级别的日志信息', false)
   .helpOption('-h, --help', '帮助信息')
   .allowUnknownOption(true)
   .showSuggestionAfterError(true)
@@ -58,31 +57,6 @@ program
       await requirements(platforms)
     } catch (error) {
       error2exit(error, '检查平台环境要求出错了')
-    }
-  })
-
-program
-  .command('transform')
-  .usage('<source> [target]')
-  .summary('转换HBuilderX项目到CLI项目')
-  .description('把一个HBuilderX创建的项目，转换为CLI创建的项目')
-  .argument('<source>', 'HBuilderX项目所在的目录位置')
-  .argument('[target]', '转换后的CLI项目所在的目录位置。默认为当前目录+原项目名称')
-  .option('-f, --force', '如果目录已存在，强制覆盖')
-  .option('--module [module...]', '使用了哪些HBuilderX内置的模块: sass,pinia,i18n,vuex,router')
-  .addHelpText(
-    'after',
-    `
-示例:
-  uniapp transform project-by-hbuilderx project-by-cli
-  uniapp transform project-by-hbuilderx -f --module sass pinia`,
-  )
-  .action(async (source, target, options) => {
-    try {
-      const { transform } = await import('./transform.js')
-      await transform(source, target, options)
-    } catch (error) {
-      error2exit(error, '转换项目出错了')
     }
   })
 
@@ -190,6 +164,6 @@ program
 
 program.parse(process.argv)
 
-Log.verbose = program.getOptionValue('verbose')
+process.env.DEBUG = program.getOptionValue('verbose')
 
 App.init()

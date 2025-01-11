@@ -1,0 +1,63 @@
+{
+  "name": "@wtto00/uniapp-cli",
+  "version": "0.0.4-alpha",
+  "description": "CLI for uniapp.",
+  "type": "module",
+  "bin": {
+    "uniapp": "dist/index.js"
+  },
+  "files": ["templates", "dist"],
+  "scripts": {
+    "dev": "tsc -p tsconfig.build.json --pretty --declaration --sourceMap --watch",
+    "build": "pnpm build:js && pnpm build:type",
+    "build:js": "tsc -p tsconfig.build.json --pretty --removeComments --sourceMap",
+    "build:type": "tsc -p tsconfig.build.json --pretty --declaration --emitDeclarationOnly",
+    "test": "globstar -- node --import tsx --test tests/**/*.test.ts",
+    "type-check": "tsc --noEmit",
+    "prebuild": "node scripts/prebuild.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wtto00/uniapp-cli.git",
+    "directory": "packages/core"
+  },
+  "keywords": ["uniapp", "cli"],
+  "author": "wtto00 <wtto00@outlook.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "bugs": {
+    "url": "https://github.com/wtto00/uniapp-cli/issues"
+  },
+  "homepage": "https://wtto00.github.io/uniapp-cli/",
+  "dependencies": {
+    "@inquirer/prompts": "^7.2.1",
+    "@wtto00/android-tools": "^1.0.5",
+    "archiver": "^7.0.1",
+    "chalk": "^5.4.1",
+    "chokidar": "^4.0.3",
+    "commander": "^13.0.0",
+    "execa": "^9.5.2",
+    "json5": "^2.2.3",
+    "log-symbols": "^7.0.0",
+    "node-fetch": "^3.3.2",
+    "open": "^10.1.0",
+    "ora": "^8.1.1",
+    "package-manager-detector": "^0.2.8",
+    "pkg-types": "^1.3.0",
+    "proxy-agent": "^6.5.0",
+    "send": "^1.1.0",
+    "validate-npm-package-name": "^6.0.0",
+    "which": "^5.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/send": "^0.17.4",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "@types/which": "^3.0.4",
+    "@types/ws": "^8.5.13",
+    "globstar": "^1.0.0"
+  }
+}

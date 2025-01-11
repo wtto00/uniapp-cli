@@ -1,79 +1,27 @@
 {
-  "name": "@wtto00/uniapp-cli",
-  "version": "0.0.3-alpha",
-  "description": "CLI for uniapp.",
-  "type": "module",
-  "bin": {
-    "uniapp": "dist/index.js"
-  },
-  "files": ["templates", "dist"],
+  "private": true,
   "scripts": {
-    "dev": "tsc -p tsconfig.build.json --pretty --declaration --sourceMap --watch",
-    "uniapp": "tsx src/index.ts",
-    "build": "pnpm build:js && pnpm build:type",
-    "build:js": "tsc -p tsconfig.build.json --pretty --removeComments --sourceMap",
-    "build:type": "tsc -p tsconfig.build.json --pretty --declaration --emitDeclarationOnly",
-    "test": "globstar -- node --import tsx --test tests/**/*.test.ts",
+    "uniapp": "tsx packages/core/src/index.ts",
     "dev:docs": "pnpm -C docs docs:dev",
-    "type-check": "tsc --noEmit",
+    "build:core": "pnpm -C packages/core build",
     "check": "biome check --write .",
-    "prebuild": "node scripts/prebuild.mjs",
     "preinstall": "npx -y only-allow pnpm",
     "prepare": "husky && echo npx lint-staged > .husky/pre-commit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wtto00/uniapp-cli.git"
-  },
-  "keywords": ["uniapp", "cli"],
-  "author": "wtto00 <wtto00@outlook.com>",
-  "license": "MIT",
-  "engines": {
-    "node": ">=20"
-  },
-  "bugs": {
-    "url": "https://github.com/wtto00/uniapp-cli/issues"
-  },
-  "homepage": "https://wtto00.github.io/uniapp-cli/",
-  "dependencies": {
-    "@inquirer/prompts": "^7.2.0",
-    "@wtto00/android-tools": "^1.0.5",
-    "archiver": "^7.0.1",
-    "chalk": "^5.3.0",
-    "chokidar": "^4.0.1",
-    "commander": "^12.1.0",
-    "execa": "^9.5.2",
-    "json5": "^2.2.3",
-    "log-symbols": "^7.0.0",
-    "node-fetch": "^3.3.2",
-    "open": "^10.1.0",
-    "ora": "^8.1.1",
-    "package-manager-detector": "^0.2.7",
-    "pkg-types": "^1.2.1",
-    "proxy-agent": "^6.5.0",
-    "send": "^1.1.0",
-    "validate-npm-package-name": "^6.0.0",
-    "which": "^5.0.0",
-    "ws": "^8.18.0"
-  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/archiver": "^6.0.3",
-    "@types/node": "^22.10.2",
-    "@types/send": "^0.17.4",
-    "@types/validate-npm-package-name": "^4.0.2",
-    "@types/which": "^3.0.4",
-    "@types/ws": "^8.5.13",
+    "@types/node": "^22.10.5",
     "@wtto00/biome-config": "^0.0.1",
     "globstar": "^1.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
+    "lint-staged": "^15.3.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
-  "packageManager": "pnpm@9.13.2",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.3",
   "lint-staged": {
-    "package.json": ["pnpm prebuild", "git add src/utils/const.ts"],
+    "packages/core/package.json": ["pnpm -C packages/core prebuild", "git add packages/core/src/utils/const.ts"],
     "*": ["biome check --no-errors-on-unmatched --write"]
   }
 }

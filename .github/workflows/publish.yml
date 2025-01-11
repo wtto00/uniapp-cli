@@ -37,11 +37,12 @@ jobs:
         run: pnpm i -r
 
       - name: Build
-        run: pnpm build
+        run: pnpm build:core
 
       - run: git config --global user.name "wtto00"
       - run: git config --global user.email "wtto00@outlook.com"
-      - run: npm publish --access public
+      - run: npm pkg set publishConfig.directory=packages/core
+      - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
@@ -70,6 +71,7 @@ jobs:
         run: pnpm build
 
       - run: npm pkg set publishConfig.registry=https://npm.pkg.github.com
+      - run: npm pkg set publishConfig.directory=packages/core
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

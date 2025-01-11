@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2015",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
@@ -18,8 +18,7 @@
     "allowUnusedLabels": false,
     "alwaysStrict": true,
     "rootDir": ".",
-    "baseUrl": ".",
-    "outDir": "./dist"
+    "baseUrl": "."
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/*.mjs"]
+  "include": ["packages/**/*.ts", "scripts/*.mjs"]
 }
