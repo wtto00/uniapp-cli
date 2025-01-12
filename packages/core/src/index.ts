@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
+import { App, Log, checkIsUniapp, error2exit } from '@wtto00/uniapp-common'
 import { program } from 'commander'
-import { App } from './utils/app.js'
 import { CLI_VERSION } from './utils/const.js'
-import { error2exit } from './utils/error.js'
-import { checkIsUniapp } from './utils/package.js'
 
 program
   .name('uniapp')
@@ -162,8 +160,8 @@ program
     }
   })
 
+App.projectRoot = process.cwd()
+
 program.parse(process.argv)
 
-process.env.DEBUG = program.getOptionValue('verbose')
-
-App.init()
+Log.verbose = program.getOptionValue('verbose')

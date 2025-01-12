@@ -23,6 +23,6 @@
   },
   "homepage": "https://wtto00.github.io/uniapp-cli/",
   "dependencies": {
-    "common": "link:packages/common"
+    "@wtto00/uniapp-common": "workspace:^"
   }
 }

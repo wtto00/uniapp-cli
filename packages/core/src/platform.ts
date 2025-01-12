@@ -1,6 +1,5 @@
+import { Log, type MaybePromise, errorMessage } from '@wtto00/uniapp-common'
 import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
-import { errorMessage } from './utils/error.js'
-import Log from './utils/log.js'
 
 /**
  * add platforms
@@ -12,14 +11,17 @@ export async function add(platforms: PLATFORM[]) {
       continue
     }
 
-    const module = await importPlatform(platform)
+    const module = await importPlatform<{
+      platformAdd: () => MaybePromise<void>
+      platformRemove: () => MaybePromise<void>
+    }>(platform, 'platform-add')
 
     try {
-      await module.add()
+      await module.platformAdd()
       Log.success(`${platform} 平台已成功添加`)
     } catch (error) {
       Log.error(`${platform} 平台添加失败: ${errorMessage(error)}`)
-      module.remove()
+      await module.platformRemove()
     }
   }
 }
@@ -34,9 +36,9 @@ export async function remove(platforms: PLATFORM[]) {
       Log.warn(`${platform} 不是一个有效的平台`)
       continue
     }
-    const module = await importPlatform(platform)
+    const module = await importPlatform<{ platformRemove: () => MaybePromise<void> }>(platform, 'platform-remove')
     try {
-      await module.remove()
+      await module.platformRemove()
       Log.success(`${platform} 平台已成功移除`)
     } catch (error) {
       Log.error(`${platform} 平台移除失败: ${errorMessage(error)}`)
@@ -49,13 +51,15 @@ export async function remove(platforms: PLATFORM[]) {
  */
 export async function list() {
   for (const platform of allPlatforms) {
-    const module = await importPlatform(platform)
+    const module = await importPlatform<{ platformIsInstalled: () => Promise<boolean> }>(platform, 'platform-list')
     const space = Array.from(Array(20 - platform.length))
       .map(() => ' ')
       .join('')
     Log.info([
       { message: `${platform}:${space}` },
-      (await module.isInstalled()) ? { message: '已安装', type: 'success' } : { message: '未安装', type: 'warn' },
+      (await module.platformIsInstalled())
+        ? { message: '已安装', type: 'success' }
+        : { message: '未安装', type: 'warn' },
     ])
   }
 }

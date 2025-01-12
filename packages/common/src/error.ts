@@ -1,4 +1,4 @@
-import Log from './log.js'
+import { Log } from './log.js'
 
 export function error2exit(error: unknown, defaultMessage: string, code = 1) {
   const message = errorMessage(error)
@@ -18,4 +18,8 @@ export function errorDebugLog(error: unknown) {
 
 export function sdkNotFoundMessage(cmd: string, sdkName: string) {
   return `未找到 ${cmd} 可执行文件，请确认已安装 ${sdkName}`
+}
+
+export function uniRunSuccess(text: string) {
+  return /ready in (\d+\.)?\d+m?s\./.test(text)
 }

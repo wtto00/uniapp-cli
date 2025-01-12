@@ -1,15 +1,20 @@
 import { resolve } from 'node:path'
-import { sdkNotFoundMessage } from '@wtto00/uniapp-common//dist/error.js'
-import { execa, whichPath } from '@wtto00/uniapp-common//dist/exec.js'
-import { exists } from '@wtto00/uniapp-common/dist/file.js'
-import Log from '@wtto00/uniapp-common/dist/log.js'
+import { Log, sdkNotFoundMessage } from '@wtto00/uniapp-common'
+import { execa, whichPath } from '@wtto00/uniapp-common'
+import { exists } from '@wtto00/uniapp-common'
+import { platformIsInstalled } from './platform-list.js'
 
 export async function requirement() {
-  await checkJave()
+  if (!(await platformIsInstalled())) {
+    Log.warn('平台 android 还没有安装。请运行 `uniapp platform add android` 添加安装')
+  } else {
+    Log.success('平台 android 已安装')
+  }
+  await checkJava()
   await checkAndroidSdk()
 }
 
-async function checkJave() {
+async function checkJava() {
   let javaBinPath = ''
   if (process.env.JAVA_HOME) {
     javaBinPath = resolve(process.env.JAVA_HOME, `bin/java${process.platform === 'win32' ? '.exe' : ''}`)

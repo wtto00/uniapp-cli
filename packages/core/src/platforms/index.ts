@@ -1,38 +1,35 @@
-import type { BuildOptions } from '../build.js'
-import type { RunOptions } from '../run.js'
-import { App } from '../utils/app.js'
-import { installDeps, isInstalled, uninstallDeps } from '../utils/package.js'
+import { App, importFileModule, installDependencies, isInstalled } from '@wtto00/uniapp-common'
 
-export type MaybePromise<T> = T | Promise<T>
+// export type MaybePromise<T> = T | Promise<T>
 
-export class PlatformModule {
-  modules: string[] = []
+// export class PlatformModule {
+//   modules: string[] = []
 
-  async isInstalled() {
-    return this.modules.every((module) => isInstalled(module))
-  }
+//   async isInstalled() {
+//     return this.modules.every((module) => isInstalled(module))
+//   }
 
-  async requirement() {}
+//   async requirement() {}
 
-  /** platform add */
-  async add() {
-    const uniVersion = App.getUniVersion()
-    await installDeps(this.modules, uniVersion)
-  }
+//   /** platform add */
+//   async add() {
+//     const uniVersion = App.getUniVersion()
+//     await installDeps(this.modules, uniVersion)
+//   }
 
-  /** platform remove */
-  async remove() {
-    await uninstallDeps(this.modules)
-  }
+//   /** platform remove */
+//   async remove() {
+//     await uninstallDeps(this.modules)
+//   }
 
-  async run(_options: RunOptions): Promise<void> {
-    return Promise.reject(Error('暂未实现'))
-  }
+//   async run(_options: RunOptions): Promise<void> {
+//     return Promise.reject(Error('暂未实现'))
+//   }
 
-  async build(_options: BuildOptions): Promise<void> {
-    return Promise.reject(Error('暂未实现'))
-  }
-}
+//   async build(_options: BuildOptions): Promise<void> {
+//     return Promise.reject(Error('暂未实现'))
+//   }
+// }
 
 export enum PLATFORM {
   H5 = 'h5',
@@ -54,41 +51,18 @@ export enum PLATFORM {
 }
 export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
 
-export async function importPlatform(platform: PLATFORM): Promise<PlatformModule> {
+export async function importPlatform<T extends object>(platform: PLATFORM, fileName: string): Promise<T> {
   switch (platform) {
     case PLATFORM.ANDROID:
-      return (await import('./android.js')).default.instance
+      if (!(await isInstalled('@wtto00/uniapp-android'))) {
+        await installDependencies([`@wtto00/uniapp-android@${await App.getUniVersion()}`])
+      }
+      return await importFileModule(`node_modules/@wtto00/uniapp-android/dist/${fileName}.js`)
     case PLATFORM.IOS:
-      return (await import('./ios.js')).default.instance
+      throw Error('暂未实现')
     case PLATFORM.HARMONY:
-      return (await import('./harmony.js')).default.instance
-    case PLATFORM.H5:
-      return (await import('./h5.js')).default.instance
-    case PLATFORM.MP_WEIXIN:
-      return (await import('./mp-weixin.js')).default.instance
-    case PLATFORM.MP_ALIPAY:
-      return (await import('./mp-alipay.js')).default.instance
-    case PLATFORM.MP_BAIDU:
-      return (await import('./mp-baidu.js')).default.instance
-    case PLATFORM.MP_TOUTIAO:
-      return (await import('./mp-toutiao.js')).default.instance
-    case PLATFORM.MP_LARK:
-      return (await import('./mp-lark.js')).default.instance
-    case PLATFORM.MP_QQ:
-      return (await import('./mp-qq.js')).default.instance
-    case PLATFORM.MP_KUAISHOU:
-      return (await import('./mp-kuaishou.js')).default.instance
-    case PLATFORM.MP_JD:
-      return (await import('./mp-jd.js')).default.instance
-    case PLATFORM.MP_360:
-      return (await import('./mp-360.js')).default.instance
-    case PLATFORM.MP_XHS:
-      return (await import('./mp-xhs.js')).default.instance
-    case PLATFORM.MP_QUICKAPP_UNION:
-      return (await import('./quickapp-union.js')).default.instance
-    case PLATFORM.MP_QUICKAPP_HUAWEI:
-      return (await import('./quickapp-huawei.js')).default.instance
+      throw Error('暂未实现')
     default:
-      throw Error(`未知的平台: ${platform}`)
+      return await import(`../${platform}/${fileName}.js`)
   }
 }

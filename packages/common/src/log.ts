@@ -1,15 +1,17 @@
-import chalk, { type ChalkInstance } from 'chalk'
+import chalk, { type ColorName, type BackgroundColorName } from 'chalk'
 import logSymbols from 'log-symbols'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'success'
 
-const Log = {
+export const Log = {
+  verbose: false,
+
   debug(message: string) {
-    if (!process.env.DEBUG) return
+    if (!Log.verbose) return
     console.log(Log.debugColor(message))
   },
 
-  info(message: string | { message: string; type?: LogLevel | ChalkInstance }[] = '') {
+  info(message: string | { message: string; type?: LogLevel | ColorName | BackgroundColorName }[] = '') {
     if (!Array.isArray(message)) {
       console.log(message)
     } else {
@@ -17,21 +19,23 @@ const Log = {
         message
           .map((item) => {
             if (!item.type) return item.message
-            if (typeof item.type === 'string') {
-              switch (item.type) {
-                case 'debug':
-                  return Log.debugColor(item.message)
-                case 'warn':
-                  return Log.warnColor(item.message)
-                case 'error':
-                  return Log.errorColor(item.message)
-                case 'success':
-                  return Log.successColor(item.message)
-                default:
-                  return item.message
-              }
+            switch (item.type) {
+              case 'debug':
+                return Log.debugColor(item.message)
+              case 'warn':
+                return Log.warnColor(item.message)
+              case 'error':
+                return Log.errorColor(item.message)
+              case 'success':
+                return Log.successColor(item.message)
+              case 'info':
+                return item.message
+              default:
+                if (item.type in chalk) {
+                  return chalk[item.type](item.message)
+                }
+                return item.message
             }
-            return item.type(item.message)
           })
           .join(''),
       )
@@ -59,5 +63,3 @@ const Log = {
   warnColor: (text: string) => chalk.yellow(text),
   debugColor: (text: string) => chalk.gray(text),
 }
-
-export default Log

@@ -1,7 +1,5 @@
-import { importPlatform } from './platforms/index.js'
-import { type PLATFORM, allPlatforms } from './platforms/index.js'
-import { App } from './utils/app.js'
-import { isInstalled } from './utils/package.js'
+import type { MaybePromise } from '@wtto00/uniapp-common'
+import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
 
 export interface CommonOptions {
   open: boolean
@@ -27,16 +25,7 @@ export async function run(platform: PLATFORM, options: RunOptions) {
     throw Error(`未知的平台: ${platform}`)
   }
 
-  const module = await importPlatform(platform)
-
-  if (module.modules.some((module) => !isInstalled(module))) {
-    throw Error(`平台 ${platform} 还没有安装。 运行 \`uniapp platform add ${platform}\` 添加`)
-  }
-
-  if (!App.isVue3()) {
-    process.env.NODE_ENV = 'development'
-    process.env.UNI_PLATFORM = platform
-  }
+  const module = await importPlatform<{ run: (option: RunOptions) => MaybePromise }>(platform, 'run')
 
   await module.run(options)
 }

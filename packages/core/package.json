@@ -34,8 +34,8 @@
   "dependencies": {
     "@inquirer/prompts": "^7.2.1",
     "@wtto00/android-tools": "^1.0.5",
+    "@wtto00/uniapp-common": "workspace:^",
     "archiver": "^7.0.1",
-    "chalk": "^5.4.1",
     "chokidar": "^4.0.3",
     "commander": "^13.0.0",
     "execa": "^9.5.2",
