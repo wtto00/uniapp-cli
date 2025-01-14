@@ -1,45 +1,31 @@
 import {
-  Log,
-  type RunOptions,
   type StdoutStderrOption,
   execa,
   stripAnsiColors,
   transformPackageCommand,
   uniRunSuccess,
 } from '@wtto00/uniapp-common'
-import open from 'open'
 import { checkInstalled } from './platform-list.js'
+import { openWeixinDevTool } from './utils/utils.js'
 
-export async function run(options: RunOptions) {
+export async function run(options: { open: boolean; mode?: string }) {
   await checkInstalled()
 
-  const args = ['uni']
+  const args = ['uni', '-p', 'mp-weixin']
   if (options.mode) args.push('--mode', options.mode)
   const commands = await transformPackageCommand('execute-local', args)
 
-  let url = ''
   let over = false
 
   const stdoutTransform = function* (line: string) {
     yield line
-    if (over && url) return
+    if (over) return
 
     const text = stripAnsiColors(line)
-    if (!url) {
-      const matched = text.match(/Local:\s+(http:\/\/localhost:\d+)\//)
-      if (matched?.[1]) url = matched[1]
-    }
-    if (!over && uniRunSuccess(text)) over = true
+    if (!uniRunSuccess(text)) return
 
-    if (!over || !url) return
-
-    open(url)
-      .then(() => {
-        Log.success(`浏览器已打开: ${url}`)
-      })
-      .catch((error) => {
-        Log.error(`浏览器打开失败 ${error.message}`)
-      })
+    over = true
+    void openWeixinDevTool('dist/dev/mp-weixin')
   }
 
   await execa({

@@ -1,5 +1,5 @@
 import { Log, type MaybePromise, errorMessage } from '@wtto00/uniapp-common'
-import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
+import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
 
 /**
  * add platforms
@@ -7,7 +7,7 @@ import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.j
 export async function add(platforms: PLATFORM[]) {
   for (const platform of platforms) {
     if (!allPlatforms.includes(platform)) {
-      Log.warn(`${platform} 不是一个有效的平台`)
+      logInvalidPlatform(platform)
       continue
     }
 
@@ -33,7 +33,7 @@ export async function remove(platforms: PLATFORM[]) {
   for (const platform of platforms) {
     Log.debug(`移除平台: ${platform}`)
     if (!allPlatforms.includes(platform)) {
-      Log.warn(`${platform} 不是一个有效的平台`)
+      logInvalidPlatform(platform)
       continue
     }
     const module = await importPlatform<{ platformRemove: () => MaybePromise<void> }>(platform, 'platform-remove')

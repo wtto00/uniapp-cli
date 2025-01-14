@@ -1,9 +1,11 @@
 import { type DetectResult, detect } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
+import type { UniConfig } from './config.js'
 import { readJsonFile } from './file.js'
 import { Log } from './log.js'
 import type { ManifestConfig } from './manifest.config.js'
 import { getDependencyVersion } from './package.js'
+import { safeAwait } from './tool.js'
 
 /**
  * 缓存相关配置
@@ -21,21 +23,7 @@ export const App = {
 
   _vueVersion: '',
 
-  // init() {
-  //   App.projectRoot = process.cwd()
-  //   const configPath = resolve(App.projectRoot, 'uniapp.config.json')
-  //   if (existsSync(configPath)) {
-  //     const config = readJsonFile<Record<string, unknown>>(configPath, true)
-  //     for (const key in config || {}) {
-  //       if (typeof config[key] === 'object') {
-  //         process.env[key] = JSON.stringify(config[key])
-  //       } else {
-  //         process.env[key] = (config[key] ?? '').toString()
-  //       }
-  //       Log.debug(`设置环境变量 ${key}="${process.env[key]}"`)
-  //     }
-  //   }
-  // },
+  _config: null as UniConfig | null,
 
   async getPackageJson(): Promise<PackageJson> {
     if (!App._package) {
@@ -79,5 +67,12 @@ export const App = {
 
   async isVue3(): Promise<boolean> {
     return (await App.getVueVersion()).startsWith('3')
+  },
+
+  async getConfig(): Promise<UniConfig> {
+    if (!App._config) {
+      ;[, App._config] = await safeAwait(readJsonFile<UniConfig>('.uniapp.json'))
+    }
+    return App._config ?? {}
   },
 }

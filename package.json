@@ -1,8 +1,9 @@
 {
   "private": true,
   "scripts": {
+    "dev": "pnpm -C packages/common dev & pnpm -C packages/android dev & pnpm -C packages/core dev",
     "uniapp": "tsx packages/core/src/index.ts",
-    "dev:docs": "pnpm -C docs docs:dev",
+    "dev:docs": "pnpm -C packages/docs docs:dev",
     "build:core": "pnpm -C packages/core build",
     "check": "biome check --write .",
     "preinstall": "npx -y only-allow pnpm",
@@ -19,7 +20,7 @@
     "typescript": "^5.7.3"
   },
   "license": "MIT",
-  "packageManager": "pnpm@9.15.3",
+  "packageManager": "pnpm@9.15.4",
   "lint-staged": {
     "packages/core/package.json": ["pnpm -C packages/core prebuild", "git add packages/core/src/utils/const.ts"],
     "*": ["biome check --no-errors-on-unmatched --write"]

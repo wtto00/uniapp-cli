@@ -1,4 +1,4 @@
-import { App, importFileModule, installDependencies, isInstalled } from '@wtto00/uniapp-common'
+import { App, Log, importFileModule, installDependencies, isInstalled } from '@wtto00/uniapp-common'
 
 // export type MaybePromise<T> = T | Promise<T>
 
@@ -50,6 +50,16 @@ export enum PLATFORM {
   MP_QUICKAPP_HUAWEI = 'quickapp-huawei',
 }
 export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
+
+export function checkPlatformValid(platform: string) {
+  if (!allPlatforms.includes(platform as PLATFORM)) {
+    throw Error(`未知的平台: ${platform}`)
+  }
+}
+
+export function logInvalidPlatform(platform: string) {
+  Log.warn(`${platform} 不是一个有效的平台`)
+}
 
 export async function importPlatform<T extends object>(platform: PLATFORM, fileName: string): Promise<T> {
   switch (platform) {

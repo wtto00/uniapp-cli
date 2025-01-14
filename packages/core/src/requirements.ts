@@ -1,5 +1,5 @@
 import { Log, type MaybePromise, errorMessage } from '@wtto00/uniapp-common'
-import { type PLATFORM, allPlatforms, importPlatform } from './platforms/index.js'
+import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
 
 export async function requirements(platforms: PLATFORM[]) {
   const invalidPlatforms: string[] = []
@@ -11,7 +11,7 @@ export async function requirements(platforms: PLATFORM[]) {
 
   if (invalidPlatforms.length) {
     for (const platform of invalidPlatforms) {
-      Log.warn(`无效的平台: ${platform}`)
+      logInvalidPlatform(platform)
     }
     Log.info()
   }

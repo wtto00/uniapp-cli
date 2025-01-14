@@ -50,7 +50,7 @@ program
   .addHelpText('after', '\n示例:\n  uniapp requirements android\n  uniapp requirement h5 mp-weixin')
   .action(async (platforms) => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { requirements } = await import('./requirements.js')
       await requirements(platforms)
     } catch (error) {
@@ -72,7 +72,7 @@ platform
   .argument('<platform...>', '要添加的平台: android,ios,h5,mp-weixin...')
   .action(async (platforms) => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { add } = await import('./platform.js')
       await add(platforms)
     } catch (error) {
@@ -88,7 +88,7 @@ platform
   .argument('<platform...>', '要移除的平台: android,ios,h5,mp-weixin...')
   .action(async (platforms) => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { remove } = await import('./platform.js')
       await remove(platforms)
     } catch (error) {
@@ -102,7 +102,7 @@ platform
   .description('列出所有已安装和可用的平台')
   .action(async () => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { list } = await import('./platform.js')
       await list()
     } catch (error) {
@@ -127,7 +127,7 @@ program
   .addHelpText('after', '\n示例:\n  uniapp run android --device myEmulator\n  uniapp run ios\n  uniapp run mp-weixin')
   .action(async (platform, options) => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { run } = await import('./run.js')
       await run(platform, options)
     } catch (error) {
@@ -152,9 +152,31 @@ program
   .addHelpText('after', '\n示例:\n  uniapp build android --bundle aab\n  uniapp build ios\n  uniapp build mp-weixin')
   .action(async (platform, options) => {
     try {
-      checkIsUniapp()
+      await checkIsUniapp()
       const { build } = await import('./build.js')
       await build(platform, options)
+    } catch (error) {
+      error2exit(error, `打包平台 \`${platform}\` 出错了`)
+    }
+  })
+
+program
+  .command('publish')
+  .usage('<platform>')
+  .summary('发布给定的平台')
+  .description('发布给定的平台')
+  .argument('<platform>', '要发布的平台: 仅支持 mp-weixin,mp-alipay,h5')
+  .option('--version <version>', '要发布的版本，不填默认读取manifest中的版本')
+  .option('--desc <desc>', '发布时的备注')
+  .option('--no-build', '发布前不要打包')
+  .option('--mode <mode>', '如果发布前的打包的话，选择打包的 vite 环境模式')
+  .option('--hxcli [hxcli]', 'H5发布需要使用HBuilderX的cli工具', false)
+  .addHelpText('after', '\n示例:\n  uniapp publish mp-weixin\n  uniapp publish mp-alipay\n  uniapp publish h5')
+  .action(async (platform, options) => {
+    try {
+      await checkIsUniapp()
+      const { publish } = await import('./publish.js')
+      await publish(platform, options)
     } catch (error) {
       error2exit(error, `打包平台 \`${platform}\` 出错了`)
     }
