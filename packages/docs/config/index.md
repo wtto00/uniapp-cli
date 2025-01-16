@@ -156,7 +156,7 @@ DCloud 官方的百度云网盘，速度感人。这里分享一个我的阿里�
 
 ## WEIXIN_DEV_TOOL
 
-微信开发者工具的 `cli`(`Widnows` 上为 `cli.bat`) 可执行文件所在的位置。
+微信开发者工具的 `cli`(`Windows` 上为 `cli.bat`) 可执行文件所在的位置。
 
 默认位置为:
 

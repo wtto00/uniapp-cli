@@ -1,5 +1,5 @@
-import { Log, type MaybePromise, errorMessage } from '@wtto00/uniapp-common'
-import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
+import { Log, type MaybePromise, errorMessage, installDependencies, safeAwait } from '@wtto00/uniapp-common'
+import { PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
 
 /**
  * add platforms
@@ -9,6 +9,14 @@ export async function add(platforms: PLATFORM[]) {
     if (!allPlatforms.includes(platform)) {
       logInvalidPlatform(platform)
       continue
+    }
+
+    if (platform === PLATFORM.ANDROID) {
+      await installDependencies(['@wtto00/uniapp-android'])
+    } else if (platform === PLATFORM.IOS) {
+      await installDependencies(['@wtto00/uniapp-ios'])
+    } else if (platform === PLATFORM.HARMONY) {
+      await installDependencies(['@wtto00/uniapp-harmony'])
     }
 
     const module = await importPlatform<{
@@ -51,10 +59,16 @@ export async function remove(platforms: PLATFORM[]) {
  */
 export async function list() {
   for (const platform of allPlatforms) {
-    const module = await importPlatform<{ platformIsInstalled: () => Promise<boolean> }>(platform, 'platform-list')
+    const [error, module] = await safeAwait(
+      importPlatform<{ platformIsInstalled: () => Promise<boolean> }>(platform, 'platform-list'),
+    )
     const space = Array.from(Array(20 - platform.length))
       .map(() => ' ')
       .join('')
+    if (error) {
+      Log.info([{ message: `${platform}:${space}` }, { message: '未安装', type: 'warn' }])
+      continue
+    }
     Log.info([
       { message: `${platform}:${space}` },
       (await module.platformIsInstalled())

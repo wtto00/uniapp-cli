@@ -3,7 +3,7 @@ import type { PackageJson } from 'pkg-types'
 import type { UniConfig } from './config.js'
 import { readJsonFile } from './file.js'
 import { Log } from './log.js'
-import type { ManifestConfig } from './manifest.config.js'
+import type { ManifestConfig } from './manifest.js'
 import { getDependencyVersion } from './package.js'
 import { safeAwait } from './tool.js'
 

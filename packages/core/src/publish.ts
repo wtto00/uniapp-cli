@@ -8,7 +8,7 @@ export async function publish(platform: PLATFORM, options: PublishOptions) {
     importPlatform<{ publish: (options: PublishOptions) => MaybePromise }>(platform, 'publish'),
   )
   if (error) {
-    Log.warn(`${platform} 平台暂不支持 publish 方法`)
+    Log.error(error.message || '出错了')
     return
   }
   await module.publish(options)

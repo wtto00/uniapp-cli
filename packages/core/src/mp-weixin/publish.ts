@@ -22,7 +22,7 @@ export async function publish(options: PublishOptions) {
     const today = new Date()
     desc = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日 ${today.getHours()}:${today.getMinutes()} 提交上传`
   }
-  Log.info(`备注: ${desc}`)
+  Log.info(`备注: ${desc}\n`)
 
   if (options.build) {
     await build({ open: false, mode: options.mode })

@@ -1,3 +1,7 @@
+/**
+ * 本地相关的一些配置项。
+ * 文件 `.uniapp.json`
+ */
 export interface UniConfig {
   /**
    * 离线 SDK 的下载保存的本地目录。
@@ -20,9 +24,9 @@ export interface UniConfig {
   }
   'mp-weixin'?: {
     /**
-     * 微信开发者工具的 `cli`(`Widnows` 上为 `cli.bat`) 可执行文件所在的位置。
+     * 微信开发者工具的 `cli`(`Windows` 上为 `cli.bat`) 可执行文件所在的位置。
      * @default
-     * - `Widnows` 上为 `C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat`
+     * - `Windows` 上为 `C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat`
      * - `macOS` 上为 `/Applications/wechatwebdevtools.app/Contents/MacOS/cli`
      */
     devTool?: string

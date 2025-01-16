@@ -18,7 +18,7 @@ export interface PublishOptions {
    * 如果为false，则不使用HBuilderX的cli
    * 如果为字符串，则使用指定的HBuilderX的cli可执行文件位置
    */
-  hxcli: string | boolean
+  // hxcli: string | boolean
 }
 
 interface RunBuildOptions {

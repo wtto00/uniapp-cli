@@ -1,35 +1,11 @@
-import { App, Log, importFileModule, installDependencies, isInstalled } from '@wtto00/uniapp-common'
-
-// export type MaybePromise<T> = T | Promise<T>
-
-// export class PlatformModule {
-//   modules: string[] = []
-
-//   async isInstalled() {
-//     return this.modules.every((module) => isInstalled(module))
-//   }
-
-//   async requirement() {}
-
-//   /** platform add */
-//   async add() {
-//     const uniVersion = App.getUniVersion()
-//     await installDeps(this.modules, uniVersion)
-//   }
-
-//   /** platform remove */
-//   async remove() {
-//     await uninstallDeps(this.modules)
-//   }
-
-//   async run(_options: RunOptions): Promise<void> {
-//     return Promise.reject(Error('暂未实现'))
-//   }
-
-//   async build(_options: BuildOptions): Promise<void> {
-//     return Promise.reject(Error('暂未实现'))
-//   }
-// }
+import {
+  App,
+  Log,
+  importFileModule,
+  installDependencies,
+  isInstalled,
+  uninstallDependencies,
+} from '@wtto00/uniapp-common'
 
 export enum PLATFORM {
   H5 = 'h5',
@@ -51,6 +27,33 @@ export enum PLATFORM {
 }
 export const allPlatforms: PLATFORM[] = Object.values(PLATFORM)
 
+export const BasePlatform = {
+  name: PLATFORM.H5,
+  dependencies: [] as string[],
+
+  async isInstalled() {
+    for (const dependencyName of this.dependencies) {
+      if (!(await isInstalled(dependencyName))) return false
+    }
+    return true
+  },
+
+  async checkInstalled() {
+    if (!(await this.isInstalled())) {
+      throw Error(`平台 ${this.name} 还没有安装。 运行 uniapp platform add ${this.name} 添加`)
+    }
+  },
+
+  async add() {
+    const uniVersion = await App.getUniVersion()
+    await installDependencies(this.dependencies.map((dependencyName) => `${dependencyName}@${uniVersion}`))
+  },
+
+  async remove() {
+    await uninstallDependencies(this.dependencies)
+  },
+}
+
 export function checkPlatformValid(platform: string) {
   if (!allPlatforms.includes(platform as PLATFORM)) {
     throw Error(`未知的平台: ${platform}`)
@@ -65,13 +68,13 @@ export async function importPlatform<T extends object>(platform: PLATFORM, fileN
   switch (platform) {
     case PLATFORM.ANDROID:
       if (!(await isInstalled('@wtto00/uniapp-android'))) {
-        await installDependencies([`@wtto00/uniapp-android@${await App.getUniVersion()}`])
+        throw Error('平台 android 还没有安装，请运行 uniapp platform add android 添加安装')
       }
       return await importFileModule(`node_modules/@wtto00/uniapp-android/dist/${fileName}.js`)
     case PLATFORM.IOS:
-      throw Error('暂未实现')
+      throw Error('暂未实现 iOS 平台')
     case PLATFORM.HARMONY:
-      throw Error('暂未实现')
+      throw Error('暂未实现 Harmony 平台')
     default:
       return await import(`../${platform}/${fileName}.js`)
   }

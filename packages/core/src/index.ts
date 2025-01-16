@@ -165,12 +165,11 @@ program
   .usage('<platform>')
   .summary('发布给定的平台')
   .description('发布给定的平台')
-  .argument('<platform>', '要发布的平台: 仅支持 mp-weixin,mp-alipay,h5')
+  .argument('<platform>', '要发布的平台: 仅支持 mp-weixin')
   .option('--version <version>', '要发布的版本，不填默认读取manifest中的版本')
   .option('--desc <desc>', '发布时的备注')
   .option('--no-build', '发布前不要打包')
   .option('--mode <mode>', '如果发布前的打包的话，选择打包的 vite 环境模式')
-  .option('--hxcli [hxcli]', 'H5发布需要使用HBuilderX的cli工具', false)
   .addHelpText('after', '\n示例:\n  uniapp publish mp-weixin\n  uniapp publish mp-alipay\n  uniapp publish h5')
   .action(async (platform, options) => {
     try {
