@@ -1,4 +1,5 @@
 import { join } from 'node:path'
+import { sdkNotFoundMessage } from '@wtto00/uniapp-common'
 import { execa } from 'execa'
 import which from 'which'
 import { exists } from '../../utils/file.js'
@@ -30,7 +31,7 @@ export async function getOhpm() {
     if (await exists(ohpmPath)) return ohpmPath
   }
 
-  throw Error('未找到 ohpm 可执行文件，请确认已安装 Harmony 命令行工具或者DevEco')
+  throw Error(sdkNotFoundMessage('ohpm', 'Harmony 命令行工具或者DevEco'))
 }
 
 export async function ohpmInstall() {

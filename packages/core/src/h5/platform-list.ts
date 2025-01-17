@@ -7,9 +7,3 @@ export async function platformIsInstalled() {
   }
   return true
 }
-
-export async function checkInstalled() {
-  if (!(await platformIsInstalled())) {
-    throw Error('平台 h5 还没有安装。 运行 `uniapp platform add h5` 添加')
-  }
-}

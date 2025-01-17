@@ -1,15 +1,18 @@
 import {
   type StdoutStderrOption,
   execa,
+  notInstalledMessage,
   stripAnsiColors,
   transformPackageCommand,
   uniRunSuccess,
 } from '@wtto00/uniapp-common'
-import { checkInstalled } from './platform-list.js'
+import { platformIsInstalled } from './platform-list.js'
 import { openWeixinDevTool } from './utils/utils.js'
 
 export async function run(options: { open: boolean; mode?: string }) {
-  await checkInstalled()
+  if (!(await platformIsInstalled())) {
+    throw Error(notInstalledMessage('mp-weixin'))
+  }
 
   const args = ['uni', '-p', 'mp-weixin']
   if (options.mode) args.push('--mode', options.mode)

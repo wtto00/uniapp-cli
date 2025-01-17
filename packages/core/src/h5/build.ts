@@ -1,8 +1,10 @@
-import { type BuildOptions, execa, transformPackageCommand } from '@wtto00/uniapp-common'
-import { checkInstalled } from './platform-list.js'
+import { type BuildOptions, execa, notInstalledMessage, transformPackageCommand } from '@wtto00/uniapp-common'
+import { platformIsInstalled } from './platform-list.js'
 
 export async function build(options: BuildOptions) {
-  await checkInstalled()
+  if (!(await platformIsInstalled())) {
+    throw Error(notInstalledMessage('h5'))
+  }
 
   const args = ['uni', 'build']
   if (options.mode) args.push('--mode', options.mode)

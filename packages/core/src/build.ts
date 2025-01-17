@@ -5,7 +5,7 @@ export async function build(platform: PLATFORM, options: BuildOptions) {
   checkPlatformValid(platform)
 
   const [error, module] = await safeAwait(
-    importPlatform<{ build: (options: BuildOptions) => MaybePromise }>(platform, 'build'),
+    importPlatform<{ build: (options: BuildOptions) => MaybePromise }>({ platform, fileName: 'build' }),
   )
 
   if (error) {

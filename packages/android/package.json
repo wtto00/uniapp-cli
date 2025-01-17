@@ -15,7 +15,7 @@
     "url": "git+https://github.com/wtto00/uniapp-cli.git",
     "directory": "packages/android"
   },
-  "keywords": ["uniapp", "cli"],
+  "keywords": ["uniapp", "cli", "android"],
   "author": "wtto00 <wtto00@outlook.com>",
   "license": "MIT",
   "bugs": {
@@ -23,6 +23,8 @@
   },
   "homepage": "https://wtto00.github.io/uniapp-cli/",
   "dependencies": {
-    "@wtto00/uniapp-common": "workspace:^"
+    "@wtto00/uniapp-common": "workspace:^",
+    "node-fetch": "^3.3.2",
+    "proxy-agent": "^6.5.0"
   }
 }

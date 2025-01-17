@@ -1,5 +1,5 @@
-import { Log, type MaybePromise, errorMessage, installDependencies, safeAwait } from '@wtto00/uniapp-common'
-import { PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
+import { Log, type MaybePromise, errorMessage, safeAwait } from '@wtto00/uniapp-common'
+import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
 
 /**
  * add platforms
@@ -11,18 +11,10 @@ export async function add(platforms: PLATFORM[]) {
       continue
     }
 
-    if (platform === PLATFORM.ANDROID) {
-      await installDependencies(['@wtto00/uniapp-android'])
-    } else if (platform === PLATFORM.IOS) {
-      await installDependencies(['@wtto00/uniapp-ios'])
-    } else if (platform === PLATFORM.HARMONY) {
-      await installDependencies(['@wtto00/uniapp-harmony'])
-    }
-
     const module = await importPlatform<{
       platformAdd: () => MaybePromise<void>
       platformRemove: () => MaybePromise<void>
-    }>(platform, 'platform-add')
+    }>({ platform, fileName: 'platform-add', tryInstall: true })
 
     try {
       await module.platformAdd()
@@ -44,7 +36,13 @@ export async function remove(platforms: PLATFORM[]) {
       logInvalidPlatform(platform)
       continue
     }
-    const module = await importPlatform<{ platformRemove: () => MaybePromise<void> }>(platform, 'platform-remove')
+    const [error, module] = await safeAwait(
+      importPlatform<{ platformRemove: () => MaybePromise<void> }>({ platform, fileName: 'platform-remove' }),
+    )
+    if (error) {
+      Log.error(error.message)
+      continue
+    }
     try {
       await module.platformRemove()
       Log.success(`${platform} 平台已成功移除`)
@@ -60,7 +58,7 @@ export async function remove(platforms: PLATFORM[]) {
 export async function list() {
   for (const platform of allPlatforms) {
     const [error, module] = await safeAwait(
-      importPlatform<{ platformIsInstalled: () => Promise<boolean> }>(platform, 'platform-list'),
+      importPlatform<{ platformIsInstalled: () => Promise<boolean> }>({ platform, fileName: 'platform-list' }),
     )
     const space = Array.from(Array(20 - platform.length))
       .map(() => ' ')

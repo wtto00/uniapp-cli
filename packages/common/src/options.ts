@@ -21,6 +21,9 @@ export interface PublishOptions {
   // hxcli: string | boolean
 }
 
+/**
+ * 运行和打包共用的选项
+ */
 interface RunBuildOptions {
   /**
    * 是否自动打开

@@ -7,9 +7,3 @@ export async function platformIsInstalled() {
   }
   return await exists(projectDir)
 }
-
-export async function checkInstalled() {
-  if (!(await platformIsInstalled())) {
-    throw Error('平台 android 还没有安装。 运行 `uniapp platform add android` 添加')
-  }
-}

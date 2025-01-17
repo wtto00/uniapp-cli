@@ -5,7 +5,7 @@ export async function run(platform: PLATFORM, options: RunOptions) {
   checkPlatformValid(platform)
 
   const [error, module] = await safeAwait(
-    importPlatform<{ run: (option: RunOptions) => MaybePromise }>(platform, 'run'),
+    importPlatform<{ run: (option: RunOptions) => MaybePromise }>({ platform, fileName: 'run' }),
   )
 
   if (error) {

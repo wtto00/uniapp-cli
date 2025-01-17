@@ -3,15 +3,18 @@ import {
   type RunOptions,
   type StdoutStderrOption,
   execa,
+  notInstalledMessage,
   stripAnsiColors,
   transformPackageCommand,
   uniRunSuccess,
 } from '@wtto00/uniapp-common'
 import open from 'open'
-import { checkInstalled } from './platform-list.js'
+import { platformIsInstalled } from './platform-list.js'
 
 export async function run(options: RunOptions) {
-  await checkInstalled()
+  if (!(await platformIsInstalled())) {
+    throw Error(notInstalledMessage('h5'))
+  }
 
   const args = ['uni']
   if (options.mode) args.push('--mode', options.mode)

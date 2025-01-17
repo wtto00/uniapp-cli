@@ -38,6 +38,12 @@ importers:
       '@wtto00/uniapp-common':
         specifier: workspace:^
         version: link:../common
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      proxy-agent:
+        specifier: ^6.5.0
+        version: 6.5.0
 
   packages/common:
     dependencies:

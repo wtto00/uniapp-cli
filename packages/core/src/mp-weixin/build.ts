@@ -1,10 +1,12 @@
-import { Log, execa, stripAnsiColors, transformPackageCommand } from '@wtto00/uniapp-common'
-import { checkInstalled } from './platform-list.js'
+import { Log, execa, notInstalledMessage, stripAnsiColors, transformPackageCommand } from '@wtto00/uniapp-common'
+import { platformIsInstalled } from './platform-list.js'
 import { buildDistPath } from './utils/const.js'
 import { openWeixinDevTool } from './utils/utils.js'
 
 export async function build(options: { open?: boolean; mode?: string }) {
-  await checkInstalled()
+  if (!(await platformIsInstalled())) {
+    throw Error(notInstalledMessage('mp-weixin'))
+  }
 
   const args = ['uni', 'build', '-p', 'mp-weixin']
   if (options.mode) args.push('--mode', options.mode)

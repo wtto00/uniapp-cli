@@ -1,5 +1,6 @@
 import { readdir } from 'node:fs/promises'
 import { join } from 'node:path'
+import { sdkNotFoundMessage } from '@wtto00/uniapp-common'
 import which from 'which'
 import { exists } from '../../utils/file.js'
 import { isDarwin, isWindows } from '../../utils/util.js'
@@ -49,5 +50,5 @@ export async function getHdc() {
     if (await exists(hdcPath)) return hdcPath
   }
 
-  throw Error('未找到 hdc 可执行文件，请确认已安装 Harmony SDK')
+  throw Error(sdkNotFoundMessage('hdc', 'Harmony SDK'))
 }

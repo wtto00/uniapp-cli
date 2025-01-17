@@ -1,10 +1,11 @@
-import { Log } from '@wtto00/uniapp-common'
+import { Log, installedMessage, notInstalledMessage } from '@wtto00/uniapp-common'
+import { PLATFORM } from '../platforms/index.js'
 import { platformIsInstalled } from './platform-list.js'
 
 export async function requirement() {
   if (!(await platformIsInstalled())) {
-    Log.warn('平台 h5 还没有安装。请运行 `uniapp platform add h5` 添加安装')
+    Log.warn(notInstalledMessage(PLATFORM.H5))
   } else {
-    Log.success('平台 h5 已安装')
+    Log.success(installedMessage(PLATFORM.H5))
   }
 }

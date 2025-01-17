@@ -1,4 +1,4 @@
-import { Log, type MaybePromise, errorMessage, logNotInstalled, safeAwait } from '@wtto00/uniapp-common'
+import { Log, type MaybePromise, errorMessage, notInstalledMessage, safeAwait } from '@wtto00/uniapp-common'
 import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
 
 export async function requirements(platforms: PLATFORM[]) {
@@ -21,12 +21,11 @@ export async function requirements(platforms: PLATFORM[]) {
     Log.info([{ message: `${platform}:`, type: 'cyan' }])
 
     const [error, module] = await safeAwait(
-      importPlatform<{ requirement: () => MaybePromise<void> }>(platform, 'requirement'),
+      importPlatform<{ requirement: () => MaybePromise<void> }>({ platform, fileName: 'requirement' }),
     )
 
     if (error) {
-      logNotInstalled(platform)
-      Log.info()
+      Log.warn(`${notInstalledMessage(platform)}\n`)
       continue
     }
 

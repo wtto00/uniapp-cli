@@ -1,10 +1,15 @@
 import { input } from '@inquirer/prompts'
-import { App, Log, type PublishOptions } from '@wtto00/uniapp-common'
+import { App, Log, type PublishOptions, notInstalledMessage } from '@wtto00/uniapp-common'
 import { build } from './build.js'
+import { platformIsInstalled } from './platform-list.js'
 import { buildDistPath } from './utils/const.js'
 import { upload } from './utils/utils.js'
 
 export async function publish(options: PublishOptions) {
+  if (!(await platformIsInstalled())) {
+    throw Error(notInstalledMessage('mp-weixin'))
+  }
+
   let version = options.version
   if (!version) {
     version = (await App.getManifestJson()).versionName
@@ -26,6 +31,7 @@ export async function publish(options: PublishOptions) {
 
   if (options.build) {
     await build({ open: false, mode: options.mode })
+    Log.info()
   }
 
   await upload(buildDistPath, { version, desc })

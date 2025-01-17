@@ -5,7 +5,7 @@ export async function publish(platform: PLATFORM, options: PublishOptions) {
   checkPlatformValid(platform)
 
   const [error, module] = await safeAwait(
-    importPlatform<{ publish: (options: PublishOptions) => MaybePromise }>(platform, 'publish'),
+    importPlatform<{ publish: (options: PublishOptions) => MaybePromise }>({ platform, fileName: 'publish' }),
   )
   if (error) {
     Log.error(error.message || '出错了')

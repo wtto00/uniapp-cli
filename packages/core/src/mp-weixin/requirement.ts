@@ -1,12 +1,13 @@
-import { Log } from '@wtto00/uniapp-common'
+import { Log, installedMessage, notInstalledMessage } from '@wtto00/uniapp-common'
+import { PLATFORM } from '../platforms/index.js'
 import { platformIsInstalled } from './platform-list.js'
 import { getWeixinDevToolCliPath } from './utils/utils.js'
 
 export async function requirement() {
   if (!(await platformIsInstalled())) {
-    Log.warn('平台 mp-weixin 还没有安装。请运行 `uniapp platform add mp-weixin` 添加安装')
+    Log.warn(notInstalledMessage(PLATFORM.MP_WEIXIN))
   } else {
-    Log.success('平台 mp-weixin 已安装')
+    Log.success(installedMessage(PLATFORM.MP_WEIXIN))
   }
 
   if (process.platform !== 'win32' && process.platform !== 'darwin') {
