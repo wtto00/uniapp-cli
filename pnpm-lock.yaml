@@ -41,12 +41,31 @@ importers:
       '@wtto00/uniapp-common':
         specifier: workspace:^
         version: link:../common
+      archiver:
+        specifier: ^7.0.1
+        version: 7.0.1
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
       proxy-agent:
         specifier: ^6.5.0
         version: 6.5.0
+      send:
+        specifier: ^1.1.0
+        version: 1.1.0
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0
+    devDependencies:
+      '@types/archiver':
+        specifier: ^6.0.3
+        version: 6.0.3
+      '@types/send':
+        specifier: ^0.17.4
+        version: 0.17.4
+      '@types/ws':
+        specifier: ^8.5.13
+        version: 8.5.13
 
   packages/common:
     dependencies:

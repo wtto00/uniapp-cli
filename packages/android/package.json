@@ -24,7 +24,15 @@
   "homepage": "https://wtto00.github.io/uniapp-cli/",
   "dependencies": {
     "@wtto00/uniapp-common": "workspace:^",
+    "archiver": "^7.0.1",
     "node-fetch": "^3.3.2",
-    "proxy-agent": "^6.5.0"
+    "proxy-agent": "^6.5.0",
+    "send": "^1.1.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/send": "^0.17.4",
+    "@types/ws": "^8.5.13"
   }
 }

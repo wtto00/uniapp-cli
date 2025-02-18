@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { Log, importFileModule, installDependencies, isInstalled, notInstalledMessage } from '@wtto00/uniapp-common'
 
 export enum PLATFORM {
@@ -41,8 +42,8 @@ export async function importPlatform<T extends object>(options: {
       if (!(await isInstalled('@wtto00/uniapp-android'))) {
         if (tryInstall) {
           // TODO: 本地开发测试
-          // await installDependencies([resolve(import.meta.dirname, '../../../android')])
-          await installDependencies(['@wtto00/uniapp-android'])
+          await installDependencies([resolve(import.meta.dirname, '../../../android')])
+          // await installDependencies(['@wtto00/uniapp-android'])
         } else {
           throw Error(notInstalledMessage(platform))
         }
