@@ -7,6 +7,8 @@ import type { PackageJson } from 'pkg-types'
 import { App } from './app.js'
 import { readJsonFile } from './file.js'
 
+export * from 'pkg-types'
+
 export async function isInstalled(dependencyName: string): Promise<boolean> {
   const packages = await App.getPackageJson()
   return !!getPackageDependencies(packages)[dependencyName]

@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { App } from './app.js'
+import { App } from '@wtto00/uniapp-common'
 
 export function gitIgnorePath(ignorePath: string) {
   const ignoreFilePath = resolve(App.projectRoot, '.gitignore')

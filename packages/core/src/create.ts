@@ -2,14 +2,9 @@ import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { select } from '@inquirer/prompts'
-import { Log } from '@wtto00/uniapp-common'
-import { execa } from 'execa'
-import { readPackageJSON, writePackageJSON } from 'pkg-types'
+import { Log, execa, parseExecaError, readPackageJSON, showSpinner, writePackageJSON } from '@wtto00/uniapp-common'
 import validateProjectName from 'validate-npm-package-name'
-import { App } from './utils/app.js'
-import { parseExecaError } from './utils/exec.js'
 import { getTemplateRepositoryUrl } from './utils/git.js'
-import { showSpinner } from './utils/spinner.js'
 
 export const TEMPLATES = [
   { name: 'vitesse', value: 'uni-helper/vitesse-uni-app' },
@@ -92,9 +87,10 @@ export async function create(projectPath: string, options: CreateOptoins) {
       spinner.text = '删除项目模板中的 .git 目录'
       await rm(resolve(projectPath, '.git'), { force: true, recursive: true })
       spinner.text = `重命名模板项目为 ${projectName}`
-      const packages = await readPackageJSON(projectPath)
+      const packagePath = resolve(projectPath, 'package.json')
+      const packages = await readPackageJSON(packagePath)
       packages.name = projectName
-      await writePackageJSON(resolve(projectPath, 'package.json'), packages)
+      await writePackageJSON(packagePath, packages)
     },
     {
       start: '处理模板项目文件',
@@ -106,7 +102,7 @@ export async function create(projectPath: string, options: CreateOptoins) {
   Log.info(`
 运行以下命令开始吧:
   cd ${projectPath}
-  ${App.getPackageManager({ notWarn: true }).name} install
+  npm install
   uniapp run h5
 `)
 }
