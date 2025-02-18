@@ -16,7 +16,7 @@ export async function platformAdd() {
   const agent = new ProxyAgent()
   if (!(await exists(sdkDir))) {
     // download sdk libs
-    const baseUrl = new URL(process.env.UNIAPP_ANDROID_SDK_URL || 'https://wtto00.github.io/uniapp-android-sdk')
+    const baseUrl = new URL(process.env.UNIAPP_ANDROID_SDK_URL || 'https://wtto00.github.io/uniapp-android-sdk/')
     const spinner = ora('正在下载Android SDK Lib文件: ').start()
     const url = new URL(`libs/${uniVersion}/index.json`, baseUrl)
     const sdkFiles: Record<string, string> = {}
