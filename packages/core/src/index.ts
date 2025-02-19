@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-import { App, Log, checkIsUniapp, error2exit } from '@wtto00/uniapp-common'
 import { program } from 'commander'
 import { CLI_VERSION } from './utils/const.js'
+import { error2exit } from './utils/error.js'
+import { Log } from './utils/log.js'
+import { checkIsUniapp } from './utils/package.js'
 
 program
   .name('uniapp')
@@ -12,6 +14,11 @@ program
   .helpOption('-h, --help', '帮助信息')
   .allowUnknownOption(true)
   .showSuggestionAfterError(true)
+  .configureOutput({
+    outputError(str, write) {
+      write(Log.errorColor(str))
+    },
+  })
 
 program
   .command('create')
@@ -180,8 +187,6 @@ program
       error2exit(error, `打包平台 \`${platform}\` 出错了`)
     }
   })
-
-App.projectRoot = process.cwd()
 
 program.parse(process.argv)
 

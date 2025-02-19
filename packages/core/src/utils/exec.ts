@@ -1,9 +1,7 @@
 import { execa } from 'execa'
 import ora from 'ora'
 import { resolveCommand } from 'package-manager-detector/commands'
-import which from 'which'
-import { App } from './app.js'
-import { exists } from './file.js'
+import { getPackageManager } from './package.js'
 
 /**
  * Remove the color of the output text
@@ -18,16 +16,10 @@ export function parseExecaError(error: unknown) {
   return Error((error as { stderr: string }).stderr || (error as { message: string }).message)
 }
 
-export async function whichPath(cmd: string) {
-  const result = await which(cmd, { nothrow: true })
-  if (result) return await exists(result)
-  return ''
-}
-
 export async function installPackages(packages: string[]) {
   if (packages.length === 0) return
 
-  const pm = App.getPackageManager()
+  const pm = await getPackageManager()
   const commands = resolveCommand(pm.agent, 'add', packages)
   if (!commands) throw Error(`无法转换执行命令: ${pm.agent} add ${packages.join(' ')}`)
 
@@ -43,7 +35,7 @@ export async function installPackages(packages: string[]) {
 export async function uninstallPackages(packages: string[]) {
   if (packages.length === 0) return
 
-  const pm = App.getPackageManager()
+  const pm = await getPackageManager()
   const commands = resolveCommand(pm.agent, 'uninstall', packages)
   if (!commands) throw Error(`无法转换执行命令: ${pm.agent} uninstall ${packages.join(' ')}`)
 

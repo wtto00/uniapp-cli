@@ -1,5 +1,7 @@
 import { resolve } from 'node:path'
-import { Log, importFileModule, installDependencies, isInstalled, notInstalledMessage } from '@wtto00/uniapp-common'
+import { importFileModule } from '../utils/file.js'
+import { Log } from '../utils/log.js'
+import { installDependencies, isInstalled } from '../utils/package.js'
 
 export enum PLATFORM {
   H5 = 'h5',
@@ -31,6 +33,14 @@ export function logInvalidPlatform(platform: string) {
   Log.warn(`${platform} 不是一个有效的平台`)
 }
 
+export function notInstalledMessage(platform: string) {
+  return `平台 ${platform} 还没有安装，请运行 \`uniapp platform add ${platform}\` 添加安装`
+}
+
+export function installedMessage(platform: string) {
+  return `平台 ${platform} 已安装`
+}
+
 export async function importPlatform<T extends object>(options: {
   platform: PLATFORM
   fileName: string
@@ -41,9 +51,12 @@ export async function importPlatform<T extends object>(options: {
     case PLATFORM.ANDROID:
       if (!(await isInstalled('@wtto00/uniapp-android'))) {
         if (tryInstall) {
-          // TODO: 本地开发测试
-          await installDependencies([resolve(import.meta.dirname, '../../../android')])
-          // await installDependencies(['@wtto00/uniapp-android'])
+          if (process.env.UNIAPP_CLI_DEVELOPMENT_MODE) {
+            // 本地开发测试
+            await installDependencies([resolve(import.meta.dirname, '../../../android')])
+          } else {
+            await installDependencies(['@wtto00/uniapp-android'])
+          }
         } else {
           throw Error(notInstalledMessage(platform))
         }
@@ -54,6 +67,6 @@ export async function importPlatform<T extends object>(options: {
     case PLATFORM.HARMONY:
       throw Error('暂未实现 Harmony 平台')
     default:
-      return await import(`../${platform}/${fileName}.js`)
+      return await import(`./${platform}/${fileName}.js`)
   }
 }

@@ -1,5 +1,14 @@
-import { Log, type MaybePromise, errorMessage, notInstalledMessage, safeAwait } from '@wtto00/uniapp-common'
-import { type PLATFORM, allPlatforms, importPlatform, logInvalidPlatform } from './platforms/index.js'
+import {
+  type PLATFORM,
+  allPlatforms,
+  importPlatform,
+  logInvalidPlatform,
+  notInstalledMessage,
+} from './platforms/index.js'
+import { errorMessage } from './utils/error.js'
+import { Log } from './utils/log.js'
+import { getProjectInfo } from './utils/project.js'
+import { type MaybePromise, safeAwait } from './utils/util.js'
 
 export async function requirements(platforms: PLATFORM[]) {
   const invalidPlatforms: string[] = []
@@ -16,12 +25,17 @@ export async function requirements(platforms: PLATFORM[]) {
     Log.info()
   }
 
+  const projectInfo = await getProjectInfo()
+
   for (const platform of validPlatforms) {
     Log.debug(`检查平台 ${platform} 的开发环境要求`)
     Log.info([{ message: `${platform}:`, type: 'cyan' }])
 
     const [error, module] = await safeAwait(
-      importPlatform<{ requirement: () => MaybePromise<void> }>({ platform, fileName: 'requirement' }),
+      importPlatform<{ requirement: (options: ProjectInfo) => MaybePromise<void> }>({
+        platform,
+        fileName: 'requirement',
+      }),
     )
 
     if (error) {
@@ -30,7 +44,7 @@ export async function requirements(platforms: PLATFORM[]) {
     }
 
     try {
-      await module.requirement()
+      await module.requirement(projectInfo)
     } catch (error) {
       Log.warn(`出错了: ${errorMessage(error)}`)
     }

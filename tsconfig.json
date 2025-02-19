@@ -20,5 +20,6 @@
     "rootDir": ".",
     "baseUrl": "."
   },
-  "include": ["packages/**/*.ts", "scripts/*.mjs"]
+  "include": ["packages/**/*.ts", "scripts/*.mjs"],
+  "exclude": ["**/*/dist/"]
 }

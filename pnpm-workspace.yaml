@@ -1,2 +1,7 @@
 packages:
   - packages/*
+
+catalog:
+  "@inquirer/prompts": ^7.2.3
+  "execa": ^9.5.2
+  "ora": "^8.1.1"

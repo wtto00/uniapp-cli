@@ -1,6 +1,7 @@
 import { cp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { AndroidDir, App, Log, UNIAPP_SDK_HOME, exists } from '@wtto00/uniapp-common'
+import { assetsAppsPath, copyWww } from '../www.js'
 import { AndroidManifestFilePath, generateAndroidManifest } from './files/AndroidManifest.xml.js'
 import { AppBuildGradleFilePath, genderateAppBuildGradle, mergeDependencies } from './files/app-build.gradle.js'
 import { BuildGradleFilePath, generateBuildGradle } from './files/build.gradle.js'
@@ -11,10 +12,9 @@ import { LibsPath, getDefaultLibs } from './files/libs.js'
 import { SettingsGradleFilePath, generateSettingsGradle } from './files/settings.gradle.js'
 import { StringsFilePath, genderateStrings } from './files/strings.xml.js'
 import { prepareResults } from './results.js'
-import { assetsAppsPath, copyWww } from './www.js'
 import { mergeSet } from './xml.js'
 
-export async function prepare(options?: { isBuild?: boolean; isHBuilderX?: boolean }) {
+export async function prepare(options?: { isBuild?: boolean }) {
   Log.debug('前端打包资源嵌入 Android 资源中')
   if (await exists(assetsAppsPath)) {
     await rm(assetsAppsPath, { recursive: true })

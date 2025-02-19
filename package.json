@@ -1,8 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "run-p dev:common dev:android dev:core",
-    "dev:common": "pnpm -C packages/common dev",
+    "dev": "run-p dev:android dev:core",
     "dev:android": "pnpm -C packages/android dev",
     "dev:core": "pnpm -C packages/core dev",
     "uniapp": "tsx packages/core/src/index.ts",
@@ -14,6 +13,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@inquirer/prompts": "catalog:",
     "@types/node": "^22.10.5",
     "@wtto00/biome-config": "^0.0.1",
     "globstar": "^1.0.0",
@@ -24,7 +24,7 @@
     "typescript": "^5.7.3"
   },
   "license": "MIT",
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.4.1",
   "lint-staged": {
     "packages/core/package.json": ["pnpm -C packages/core prebuild", "git add packages/core/src/utils/const.ts"],
     "*": ["biome check --no-errors-on-unmatched --write"]

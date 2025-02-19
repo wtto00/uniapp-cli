@@ -1,9 +1,12 @@
-import { exists, isInstalled } from '@wtto00/uniapp-common'
 import { dependencies, projectDir } from './utils/const.js'
 
-export async function platformIsInstalled() {
+export async function platformIsInstalled(projectInfo: ProjectInfo) {
+  const {
+    utils: { isDependencyInstalled, exists },
+  } = projectInfo
+
   for (const dependencyName of dependencies) {
-    if (!(await isInstalled(dependencyName))) return false
+    if (!(await isDependencyInstalled(dependencyName))) return false
   }
   return await exists(projectDir)
 }

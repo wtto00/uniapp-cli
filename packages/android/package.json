@@ -23,16 +23,22 @@
   },
   "homepage": "https://wtto00.github.io/uniapp-cli/",
   "dependencies": {
-    "@wtto00/uniapp-common": "workspace:^",
+    "@inquirer/prompts": "catalog:",
+    "@wtto00/android-tools": "^1.0.5",
     "archiver": "^7.0.1",
+    "chokidar": "^4.0.3",
+    "execa": "catalog:",
     "node-fetch": "^3.3.2",
+    "ora": "catalog:",
     "proxy-agent": "^6.5.0",
     "send": "^1.1.0",
+    "which": "^5.0.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",
     "@types/send": "^0.17.4",
+    "@types/which": "^3.0.4",
     "@types/ws": "^8.5.13"
   }
 }

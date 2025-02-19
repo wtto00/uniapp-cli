@@ -2,7 +2,7 @@ import { createWriteStream } from 'node:fs'
 import http from 'node:http'
 import os from 'node:os'
 import path from 'node:path'
-import { App, Log, errorMessage } from '@wtto00/uniapp-common'
+import { Log, type ManifestConfig, errorMessage } from '@wtto00/uniapp-common'
 import archiver from 'archiver'
 import send from 'send'
 import { type WebSocket, WebSocketServer } from 'ws'
@@ -89,9 +89,7 @@ interface ISocketMessage {
 export const SocketMessage = {
   mobile: {} as ISocketMessage['mobile'],
 
-  async build(files: Set<string>) {
-    const manifest = await App.getManifestJson()
-
+  build(manifest: ManifestConfig, files: Set<string>) {
     const fileinfo = []
     for (const file of files) {
       fileinfo.push({
@@ -121,9 +119,7 @@ export const SocketMessage = {
     })
   },
 
-  async initial() {
-    const manifest = await App.getManifestJson()
-
+  initial(manifest: ManifestConfig) {
     return JSON.stringify({
       mobile: SocketMessage.mobile,
       contents: {

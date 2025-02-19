@@ -1,15 +1,19 @@
 import { cp, mkdir, rename, rm, writeFile } from 'node:fs/promises'
 import { URL, resolve } from 'node:url'
-import { App, errorMessage, exists, installDependencies, ora } from '@wtto00/uniapp-common'
 import fetch from 'node-fetch'
+import ora from 'ora'
 import { ProxyAgent } from 'proxy-agent'
 import { dependencies, projectDir } from './utils/const.js'
 import { getSDKDir, getTemplateDir } from './utils/path.js'
 
 export { platformRemove } from './platform-remove.js'
 
-export async function platformAdd() {
-  const uniVersion = await App.getUniVersion()
+export async function platformAdd(projectInfo: ProjectInfo) {
+  const {
+    uniVersion,
+    utils: { installDependencies, exists, errorMessage },
+  } = projectInfo
+
   await installDependencies(dependencies.map((dependencyName) => `${dependencyName}@${uniVersion}`))
 
   const sdkDir = await getSDKDir()
@@ -32,7 +36,7 @@ export async function platformAdd() {
       spinner.fail(errorMessage(error))
       throw Error(`请求Android SDK@${uniVersion} Lib文件列表失败: ${url}`)
     }
-    const targetDir = `${sdkDir}-tmp`
+    const targetDir = `${sdkDir}-tmp/`
     if (!(await exists(targetDir))) await mkdir(targetDir, { recursive: true })
     const libNames = Object.keys(sdkFiles)
     const libCount = libNames.length

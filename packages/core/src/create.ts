@@ -2,9 +2,13 @@ import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { select } from '@inquirer/prompts'
-import { Log, execa, parseExecaError, readPackageJSON, showSpinner, writePackageJSON } from '@wtto00/uniapp-common'
+import { execa } from 'execa'
+import ora from 'ora'
+import { readPackageJSON, writePackageJSON } from 'pkg-types'
 import validateProjectName from 'validate-npm-package-name'
+import { errorMessage } from './utils/error.js'
 import { getTemplateRepositoryUrl } from './utils/git.js'
+import { Log } from './utils/log.js'
 
 export const TEMPLATES = [
   { name: 'vitesse', value: 'uni-helper/vitesse-uni-app' },
@@ -44,15 +48,14 @@ export async function create(projectPath: string, options: CreateOptoins) {
       throw Error(`${projectPath} 已存在, 使用 \`--force\` 强制覆盖`)
     }
 
-    await showSpinner(
-      () => rm(projectPath, { force: true, recursive: true }),
-      {
-        start: `使用 \`--force\`，正在删除 \`${projectPath}\``,
-        succeed: `${projectPath} 已删除`,
-        fail: `${projectPath} 删除出错了`,
-      },
-      { throw: true },
-    )
+    const spinner = ora(`使用 \`--force\`，正在删除 \`${projectPath}\``).start()
+    try {
+      await rm(projectPath, { force: true, recursive: true })
+      spinner.succeed(`${projectPath} 已删除`)
+    } catch (error) {
+      spinner.fail(`${projectPath} 删除出错了`)
+      throw error
+    }
   }
 
   let template = options.template ?? ''
@@ -72,32 +75,28 @@ export async function create(projectPath: string, options: CreateOptoins) {
   if (!repo) throw Error('未知的模板仓库')
 
   const templateRepositoryUrl = getTemplateRepositoryUrl(repo)
-  await showSpinner(
-    () => execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${templateRepositoryUrl} ${projectPath}`,
-    {
-      start: `正在克隆项目模板: ${template}`,
-      succeed: `项目模板 ${template} 已克隆完成`,
-      fail: `克隆项目模板 ${template} 失败了`,
-    },
-    { throw: true, parseError: parseExecaError },
-  )
+  const cloneSpinner = ora(`正在克隆项目模板: ${template}`).start()
+  try {
+    await execa`git clone --depth 1 ${branch ? ['-b', branch] : []} ${templateRepositoryUrl} ${projectPath}`
+    cloneSpinner.succeed(`项目模板 ${template} 已克隆完成`)
+  } catch (error) {
+    cloneSpinner.fail(`克隆项目模板 ${template} 失败了`)
+    throw error
+  }
 
-  await showSpinner(
-    async (spinner) => {
-      spinner.text = '删除项目模板中的 .git 目录'
-      await rm(resolve(projectPath, '.git'), { force: true, recursive: true })
-      spinner.text = `重命名模板项目为 ${projectName}`
-      const packagePath = resolve(projectPath, 'package.json')
-      const packages = await readPackageJSON(packagePath)
-      packages.name = projectName
-      await writePackageJSON(packagePath, packages)
-    },
-    {
-      start: '处理模板项目文件',
-      succeed: `项目 ${projectName} 创建成功`,
-    },
-    { fail: true },
-  )
+  const spinner = ora('处理模板项目文件').start()
+  try {
+    spinner.text = '删除项目模板中的 .git 目录'
+    await rm(resolve(projectPath, '.git'), { force: true, recursive: true })
+    spinner.text = `重命名模板项目为 ${projectName}`
+    const packagePath = resolve(projectPath, 'package.json')
+    const packages = await readPackageJSON(packagePath)
+    packages.name = projectName
+    await writePackageJSON(packagePath, packages)
+  } catch (error) {
+    Log.warn(`处理模板项目文件出错了: ${errorMessage(error)}`)
+  }
+  spinner.succeed(`项目 ${projectName} 创建成功`)
 
   Log.info(`
 运行以下命令开始吧:
